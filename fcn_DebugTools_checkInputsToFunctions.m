@@ -7,7 +7,7 @@ variable_type_string, ...
 varargin...
 ) %#ok<*STOUT,*INUSD>
 % fcn_DebugTools_checkInputsToFunctions
-% Checks the variable types commonly used in the FuncE codes to ensure 
+% Checks the variable types commonly used in the codes to ensure 
 % they are correctly formed.
 % 
 % This is a template function which is built for each class of functions. 
