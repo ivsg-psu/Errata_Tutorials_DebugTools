@@ -91,8 +91,6 @@ varargin...
 % 
 % -- fill in to-do items here.
 
-return;
-
 %% Debugging and Input checks
 flag_check_inputs = 1; % Set equal to 1 to check the input arguments 
 flag_do_plot = 0;      % Set equal to 1 for plotting 
@@ -119,17 +117,17 @@ end
 
 
 if 1 == flag_check_inputs
-
-    % Are there the right number of inputs?
-    if nargin < 2 || nargin > 4
-        error('Incorrect number of input arguments')
+    if nargout==0
+        % Are there the right number of inputs?
+        if nargin < 2 || nargin > 4
+            error('Incorrect number of input arguments')
+        end
+        
+        % Check the variable_type_string input, make sure it is characters
+        if ~ischar(variable_type_string)
+            error('The variable_type_string input must be a string type, for example: ''Path'' ');
+        end
     end
-
-    % Check the variable_type_string input, make sure it is characters
-    if ~ischar(variable_type_string)
-       error('The variable_type_string input must be a string type, for example: ''Path'' ');
-    end
- 
 end
 
 %% Start of main code
@@ -145,19 +143,21 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
 
-% Grab the variable name
-variable_name = inputname(1);
-
 % Check to see if output argument given
 if nargout>0
     varargout{1}= INTERNAL_fcn_showPossibleFields;
     return
 end
 
+% Grab the variable name
+variable_name = inputname(1);
+
 % Set default flags all to "off" mode
 flags = INTERNAL_fcn_setDefaultFlagsToOff;
 
-% See if special inputs:
+% See if special inputs, for example if there are 3 inputs and user is
+% using 3rd input to specify greater than, less than, equal conditions,
+% etc.
 if nargin == 3
     flags.check_requiredRowLength = 1;     % Must check for required length
     flags.rowLengthRangeRequired = varargin{1}; % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
@@ -232,12 +232,71 @@ template_structure = ...
     'area',[],...
     'max_radius',[]);
 flags.structureToBeLike = template_structure;
+flags.structureToBeLikeName = 'polytopes';
 end
 
 %%
 function flags = INTERNAL_fcn_setFlagsByType(flags, variable_type_string)
 
 flag_pattern_was_matched = 0;
+
+% Convert path library variable types into regular queries
+if strcmp(variable_type_string,'station')
+    variable_type_string = '1column_of_numbers';
+end
+if strcmp(variable_type_string,'stations')
+    variable_type_string = '1column_of_numbers';
+    flags.check_requiredRowLength = 1;     % Must check for required length
+    flags.rowLengthRangeRequired = [2 3];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
+end
+if strcmp(variable_type_string,'path')
+    variable_type_string = '2column_of_numbers';
+    flags.check_requiredRowLength = 1;     % Must check for required length
+    flags.rowLengthRangeRequired = [2 3];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
+end
+if strcmp(variable_type_string,'path2or3D')
+    variable_type_string = '2or3column_of_numbers';
+    flags.check_requiredRowLength = 1;     % Must check for required length
+    flags.rowLengthRangeRequired = [2 3];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
+end
+if strcmp(variable_type_string,'elevated_path')
+    variable_type_string = '3column_of_numbers';
+    flags.check_requiredRowLength = 1;     % Must check for required length
+    flags.rowLengthRangeRequired = [2 3];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
+end
+if strcmp(variable_type_string,'paths')
+    variable_type_string = '2column_of_numbers';
+    flags.check_requiredRowLength = 1;     % Must check for required length
+    flags.rowLengthRangeRequired = [3 4];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
+end
+if strcmpi(variable_type_string,'traversal')
+    flags.check_likeStructure = 1; % Check that result is like a particular structure
+    template_structure = ...
+        struct(...
+        'X',[],...
+        'Y',[],...
+        'Z',[],...
+        'Station',[]);
+    flags.structureToBeLike = template_structure;
+    flags.structureToBeLikeName = 'traversal';
+    flag_pattern_was_matched = 1;
+end
+if strcmpi(variable_type_string,'traversals')
+    flags.check_likeStructure = 0; % Do NOT check that this is a structure
+    template_structure = ...
+        struct(...
+        'X',[],...
+        'Y',[],...
+        'Z',[],...
+        'Station',[]);
+    flags.structureToBeLike = template_structure;
+    flags.structureToBeLikeName = 'traversals';
+    flag_pattern_was_matched = 1;
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% End of special cases - start of general cases
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Check the "Ncolumn_of" pattern, where N is a digit
 pattern = digitsPattern(1)+"column_of";
@@ -296,7 +355,7 @@ if strcmpi(variable_type_string,'polytopes')
         'area',[],...
         'max_radius',[]);
     flags.structureToBeLike = template_structure;
-
+    flags.structureToBeLikeName = 'polytopes';
     flag_pattern_was_matched = 1;
 end
 
@@ -309,7 +368,7 @@ if strcmpi(variable_type_string,'mixedset')
         'settings',[],...
         'AABB',[]);
     flags.structureToBeLike = template_structure;
-
+    flags.structureToBeLikeName = 'mixedset';
     flag_pattern_was_matched = 1;
 end
 
@@ -406,28 +465,125 @@ end
 
 % Structure?
 if flags.check_likeStructure 
+    
+    % What fields are in the template?
     template_fields = fieldnames(orderfields(flags.structureToBeLike));
-    reference_fields = fieldnames(orderfields(variable));
-    if ~isequal(template_fields,reference_fields)
-        fprintf(1,'The template has fields of:\n');
+        
+    % Make sure user's input variable is a structure
+    if ~isstruct(variable)
+        fprintf(1,'The %s template has fields of:\n',flags.structureToBeLikeName);
+        for ith_field = 1:length(template_fields)
+            fprintf(1,'\t %s\n',string(template_fields(ith_field)));
+        end
+        error('The %s input must be a structure type. It it not. It should have the same form as the type: %s. See the listing of fields above.',variable_name,flags.structureToBeLikeName);
+    end
+    
+    % Make sure all the fields are where they should be
+    variable_fields = fieldnames(orderfields(variable));
+    if ~isequal(template_fields,intersect(template_fields,variable_fields))
+        fprintf(1,'The %s template has fields of:\n',flags.structureToBeLikeName);
         for ith_field = 1:length(template_fields)
             fprintf(1,'\t %s\n',string(template_fields(ith_field)));
         end
         fprintf(1,'The %s input has fields of:\n',variable_name);
-        for ith_field = 1:length(reference_fields)
-            fprintf(1,'\t %s\n',string(reference_fields(ith_field)));
+        for ith_field = 1:length(variable_fields)
+            fprintf(1,'\t %s\n',string(variable_fields(ith_field)));
         end
         error('The %s input must be a structure type. All the fields must be match the reference structure.',variable_name);
     end
     
-end 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Check special structure cases - traversal
+    if strcmpi(flags.structureToBeLikeName,'traversal')
+        X_central = variable.X;
+        Y_central = variable.Y;
+        Z_central = variable.Z;
+        Station_central = variable.Station;        
+        
+        % Check that all are numeric
+        if  ~isnumeric(X_central) ||  ~isnumeric(Y_central) ||  ~isnumeric(Z_central) ||  ~isnumeric(Station_central)
+            error('The %s input must be a traversal type, namely a structure with fields X, Y, Z, and Station, each N x 1 numeric arrays. At least one data field is non-numeric.',variable_name);
+        end
+        
+        % Check that all are 1-dimensional columns
+        if (length(X_central(1,:))~=1) || (length(Y_central(1,:))~=1) || (length(Z_central(1,:))~=1) ||  (length(Station_central(1,:))~=1)
+            error('The %s input must be a traversal type, namely a structure with fields X, Y, Z, and Station, each N x 1 numeric arrays. At least one data field has multiple columns.',variable_name);
+        end
+        
+        % Check that their lengths are all the same
+        if (length(X_central(:,1))~=length(Y_central(:,1))) || ((length(X_central(:,1))~=length(Z_central(:,1))))  || ((length(X_central(:,1))~=length(Station_central(:,1))))
+            warning('The %s input has variables whose lengths do not match. See the workspace for variable information.',variable_name);
+            fprintf(1,'\tX length is: %.0d.\n',length(X_central(:,1)));
+            fprintf(1,'\tY length is: %.0d.\n',length(Y_central(:,1)));
+            fprintf(1,'\tZ length is: %.0d.\n',length(Z_central(:,1)));
+            fprintf(1,'\tStation length is: %.0d.\n',length(Station_central(:,1)));
+            error('The %s input must be a traversal type, namely a structure with fields X, Y, Z, and Station, each N x 1 numeric arrays. The lengths do not match.',variable_name);
+        end
+        
+        % Make sure the station field is sorted
+        if ~issorted(Station_central,'strictascend')
+            error('The Station field on the %s input must be strictly increasing',variable_name);
+        end
+    end    
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Check special structure cases - traversals
+% Convert paths to traversal structures
+if strcmpi(flags.structureToBeLikeName,'traversals')
+    % Check the all_traversals variables
+    try
+        test = variable.traversal{1}; %#ok<NASGU>
+    catch
+        error('The variable: %s is expected to be a traversals type, and must a subfield called traversal which is a cell array (e.g. variable.traversal{2}). An array was not found.',variable_name);
+    end
     
+    for i_traversal = 1:length(variable.traversal)
+        try
+            fcn_Path_checkInputsToFunctions(...
+                variable.traversal{i_traversal},'traversal');
+        catch ME
+            error('The variable: %s is expected to be a traversals type, and must have a subfield called traversal which is a cell array; for eexample: variable.traversal{2}. An error in structure type was found in the %.0d index. The detail is: %s',variable_name,i_traversal,ME.message);
+        end
+    end
+end
+
 
 end % Ends INTERNAL_confirmVariable
 
 function allowable_inputs = INTERNAL_fcn_showPossibleFields
 num_inputs = 0;
 
+% General cases
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'Mcolumn_of...';
+allowable_inputs(num_inputs).description = 'checks that the input type is K x M of ...';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'NorMcolumn...';
+allowable_inputs(num_inputs).description = 'checks that the input type is K x M or K x N of ...';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'positive_...';
+allowable_inputs(num_inputs).description = 'checks that the input type is positive ...';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = '_of_integers...';
+allowable_inputs(num_inputs).description = 'checks that the input type is of_integers...';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = '_of_mixed...';
+allowable_inputs(num_inputs).description = 'checks that the input type is numeric but can include NaN..';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = '_of_mixed...';
+allowable_inputs(num_inputs).description = 'checks that the input type is numeric but can include NaN..';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'mixedset...';
+allowable_inputs(num_inputs).description = 'checks that the input type is a structure matching a given template..';
+
+% Specific cases follow
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = '1column_of_numbers';
 allowable_inputs(num_inputs).description = 'checks that the input type is N x 1 and is a number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N.';
@@ -455,6 +611,40 @@ allowable_inputs(num_inputs).description = 'checks that the input type is N x 2 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'polytopes';
 allowable_inputs(num_inputs).description = 'a 1-by-n seven field structure of polytopes within the boundaries, where n <= number of polytopes with fields:  vertices: a m+1-by-2 matrix of xy points with row1 = rowm+1, where m is the number of the individual polytope vertices  xv: a 1-by-m vector of vertice x-coordinates  yv: a 1-by-m vector of vertice y-coordinates  distances: a 1-by-m vector of perimeter distances from one point to the next point, distances(i) = distance from vertices(i) to vertices(i+1) mean: centroid xy coordinate of the polytope area: area of the polytope max_radius: the largest distance from the centroid to any vertex';
+
+% Path library types
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'station';
+allowable_inputs(num_inputs).description = 'Path library type: checks that the station type is N x 1 and is a number.';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'stations';
+allowable_inputs(num_inputs).description = 'Path library type: checks that the station type is N x 1 and is a number, with N >= 2.';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'path';
+allowable_inputs(num_inputs).description = 'Path library type: checks that the path type is N x 2 with N>=2';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'path2or3D';
+allowable_inputs(num_inputs).description = 'Path library type: checks that the path type is N x 2 or N x 3, with N>=2';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'elevated_path';
+allowable_inputs(num_inputs).description = 'Path library type: checks that the elevated path type is N x 3 with N>=2';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'paths';
+allowable_inputs(num_inputs).description = 'Path library type: checks that the path type is N x 2 with N>=3';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'traversal';
+allowable_inputs(num_inputs).description = 'Path library type: checks if a structure with X, Y, and Station, and that each has an N x 1 vector within all of same length. Further, the Station field must be strictly increasing.';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'traversals';
+allowable_inputs(num_inputs).description = 'Path library type: checks if a structure containing a subfield that is a cell array of traveral{i}, e.g. "data.traversal{3}", with each traversal also meeting traversal requirements.';
+
 end
 
 
