@@ -210,6 +210,27 @@ fcn_DebugTools_checkInputsToFunctions(Twocolumn_of_integers_test, '2column_of_in
 
 
 
+%% Structure Types
+% 
+%    _____ _                   _                       
+%   / ____| |                 | |                      
+%  | (___ | |_ _ __ _   _  ___| |_ _   _ _ __ ___  ___ 
+%   \___ \| __| '__| | | |/ __| __| | | | '__/ _ \/ __|
+%   ____) | |_| |  | |_| | (__| |_| |_| | | |  __/\__ \
+%  |_____/ \__|_|   \__,_|\___|\__|\__,_|_|  \___||___/
+%
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=PathLibraryTypes
+
+% Define a test structure and compare
+template_structure = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+structure_to_test = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
+
+%% Test the structure type (success since more fields)
+template_structure = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+structure_to_test  = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{},'temp',{});
+fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
+
 %% Path Library Types
 %   _____      _   _     _      _ _                       _______                    
 %  |  __ \    | | | |   | |    (_) |                     |__   __|                   
@@ -700,6 +721,43 @@ if 1==0
     paths_test = [4 2; 0 0];
     fcn_DebugTools_checkInputsToFunctions(paths_test, 'paths');
     
+    %% Structure Types
+    %
+    %    _____ _                   _
+    %   / ____| |                 | |
+    %  | (___ | |_ _ __ _   _  ___| |_ _   _ _ __ ___  ___
+    %   \___ \| __| '__| | | |/ __| __| | | | '__/ _ \/ __|
+    %   ____) | |_| |  | |_| | (__| |_| |_| | | |  __/\__ \
+    %  |_____/ \__|_|   \__,_|\___|\__|\__,_|_|  \___||___/
+    %
+    % See: http://patorjk.com/software/taag/#p=display&f=Big&t=PathLibraryTypes
+    
+    %% Test the structure type (success)
+    template_structure = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+    structure_to_test = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+    fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
+
+    
+    %% Test the structure type (success since more fields)
+    template_structure = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+    structure_to_test  = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{},'temp',{});
+    fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
+
+    %% Test the structure type (fail since not a structure)
+    template_structure = [1 2 3];
+    structure_to_test = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+    fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
+
+    %% Test the structure type (fail since fields are wrong)
+    template_structure = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+    structure_to_test = struct('A',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+    fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
+
+    %% Test the structure type (fail since less fields)
+    template_structure = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+    structure_to_test  = struct('color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+    fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
+
     %% Traversal
     %
     %   _______                                 _

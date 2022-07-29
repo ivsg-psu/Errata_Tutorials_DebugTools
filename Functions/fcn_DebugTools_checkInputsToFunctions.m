@@ -159,6 +159,7 @@ flags = INTERNAL_fcn_setDefaultFlagsToOff;
 % using 3rd input to specify greater than, less than, equal conditions,
 % etc.
 if nargin == 3
+    flags.third_input = varargin{1};
     flags.check_requiredRowLength = 1;     % Must check for required length
     flags.rowLengthRangeRequired = varargin{1}; % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
 end
@@ -233,6 +234,7 @@ template_structure = ...
     'max_radius',[]);
 flags.structureToBeLike = template_structure;
 flags.structureToBeLikeName = 'polytopes';
+flags.third_input = [];
 end
 
 %%
@@ -268,6 +270,17 @@ if strcmp(variable_type_string,'paths')
     variable_type_string = '2column_of_numbers';
     flags.check_requiredRowLength = 1;     % Must check for required length
     flags.rowLengthRangeRequired = [3 4];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
+end
+if strcmpi(variable_type_string,'likestructure')
+    flags.check_likeStructure = 1; % Check that result is like a particular structure
+    template_structure = flags.third_input; % This is where the 3rd input is stored
+    if ~isstruct(template_structure)
+        error('A structure type is expected as an argument for the ''likestructure'' check');
+    end
+    flags.structureToBeLike = template_structure;
+    flags.structureToBeLikeName = 'user-defined';
+    flags.check_requiredRowLength = 0;     % Override the flag by 3-argument input, since it is a structure
+    flag_pattern_was_matched = 1;
 end
 if strcmpi(variable_type_string,'traversal')
     flags.check_likeStructure = 1; % Check that result is like a particular structure
