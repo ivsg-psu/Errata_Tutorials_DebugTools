@@ -393,11 +393,13 @@ assert(result==false);
 ### Extracting a numeric value embedded in a string
 <ul>
 <li> The function fcn_DebugTools_extractNumberFromStringCell takes a char type in a cell, and finds the first number within that is numeric, and then returns the string for this number. It is robust in that weird entries also work, such as '-0004.2'. This function is particularly useful to parse human-input numbers.
+	
 ```Matlab
 %% Decimal number, negative, in cell array with leading zeros and text
 result = fcn_DebugTools_extractNumberFromStringCell({'My number is -0000.4'});
 assert(isequal(result,{'-0.4'}));
 ```
+	
 </li>
 </ul>
 
