@@ -423,6 +423,7 @@ assert(isequal(result,[{'This'},{'isatest'},{'of'}]));
 ### Converting mixed input lists into comma separated string
 <ul>
 <li> The function fcn_DebugTools_parseStringIntoCells parses a string containing comma-separated elements, parsing out the elements into cells.
+
 ```Matlab
 %% Demonstrate fcn_DebugTools_convertVariableToCellString
 % Multiple mixed character, numeric in cell array ending in string with commas
