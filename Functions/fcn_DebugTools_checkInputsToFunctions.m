@@ -49,7 +49,8 @@ varargin...
 %     is a rwo vector [A B] where, if B is greater than A, then the vector 
 %     must be A or longer. If B is less than A, then the vector must be A 
 %     or shorter. If B = A, then the vector must be length A, and no 
-%     shorter or greater.
+%     shorter or greater - note: if B==A then [A B] gives the same result
+%     as [A].
 % 
 %     fig_num: any number that acts somewhat like a figure number output. 
 %     If given, this forces the variable types to be displayed as output 
@@ -61,8 +62,8 @@ varargin...
 %     (optional outputs)
 %
 %     AllowableInputs: This is a structure output that lists all the 
-%     allowable types, and a description of each. As well, if the output 
-%     argument is given, the same information is printed within the 
+%     allowable types, and a description of each. As well, if an output 
+%     argument is specified, the same information is printed within the 
 %     workspace.
 % 
 % 
@@ -85,6 +86,14 @@ varargin...
 % 
 % 2021_12_12 by S. Brennan
 % -- first write of function
+% 2022_04_03 by S. Brennan
+% -- added Path variable types
+% 2023_01_16 by S. Brennan
+% -- added narginchk
+% -- fixed dbstack error to match error to source function
+% -- added char type
+% -- added string type
+% -- improved documentation
 
 % 
 % TO DO:
@@ -119,13 +128,11 @@ end
 if 1 == flag_check_inputs
     if nargout==0
         % Are there the right number of inputs?
-        if nargin < 2 || nargin > 4
-            error('Incorrect number of input arguments')
-        end
+        narginchk(2,4);
         
         % Check the variable_type_string input, make sure it is characters
         if ~ischar(variable_type_string)
-            error('The variable_type_string input must be a string type, for example: ''Path'' ');
+            error('The variable_type_string input must be a character type, for example: ''Path'' ');
         end
     end
 end
@@ -220,6 +227,10 @@ flags.minNrequiredcolumns  = 0; % No check
 flags.maxNrequiredcolumns  = 0; % No check
 flags.check_if_noNaN = 0; % Check that there are no NaN 
 flags.check_if_integer = 0; % Check that the variable is an integer
+flags.check_if_char = 0; % Check that the variable is a character
+flags.check_if_string = 0; % Check that the variable is a string
+flags.check_if_doesFileExist = 0; % Check that the variable is an existing file
+flags.check_if_doesDirectoryExist = 0; % Check that the variable is an existing directory
 flags.check_requiredRowLength = 0;     % Don't check for required length
 flags.rowLengthRangeRequired = [0 0]; % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
 flags.check_likeStructure = 0; % Check that result is like a particular structure
@@ -341,18 +352,49 @@ end
 pattern = 'positive_';
 if contains(variable_type_string,pattern)
     flags.check_if_strictly_positive = 1; % Must be a number    
+    flag_pattern_was_matched = 1;
 end
 
 % XXX_of_integers
 pattern = '_of_integers';
 if contains(variable_type_string,pattern)
     flags.check_if_integer = 1; % Check that the variable is an integer
+    flag_pattern_was_matched = 1;
 end
 
 % XXX_of_mixed
 pattern = '_of_mixed';
 if contains(variable_type_string,pattern)
     flags.check_if_noNaN = 0; % Removes check that it be numeric
+    flag_pattern_was_matched = 1;
+end
+
+% XXX_of_chars
+pattern = '_of_chars';
+if contains(variable_type_string,pattern)
+    flags.check_if_char = 1; % Check that the variable is a char
+    flag_pattern_was_matched = 1;
+end
+
+% XXX_of_strings
+pattern = '_of_strings';
+if contains(variable_type_string,pattern)
+    flags.check_if_string = 1; % Check that the variable is a string
+    flag_pattern_was_matched = 1;
+end
+
+% DoesFileExist
+pattern = 'DoesFileExist';
+if contains(variable_type_string,pattern)
+    flags.check_if_doesFileExist = 1; % Check that the variable is a string
+    flag_pattern_was_matched = 1;
+end
+
+% DoesDirectoryExist
+pattern = 'DoesDirectoryExist';
+if contains(variable_type_string,pattern)
+    flags.check_if_doesDirectoryExist = 1; % Check that the variable is a string
+    flag_pattern_was_matched = 1;
 end
 
 % polytopes
@@ -391,60 +433,110 @@ end
 
 end % Ends INTERNAL_fcn_setFlagsByType
 
+%% 
 function INTERNAL_confirmVariable(flags,variable,variable_name)
+
+
+
+st = dbstack(2);
+errorStruct.stack = st;
+errorStruct.message = 'MyComponent:incorrectType';
+errorStruct.identifier = 'MyFunction:fileNotFound';
 
 % Numeric?
 if flags.check_if_isnumeric   
     if ~isnumeric(variable)
-        error('The %s input must be numeric.',variable_name);
+        errorStruct.message =sprintf('The %s input must be numeric.',variable_name);
+        error(errorStruct);
     end
 end
 
 % Strictly positive?
 if flags.check_if_strictly_positive   
     if any(variable<=0)
-        error('The %s input must be strictly positive, e.g. greater than zero and not equal to zero.',variable_name);
+        errorStruct.message =sprintf('The %s input must be strictly positive, e.g. greater than zero and not equal to zero.',variable_name);
+        error(errorStruct);
     end
 end
 
 % NaN?
 if flags.check_if_noNaN   
-    if any(isnan(variable),'all')
-        error('The %s input must have no NaN values.',variable_name);
+    if any(isnan(variable),'all')        
+        errorStruct.message =sprintf('The %s input must have no NaN values.',variable_name);
+        error(errorStruct);
     end
 end
 
 % Integer?
 if flags.check_if_integer   
-    if ~all(round(variable)==variable)
-        error('The %s input must be an integer.',variable_name);
+    if ~all(round(variable)==variable)        
+        errorStruct.message =sprintf('The %s input must be an integer.',variable_name);
+        error(errorStruct);
     end
 end
+
+% Character?
+if flags.check_if_char   
+    if ~ischar(variable)
+        errorStruct.message =sprintf('The %s input must be a character.',variable_name);
+        error(errorStruct);
+    end
+end
+
+% String?
+if flags.check_if_string   
+    if ~isstring(variable)
+        errorStruct.message =sprintf('The %s input must be a string.',variable_name);
+        error(errorStruct);
+    end
+end
+
+% DoesFileExist?
+if flags.check_if_doesFileExist
+    if 0==exist(variable,'file')
+        errorStruct.message =sprintf('The %s input, %s, must be an existing file.',variable_name,variable);
+        error(errorStruct);
+    end
+end
+
+% DoesDirectoryExist?
+if flags.check_if_doesDirectoryExist
+    if 0==exist(variable,'dir')
+        errorStruct.message =sprintf('The %s input, %s, must be an existing directory.',variable_name,variable);
+        error(errorStruct);
+    end
+end
+
 
 % Column length?
 if flags.check_required_columns    
     if flags.minNrequiredcolumns==0
-        error('Need to set minimum number of columns for variable type: %s.',variable_name);
+        errorStruct.message =sprintf('Need to set minimum number of columns for variable type: %s.',variable_name);
+        error(errorStruct);
     end
     if flags.maxNrequiredcolumns==0
-        error('Need to set maximum number of columns for variable type: %s.',variable_name);
+        errorStruct.message =sprintf('Need to set maximum number of columns for variable type: %s.',variable_name);
+        error(errorStruct);
     end
     
     % Exactly a number of columns?
     if flags.minNrequiredcolumns==flags.maxNrequiredcolumns
         if length(variable(1,:))~=flags.minNrequiredcolumns
-            error('The %s input must have exactly %.0d columns.',variable_name,flags.minNrequiredcolumns);
+            errorStruct.message =sprintf('The %s input must have exactly %.0d columns.',variable_name,flags.minNrequiredcolumns);
+            error(errorStruct);
         end
     end
     
     % A minimum number of columns
     if length(variable(1,:))<flags.minNrequiredcolumns
-        error('The %s input must have at least %.0d columns.',variable_name,flags.minNrequiredcolumns);
+        errorStruct.message =sprintf('The %s input must have at least %.0d columns.',variable_name,flags.minNrequiredcolumns);
+        error(errorStruct);
     end
 
     % A maximum number of columns
     if length(variable(1,:))>flags.maxNrequiredcolumns
-        error('The %s input must have no more than %.0d columns.',variable_name,flags.maxNrequiredcolumns);
+        errorStruct.message =sprintf('The %s input must have no more than %.0d columns.',variable_name,flags.maxNrequiredcolumns);
+        error(errorStruct);
     end
     
 end
@@ -454,23 +546,27 @@ if flags.check_requiredRowLength
     required_length = flags.rowLengthRangeRequired;
     if length(required_length(1,:))==1  % Exact, given number of rows
         if length(variable(:,1))~=required_length
-            error('The %s input must have exactly %.0d rows',variable_name,required_length);
+            errorStruct.message =sprintf('The %s input must have exactly %.0d rows',variable_name,required_length);
+            error(errorStruct);
         end
     else
         if required_length(1,2)>required_length(1,1) % Must be at least given number of rows, or more
             min_length = required_length(1,1);
             if length(variable(:,1))<min_length
-                error('The %s input must have %.0d rows or more',variable_name,min_length);
+                errorStruct.message =sprintf('The %s input must have %.0d rows or more',variable_name,min_length);
+                error(errorStruct);
             end
         elseif required_length(1,2)<required_length(1,1) % Must be no more than given number of rows
             max_length = required_length(1,1);
             if length(variable(:,1))>max_length
-                error('The %s input must have no more than %.0d rows',variable_name,max_length);
+                errorStruct.message =sprintf('The %s input must have no more than %.0d rows',variable_name,max_length);
+                error(errorStruct);
             end
         else % It has to be equal
             required_length = required_length(1,1);
             if length(variable(:,1))~=required_length
-                error('The %s input must have %.0d rows or more',variable_name,required_length);
+                errorStruct.message =sprintf('The %s input must have %.0d rows or more',variable_name,required_length);
+                error(errorStruct);
             end
         end
     end
@@ -488,7 +584,8 @@ if flags.check_likeStructure
         for ith_field = 1:length(template_fields)
             fprintf(1,'\t %s\n',string(template_fields(ith_field)));
         end
-        error('The %s input must be a structure type. It it not. It should have the same form as the type: %s. See the listing of fields above.',variable_name,flags.structureToBeLikeName);
+        errorStruct.message =sprintf('The %s input must be a structure type. It it not. It should have the same form as the type: %s. See the listing of fields above.',variable_name,flags.structureToBeLikeName);
+        error(errorStruct);
     end
     
     % Make sure all the fields are where they should be
@@ -502,7 +599,8 @@ if flags.check_likeStructure
         for ith_field = 1:length(variable_fields)
             fprintf(1,'\t %s\n',string(variable_fields(ith_field)));
         end
-        error('The %s input must be a structure type. All the fields must be match the reference structure.',variable_name);
+        errorStruct.message =sprintf('The %s input must be a structure type. All the fields must be match the reference structure.',variable_name);
+        error(errorStruct);
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -514,13 +612,15 @@ if flags.check_likeStructure
         Station_central = variable.Station;        
         
         % Check that all are numeric
-        if  ~isnumeric(X_central) ||  ~isnumeric(Y_central) ||  ~isnumeric(Z_central) ||  ~isnumeric(Station_central)
-            error('The %s input must be a traversal type, namely a structure with fields X, Y, Z, and Station, each N x 1 numeric arrays. At least one data field is non-numeric.',variable_name);
+        if  ~isnumeric(X_central) ||  ~isnumeric(Y_central) ||  ~isnumeric(Z_central) ||  ~isnumeric(Station_central)           
+            errorStruct.message =sprintf('The %s input must be a traversal type, namely a structure with fields X, Y, Z, and Station, each N x 1 numeric arrays. At least one data field is non-numeric.',variable_name);
+            error(errorStruct);
         end
         
         % Check that all are 1-dimensional columns
-        if (length(X_central(1,:))~=1) || (length(Y_central(1,:))~=1) || (length(Z_central(1,:))~=1) ||  (length(Station_central(1,:))~=1)
-            error('The %s input must be a traversal type, namely a structure with fields X, Y, Z, and Station, each N x 1 numeric arrays. At least one data field has multiple columns.',variable_name);
+        if (length(X_central(1,:))~=1) || (length(Y_central(1,:))~=1) || (length(Z_central(1,:))~=1) ||  (length(Station_central(1,:))~=1)            
+            errorStruct.message =sprintf('The %s input must be a traversal type, namely a structure with fields X, Y, Z, and Station, each N x 1 numeric arrays. At least one data field has multiple columns.',variable_name);
+            error(errorStruct);
         end
         
         % Check that their lengths are all the same
@@ -530,12 +630,15 @@ if flags.check_likeStructure
             fprintf(1,'\tY length is: %.0d.\n',length(Y_central(:,1)));
             fprintf(1,'\tZ length is: %.0d.\n',length(Z_central(:,1)));
             fprintf(1,'\tStation length is: %.0d.\n',length(Station_central(:,1)));
-            error('The %s input must be a traversal type, namely a structure with fields X, Y, Z, and Station, each N x 1 numeric arrays. The lengths do not match.',variable_name);
+            
+            errorStruct.message =sprintf('The %s input must be a traversal type, namely a structure with fields X, Y, Z, and Station, each N x 1 numeric arrays. The lengths do not match.',variable_name);
+            error(errorStruct);
         end
         
         % Make sure the station field is sorted
         if ~issorted(Station_central,'strictascend')
-            error('The Station field on the %s input must be strictly increasing',variable_name);
+            errorStruct.message =sprintf('The Station field on the %s input must be strictly increasing',variable_name);
+            error(errorStruct);
         end
     end    
 end
@@ -548,15 +651,17 @@ if strcmpi(flags.structureToBeLikeName,'traversals')
     try
         test = variable.traversal{1}; %#ok<NASGU>
     catch
-        error('The variable: %s is expected to be a traversals type, and must a subfield called traversal which is a cell array (e.g. variable.traversal{2}). An array was not found.',variable_name);
+        errorStruct.message =sprintf('The variable: %s is expected to be a traversals type, and must a subfield called traversal which is a cell array (e.g. variable.traversal{2}). An array was not found.',variable_name);
+        error(errorStruct);
     end
     
     for i_traversal = 1:length(variable.traversal)
         try
             fcn_Path_checkInputsToFunctions(...
                 variable.traversal{i_traversal},'traversal');
-        catch ME
-            error('The variable: %s is expected to be a traversals type, and must have a subfield called traversal which is a cell array; for eexample: variable.traversal{2}. An error in structure type was found in the %.0d index. The detail is: %s',variable_name,i_traversal,ME.message);
+        catch ME            
+            errorStruct.message =sprintf('The variable: %s is expected to be a traversals type, and must have a subfield called traversal which is a cell array; for eexample: variable.traversal{2}. An error in structure type was found in the %.0d index. The detail is: %s',variable_name,i_traversal,ME.message);
+            error(errorStruct);
         end
     end
 end
@@ -574,7 +679,7 @@ allowable_inputs(num_inputs).description = 'checks that the input type is K x M 
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'NorMcolumn...';
-allowable_inputs(num_inputs).description = 'checks that the input type is K x M or K x N of ...';
+allowable_inputs(num_inputs).description = 'checks that the input type is of minimum K x M or maximum K x N of ...';
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'positive_...';
@@ -589,8 +694,24 @@ allowable_inputs(num_inputs).name = '_of_mixed...';
 allowable_inputs(num_inputs).description = 'checks that the input type is numeric but can include NaN..';
 
 num_inputs = num_inputs+1;
-allowable_inputs(num_inputs).name = '_of_mixed...';
-allowable_inputs(num_inputs).description = 'checks that the input type is numeric but can include NaN..';
+allowable_inputs(num_inputs).name = '_of_chars...';
+allowable_inputs(num_inputs).description = 'checks that the input type is a char type (uses ischar)';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = '_of_strings...';
+allowable_inputs(num_inputs).description = 'checks that the input type is a string type (uses isstring)';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'DoesFileExist...';
+allowable_inputs(num_inputs).description = 'checks that the input type is an existing file';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'DoesDirectoryExist...';
+allowable_inputs(num_inputs).description = 'checks that the input type is an existing directory';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'polytopes...';
+allowable_inputs(num_inputs).description = 'checks that the input type is a polytope type, e.g. a structure with fields: vertices, xv, yv, distances, mean, area, max_radius.';
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'mixedset...';
@@ -599,7 +720,7 @@ allowable_inputs(num_inputs).description = 'checks that the input type is a stru
 % Specific cases follow
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = '1column_of_numbers';
-allowable_inputs(num_inputs).description = 'checks that the input type is N x 1 and is a number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N.';
+allowable_inputs(num_inputs).description = 'checks that the input type is a structure with fields: name, settings, AABB.';
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'positive_1column_of_numbers';
@@ -657,6 +778,10 @@ allowable_inputs(num_inputs).description = 'Path library type: checks if a struc
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'traversals';
 allowable_inputs(num_inputs).description = 'Path library type: checks if a structure containing a subfield that is a cell array of traveral{i}, e.g. "data.traversal{3}", with each traversal also meeting traversal requirements.';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'likestructure';
+allowable_inputs(num_inputs).description = 'Takes a structure input as the 3rd argument to serve as a template. Ensures that the input has the same structure fields.';
 
 end
 

@@ -10,6 +10,8 @@
 %      -- first write of the code by Steve Harnett
 %      2022_03_27:
 %      -- created a demo script of core debug utilities
+%      2023_01_16:
+%      -- vastly improved README file
 
 
 %% Set up workspace
@@ -40,6 +42,19 @@ if ~exist('flag_DebugTools_Was_Initialized','var')
     flag_DebugTools_Was_Initialized = 1;
 end
 
+
+%% Workspace Management
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  __          __        _                                __  __                                                   _   
+%  \ \        / /       | |                              |  \/  |                                                 | |  
+%   \ \  /\  / /__  _ __| | _____ _ __   __ _  ___ ___   | \  / | __ _ _ __   __ _  __ _  ___ _ __ ___   ___ _ __ | |_ 
+%    \ \/  \/ / _ \| '__| |/ / __| '_ \ / _` |/ __/ _ \  | |\/| |/ _` | '_ \ / _` |/ _` |/ _ \ '_ ` _ \ / _ \ '_ \| __|
+%     \  /\  / (_) | |  |   <\__ \ |_) | (_| | (_|  __/  | |  | | (_| | | | | (_| | (_| |  __/ | | | | |  __/ | | | |_ 
+%      \/  \/ \___/|_|  |_|\_\___/ .__/ \__,_|\___\___|  |_|  |_|\__,_|_| |_|\__,_|\__, |\___|_| |_| |_|\___|_| |_|\__|
+%                                | |                                                __/ |                              
+%                                |_|                                               |___/                               
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 %% Demonstrate how to add subdirectories
 if ~exist('flag_DebugTools_Folders_Initialized','var')
     fcn_DebugTools_addSubdirectoriesToPath(pwd,{'Functions','Data'});
@@ -48,83 +63,113 @@ if ~exist('flag_DebugTools_Folders_Initialized','var')
     flag_DebugTools_Folders_Initialized = 1;
 end
 
+%% Input CHecking
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   _____                   _      _____ _               _    _             
+%  |_   _|                 | |    / ____| |             | |  (_)            
+%    | |  _ __  _ __  _   _| |_  | |    | |__   ___  ___| | ___ _ __   __ _ 
+%    | | | '_ \| '_ \| | | | __| | |    | '_ \ / _ \/ __| |/ / | '_ \ / _` |
+%   _| |_| | | | |_) | |_| | |_  | |____| | | |  __/ (__|   <| | | | | (_| |
+%  |_____|_| |_| .__/ \__,_|\__|  \_____|_| |_|\___|\___|_|\_\_|_| |_|\__, |
+%              | |                                                     __/ |
+%              |_|                                                    |___/ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Demonstrate fcn_DebugTools_checkInputsToFunctions
+% Check that input has 2 columns, maximum row length is 5 or less
+Twocolumn_of_integers_test = [4 1; 3 9; 2 7];
+fcn_DebugTools_checkInputsToFunctions(Twocolumn_of_integers_test, '2column_of_integers',[5 4]);
+
+
+%% Demonstrate fcn_DebugTools_doStringsMatch
+% simple string comparisons, student answer is part of correct answer so returns true, ignoring case
+student_answer = 'A';
+correct_answers = 'abc';
+result = fcn_DebugTools_doStringsMatch(student_answer,correct_answers);
+assert(result);
+
+% simple string comparisons, student answer is part of correct answer so true, checking to produce false result if student repeats (FALSE)
+student_answer = 'aa';
+correct_answers = 'abc';
+result = fcn_DebugTools_doStringsMatch(student_answer,correct_answers);
+assert(result==false);
+
+%% Demonstrate fcn_DebugTools_extractNumberFromStringCell
+% Choose a hard situation: Decimal number, negative, in cell array with leading zeros and text
+result = fcn_DebugTools_extractNumberFromStringCell({'My number is -0000.4'});
+assert(isequal(result,{'-0.4'}));
+
+%% Demonstrate fcn_DebugTools_parseStringIntoCells
+% Choose a very Complex input
+inputString = 'This,isatest,of';
+result = fcn_DebugTools_parseStringIntoCells(inputString);
+assert(isequal(result,[{'This'},{'isatest'},{'of'}]));
+
+%% Demonstrate fcn_DebugTools_convertVariableToCellString
+% Multiple mixed character, numeric in cell array ending in string with commas
+result = fcn_DebugTools_convertVariableToCellString([{'D'},{2},'abc , 123']);
+assert(isequal(result,{'D, 2, abc , 123'}));
+
+%% Output formatting
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%    ____        _               _     ______                         _   _   _             
+%   / __ \      | |             | |   |  ____|                       | | | | (_)            
+%  | |  | |_   _| |_ _ __  _   _| |_  | |__ ___  _ __ _ __ ___   __ _| |_| |_ _ _ __   __ _ 
+%  | |  | | | | | __| '_ \| | | | __| |  __/ _ \| '__| '_ ` _ \ / _` | __| __| | '_ \ / _` |
+%  | |__| | |_| | |_| |_) | |_| | |_  | | | (_) | |  | | | | | | (_| | |_| |_| | | | | (_| |
+%   \____/ \__,_|\__| .__/ \__,_|\__| |_|  \___/|_|  |_| |_| |_|\__,_|\__|\__|_|_| |_|\__, |
+%                   | |                                                                __/ |
+%                   |_|                                                               |___/ 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% fcn_DebugTools_addStringToEnd.m 
+input_string = 'test';
+value_to_add = 2;
+output_string = fcn_DebugTools_addStringToEnd(input_string,value_to_add);
+assert(isequal(output_string,'test 2'));
+
+%% fcn_DebugTools_number2string.m 
+% % prints a "pretty" version of a string, e.g avoiding weirdly odd numbers
+% of decimal places or strangely formatted printing.
+
+% Basic case - example
+stringNumber = fcn_DebugTools_number2string(2.333333333); % Empty result
+assert(isequal(stringNumber,'2.33'));
 
 %% Demonstration of codes related to fcn_DebugTools_debugPrintStringToNCharacters
 clc; % Clear the console
 
 % BASIC example 1 - string is too long
-test_string = 'This is a really really really long string where I only want the first 10 characters';
+test_string = 'This is a really, really, really long string but we only want the first 10 characters';
 fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(test_string,10);
 fprintf(1,'The string: %s\nwas converted to: "%s"\n',test_string,fixed_length_string);
 
 % BASIC example 2 - string is too short
-test_string = 'Short str that should be 40 chars';
+test_string = 'Tiny string but should be 40 chars';
 fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(test_string,40);
 fprintf(1,'The string: %s\nwas converted to: "%s"\n',test_string,fixed_length_string);
 
-% Advanced example
-% This example shows why the function was written: to show information in a
-% delimited format length
-
-N_chars = 15;
-
-
-% Create dummy data
+%% Demonstration of fixed-formatting table printing
+% Fill in test data
 Npoints = 10;
+point_IDs = (1:Npoints)';
 intersection_points = rand(Npoints,2);
 s_coordinates_in_traversal_1 = rand(Npoints,1);
 s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
 
-% Print the header
-header_1_str = sprintf('%s','Data ID');
-fixed_header_1_str = fcn_DebugTools_debugPrintStringToNCharacters(header_1_str,N_chars);
-header_2_str = sprintf('%s','Location X');
-fixed_header_2_str = fcn_DebugTools_debugPrintStringToNCharacters(header_2_str,N_chars);
-header_3_str = sprintf('%s','Location Y');
-fixed_header_3_str = fcn_DebugTools_debugPrintStringToNCharacters(header_3_str,N_chars);
-header_4_str = sprintf('%s','s-coord 1');
-fixed_header_4_str = fcn_DebugTools_debugPrintStringToNCharacters(header_4_str,N_chars);
-header_5_str = sprintf('%s','s-coord 2');
-fixed_header_5_str = fcn_DebugTools_debugPrintStringToNCharacters(header_5_str,N_chars);
+% Basic test case
 
-fprintf(1,'\n\n%s %s %s %s %s\n',...
-    fixed_header_1_str,...
-    fixed_header_2_str,...
-    fixed_header_3_str,...
-    fixed_header_4_str,...
-    fixed_header_5_str);
+header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}];
+formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}];
+N_chars = 15; % All columns have same number of characters
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
 
-% Print the results only if the array is not empty
-if ~isempty(intersection_points)
-    
-    % Loop through all the points
-    for ith_intersection =1:length(intersection_points(:,1))
-        
-        % Convert all the data to fixed-length format
-        results_1_str = sprintf('%.0d',ith_intersection);
-        fixed_results_1_str = fcn_DebugTools_debugPrintStringToNCharacters(results_1_str,N_chars);
-        results_2_str = sprintf('%.12f',intersection_points(ith_intersection,1));
-        fixed_results_2_str = fcn_DebugTools_debugPrintStringToNCharacters(results_2_str,N_chars);
-        results_3_str = sprintf('%.12f',intersection_points(ith_intersection,2));
-        fixed_results_3_str = fcn_DebugTools_debugPrintStringToNCharacters(results_3_str,N_chars);
-        results_4_str = sprintf('%.12f',s_coordinates_in_traversal_1(ith_intersection));
-        fixed_results_4_str = fcn_DebugTools_debugPrintStringToNCharacters(results_4_str,N_chars);
-        results_5_str = sprintf('%.12f',s_coordinates_in_traversal_2(ith_intersection));
-        fixed_results_5_str = fcn_DebugTools_debugPrintStringToNCharacters(results_5_str,N_chars);
-        
-        % Print the fixed results
-        fprintf(1,'%s %s %s %s %s\n',...
-            fixed_results_1_str,...
-            fixed_results_2_str,...
-            fixed_results_3_str,...
-            fixed_results_4_str,...
-            fixed_results_5_str);
-        
-    end % Ends for loop
-end % Ends check to see if isempty
 
-%% Demonstrate the checking of inputs to functions
-% Maximum length is 5 or less
-Twocolumn_of_integers_test = [4 1; 3 9; 2 7];
-fcn_DebugTools_checkInputsToFunctions(Twocolumn_of_integers_test, '2column_of_integers',[5 4]);
+% Advanced test case
+
+header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
+N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+
 

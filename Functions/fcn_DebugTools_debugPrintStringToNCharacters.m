@@ -21,7 +21,7 @@ function fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(inpu
 %
 % DEPENDENCIES:
 %
-%      (none)
+%      fcn_DebugTools_checkInputsToFunctions
 %
 % EXAMPLES:
 %
@@ -35,6 +35,8 @@ function fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(inpu
 % Revision history:
 %      2021_12_12:
 %      -- first write of the code
+%      2023_01_16:
+%      -- added input checking
 
 
 flag_do_debug = 0; % Flag to debug the results
@@ -61,25 +63,26 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if flag_check_inputs == 1
-    %     % Are there the right number of inputs?
-    %     if nargin < 2 || nargin > 3
-    %         error('Incorrect number of input arguments')
-    %     end
-    %
-    %     % Check the traversal_1 input
-    %     fcn_Path_checkInputsToFunctions(traversal_1, 'traversal');
-    %
-    %     % Check the traversal_2 input
-    %     fcn_Path_checkInputsToFunctions(traversal_2, 'traversal');
-              
+    
+    % Are there the right number of inputs?
+    narginchk(2,3);
+    
+    % Check the input_sequence input
+    fcn_DebugTools_checkInputsToFunctions(input_sequence, '_of_chars');
+
+    % Check the N input   
+    fcn_DebugTools_checkInputsToFunctions(N, '1column_of_integers',1);
+
 end
 
 
 % % Does user want to show the plots?
 % if 3 == nargin
-%     fig_num = varargin{1};
-%     figure(fig_num);
-%     flag_do_plot = 1;
+%     temp = varargin{1};
+%     if ~isempty(temp)
+%         figure(fig_num);
+%         flag_do_plot = 1;
+%     end
 % else
 %     if flag_do_debug
 %         fig = figure;
