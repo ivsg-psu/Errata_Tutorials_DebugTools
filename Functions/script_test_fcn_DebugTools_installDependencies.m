@@ -20,7 +20,7 @@ dependency_subfolders = {'Functions','Data'};
 % Define a universal resource locator (URL) pointing to the zip file to
 % install. For example, here is the zip file location to the Debugtools
 % package on GitHub:
-dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25?raw=true';
+dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
 
 % Call the function to do the install
 fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url)

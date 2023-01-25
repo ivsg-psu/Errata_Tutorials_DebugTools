@@ -17,11 +17,32 @@
 
 
 %% Set up workspace
-% NOTE: this installs under the Utililities directory
-dependency_name = 'DebugTools_v2023_01_25';
-dependency_subfolders = {'Functions','Data'};
-dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25?raw=true';
-fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url)
+if ~exist('flag_DebugTools_Was_Initialized','var')
+    
+    % add necessary directories for functions recursively
+    if(exist([pwd, filesep,  'Functions'],'dir'))
+        addpath(genpath([pwd, filesep, 'Functions']))
+    else % Throw an error?
+        error('No Functions directory exists to be added to the path. Please create one (see README.md) and run again.');
+    end
+    
+    % % add necessary directories for data?
+    if(exist([pwd, filesep,  'Data'],'dir'))
+        addpath(genpath([pwd, filesep, 'Data']))
+    else % Throw an error?
+        % error('No Data directory exists to be added to the path. Please create one (see README.md) and run again.');
+    end
+    
+    % add necessary directories for Utilities to the path?
+    if(exist([pwd, filesep,  'Utilities'],'dir'))
+        addpath(genpath([pwd, filesep, 'Utilities']))  % This is where GPS utilities are stored
+    else % Throw an error?
+        % error('No Utilities directory exists to be added to the path. Please create one (see README.md) and run again.');
+    end
+    
+    % set a flag so we do not have to do this again
+    flag_DebugTools_Was_Initialized = 1;
+end
 
 %% Workspace Management
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,6 +55,39 @@ fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, depen
 %                                | |                                                __/ |                              
 %                                |_|                                               |___/                               
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% Demonstrate workspace install from URL
+% see script_test_fcn_DebugTools_installDependencies
+flag_show_warnings = 0;
+
+% NOTE: this installs under the Utililities directory
+dependency_name = 'DebugTools_v2023_01_25';
+dependency_subfolders = {'Functions','Data'};
+dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
+fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url);
+
+
+disp('Library installed! Verify this now, as it will be deleted to complete the demo');
+disp('Paused. Hit any key to continue...');
+pause;
+
+% Remove the folders from path, to avoid deletion warnings
+temp_path = fullfile(pwd,'Utilities','DebugTools_v2023_01_25','Functions');
+rmpath(temp_path);
+temp_path = fullfile(pwd,'Utilities','DebugTools_v2023_01_25','Data');
+rmpath(temp_path);
+
+% Remove the example Utilities folder and all subfolders
+[success_flag,error_message,message_ID] = rmdir('Utilities','s');
+
+% Did it work?
+if ~success_flag
+    error('Unable to remove the example Utilities directory. Reason: %s with message ID: %s\n',error_message,message_ID);
+elseif ~isempty(error_message)
+    if flag_show_warnings
+        warning('The Utilities directory was removed, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID); %#ok<UNRCH> 
+    end
+end
 
 %% Demonstrate how to add subdirectories
 if ~exist('flag_DebugTools_Folders_Initialized','var')
