@@ -6,42 +6,22 @@
 
 
 % Revision history:
-%      2021_12_12:
-%      -- first write of the code by Steve Harnett
-%      2022_03_27:
-%      -- created a demo script of core debug utilities
-%      2023_01_16:
-%      -- vastly improved README file
+% 2021_12_12: sbrennan@psu.edu
+% -- first write of the code by Steve Harnett
+% 2022_03_27: sbrennan@psu.edu
+% -- created a demo script of core debug utilities
+% 2023_01_16: sbrennan@psu.edu
+% -- vastly improved README file
+% 2023_01_25: sbrennan@psu.edu
+% -- added install from URL
 
 
 %% Set up workspace
-if ~exist('flag_DebugTools_Was_Initialized','var')
-    
-    % add necessary directories for functions recursively
-    if(exist([pwd, filesep,  'Functions'],'dir'))
-        addpath(genpath([pwd, filesep, 'Functions']))
-    else % Throw an error?
-        error('No Functions directory exists to be added to the path. Please create one (see README.md) and run again.');
-    end
-    
-    % % add necessary directories for data?
-    if(exist([pwd, filesep,  'Data'],'dir'))
-        addpath(genpath([pwd, filesep, 'Data']))
-    else % Throw an error?
-        % error('No Data directory exists to be added to the path. Please create one (see README.md) and run again.');
-    end
-    
-    % add necessary directories for Utilities to the path?
-    if(exist([pwd, filesep,  'Utilities'],'dir'))
-        addpath(genpath([pwd, filesep, 'Utilities']))  % This is where GPS utilities are stored
-    else % Throw an error?
-        % error('No Utilities directory exists to be added to the path. Please create one (see README.md) and run again.');
-    end
-    
-    % set a flag so we do not have to do this again
-    flag_DebugTools_Was_Initialized = 1;
-end
-
+% NOTE: this installs under the Utililities directory
+dependency_name = 'DebugTools_v2023_01_25';
+dependency_subfolders = {'Functions','Data'};
+dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25?raw=true';
+fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url)
 
 %% Workspace Management
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
