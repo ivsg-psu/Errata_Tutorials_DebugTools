@@ -54,6 +54,7 @@ This repo provides common tools used for debugging MATLAB codes within IVSG, and
     </li>
     <li><a href="#functions-for-workspace-management">Functions for Workspace Management</a>
 	    <ul>
+      <li><a href="#automatically-installing-matlab-packages">Automatically installing MATLAB packages</li>      
 	    <li><a href="#adding-subdirectories-to-the-path">Adding subdirectories to the pathTop-Level Directories</li>
 	    </ul>
     </li>
@@ -190,6 +191,39 @@ for any function to view function details.
 
 <!-- FUNCTIONS FOR WORKSPACE MANAGEMENT -->
 ## Functions for Workspace Management
+### Automatically installing MATLAB packages
+fcn_DebugTools_installDependencies.m : installs code packages that are specified by a URL pointing to a zip file into a default local subfolder, "Utilities", under the root folder. It also adds either the package subfoder or any specified sub-subfolders to the MATLAB path.
+
+If the Utilities folder does not exist, it is created.
+
+If the specified code package folder and all subfolders already exist, the package is not installed. Otherwise, the folders are created as needed, and the package is installed.
+
+If one does not wish to put these codes in different directories, the function can be easily modified with strings specifying the desired install location.
+
+For path creation, if the "DebugTools" package is being installed, the code installs the package, then shifts temporarily into the package to complete the path definitions for MATLAB. If the DebugTools is not already installed, an error is thrown as these tools are needed for the path creation.
+
+Finally, the code sets a global flag to indicate that the folders are initialized so that, in this session, if the code is called again the folders will not be installed. This global flag can be overwritten by an optional flag input.
+
+
+```Matlab
+%% Basic test case
+% NOTE: this installs under the current directory!
+% Define the name of subfolder to be created in "Utilities" subfolder
+dependency_name = 'DebugTools_v2023_01_18';
+
+% Define sub-subfolders that are in the code package that also need to be
+% added to the MATLAB path after install. Leave empty ({}) to only add
+% the subfolder path without any sub-subfolder path additions.
+dependency_subfolders = {'Functions','Data'};
+
+% Define a universal resource locator (URL) pointing to the zip file to
+% install. For example, here is the zip file location to the Debugtools
+% package on GitHub:
+dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_18.zip?raw=true';
+
+% Call the function to do the install
+fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url)
+```
 
 ### Adding subdirectories to the path
 
@@ -593,7 +627,11 @@ Distributed under the MIT License. See `LICENSE` for more information.
 ## Major release versions
 
 This code is still in development (alpha testing). 
-The 2023-01 release includes the following addition:
+The 2023-01-25 release includes the following addition:
+* Updated README
+* Added fcn_DebugTools_installDependencies to support automated URL-referenced install of code packages
+
+The 2023-01-18 release includes the following addition:
 * Updated README
 * Adding directory and file queries for input checking
 * String output functions (fixed-length printing)
