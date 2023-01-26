@@ -187,16 +187,20 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
     % Do the subfolders exist?
     flag_allFoldersThere = 1;
-    for ith_folder = 1:length(dependency_subfolders)
-        subfolder_name = dependency_subfolders{ith_folder};
-
-        % Create the entire path
-        subfunction_folder = fullfile(root_directory_name, 'Utilities', dependency_name,subfolder_name);
-
-        % Check if the folder and file exists that is typically created when
-        % unzipping.
-        if ~exist(subfunction_folder,'dir')
-            flag_allFoldersThere = 0;
+    if isempty(dependency_subfolders)
+        flag_allFoldersThere = 0;
+    else
+        for ith_folder = 1:length(dependency_subfolders)
+            subfolder_name = dependency_subfolders{ith_folder};
+            
+            % Create the entire path
+            subfunction_folder = fullfile(root_directory_name, 'Utilities', dependency_name,subfolder_name);
+            
+            % Check if the folder and file exists that is typically created when
+            % unzipping.
+            if ~exist(subfunction_folder,'dir')
+                flag_allFoldersThere = 0;
+            end
         end
     end
 
@@ -217,18 +221,21 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
         % Did this work?
         flag_allFoldersThere = 1;
-        for ith_folder = 1:length(dependency_subfolders)
-            subfolder_name = dependency_subfolders{ith_folder};
-
-            % Create the entire path
-            subfunction_folder = fullfile(root_directory_name, 'Utilities', dependency_name,subfolder_name);
-
-            % Check if the folder and file exists that is typically created when
-            % unzipping.
-            if ~exist(subfunction_folder,'dir')
-                flag_allFoldersThere = 0;
+        if ~isempty(dependency_subfolders)
+            for ith_folder = 1:length(dependency_subfolders)
+                subfolder_name = dependency_subfolders{ith_folder};
+                
+                % Create the entire path
+                subfunction_folder = fullfile(root_directory_name, 'Utilities', dependency_name,subfolder_name);
+                
+                % Check if the folder and file exists that is typically created when
+                % unzipping.
+                if ~exist(subfunction_folder,'dir')
+                    flag_allFoldersThere = 0;
+                end
             end
         end
+        
         if flag_allFoldersThere==0
             error('The necessary dependency: %s has an error in install, or error performing an unzip operation. Check the code install (see README.md) and try again.\n',dependency_name);
         else
