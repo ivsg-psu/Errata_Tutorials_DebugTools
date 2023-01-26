@@ -100,13 +100,22 @@ end
 
 
 % add necessary directories
-for ith_subdirectory = 1:length(subdirectories)
-    subdirectory_name = subdirectories{ith_subdirectory};
-    if(exist([root_path, filesep,  subdirectory_name],'dir'))
-        addpath(genpath([root_path, filesep, subdirectory_name]))
+if isempty(subdirectories)
+    if(exist(root_path,'dir'))
+        addpath(root_path);
     else % Throw an error?
-        error('There was an attempt to add subdirectory: \n%s \nto the path: \n%s\nbut the subdirectory does not exist. Suggest checking the README file to ensure correct folders are included.',...
-            subdirectory_name,root_path);
+        error('There was an attempt to add directory: \n%s \nto the path but the subdirectory does not exist. Suggest checking the README file to ensure correct folders are included.',...
+            root_path);
+    end
+else
+    for ith_subdirectory = 1:length(subdirectories)
+        subdirectory_name = subdirectories{ith_subdirectory};
+        if(exist([root_path, filesep,  subdirectory_name],'dir'))
+            addpath(genpath([root_path, filesep, subdirectory_name]))
+        else % Throw an error?
+            error('There was an attempt to add subdirectory: \n%s \nto the path: \n%s\nbut the subdirectory does not exist. Suggest checking the README file to ensure correct folders are included.',...
+                subdirectory_name,root_path);
+        end
     end
 end
 
