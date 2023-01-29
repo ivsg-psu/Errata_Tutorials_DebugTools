@@ -1,4 +1,3 @@
-
 % script_test_fcn_DebugTools_addStringToEnd.m
 % This is a script to exercise the function: fcn_DebugTools_addStringToEnd.m
 % This function was written on 2021_12_12 by S. Brennan
@@ -6,8 +5,8 @@
 
 
 % Revision history:
-%      2023_01_17:
-%      -- first write of the code
+% 2023_01_17:
+% -- first write of the code
 
 close all;
 clc;
