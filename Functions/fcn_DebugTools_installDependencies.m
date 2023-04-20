@@ -87,6 +87,9 @@ function fcn_DebugTools_installDependencies(...
 % Revision history:
 % 2023_01_23:
 % -- wrote the code originally
+% 2023_04_20:
+% -- improved error handling
+% -- fixes nested installs automatically
 
 % TO DO
 % -- Add input argument checking
@@ -156,7 +159,6 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
     % Does the directory "Utilities" exist?
     utilities_folder_name = fullfile(root_directory_name,'Utilities');
     if ~exist(utilities_folder_name,'dir')
-        fprintf(1,'Main Utility subfolder does not exist - attempting creation of this folder.\n');
         % If we are in here, the directory does not exist. So create it
         % using mkdir
         [success_flag,error_message,message_ID] = mkdir(root_directory_name,'Utilities');
@@ -166,18 +168,13 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
             error('Unable to make the Utilities directory. Reason: %s with message ID: %s\n',error_message,message_ID);
         elseif ~isempty(error_message)
             warning('The Utilities directory was created, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
-        else
-            fprintf(1,'Main Utility subfolder was successfully created.\n');
         end
-    else
-        fprintf(1,'Main Utility subfolder already exists - skipping creation of this folder.\n');
+
     end
 
     % Does the directory for the dependency folder exist?
     dependency_folder_name = fullfile(root_directory_name,'Utilities',dependency_name);
-    fprintf(1,'Attempting creation of the sub-utility folder for: %s\n',dependency_name);
     if ~exist(dependency_folder_name,'dir')
-
         % If we are in here, the directory does not exist. So create it
         % using mkdir
         [success_flag,error_message,message_ID] = mkdir(utilities_folder_name,dependency_name);
@@ -187,24 +184,17 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
             error('Unable to make the dependency directory: %s. Reason: %s with message ID: %s\n',dependency_name, error_message,message_ID);
         elseif ~isempty(error_message)
             warning('The %s directory was created, but with a warning: %s\n and message ID: %s\n(continuing)\n',dependency_name, error_message, message_ID);
-        else
-            fprintf(1,'Sub-utility folder was successfully created.\n');
         end
-    else
-        fprintf(1,'Sub-utility subfolder already exists - skipping creation of this folder.\n');
+
     end
 
     % Do the subfolders exist?
     flag_allFoldersThere = 1;
-    if isempty(dependency_subfolders{1})
+    if isempty(dependency_subfolders)
         flag_allFoldersThere = 0;
-        fprintf(1,'It appears the sub-utility has no folder sub-dependencies. None are checked: %s\n',dependency_name);
     else
-        fprintf(1,'It appears the sub-utility has sub-folders. Checking if subfolders are already there for: %s\n',dependency_name);
-
         for ith_folder = 1:length(dependency_subfolders)
             subfolder_name = dependency_subfolders{ith_folder};
-            fprintf(1,'\t Checking: %s\n',subfolder_name);
             
             % Create the entire path
             subfunction_folder = fullfile(root_directory_name, 'Utilities', dependency_name,subfolder_name);
@@ -218,9 +208,7 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
     end
 
     % Do we need to unzip the files?
-    fprintf(1,'Checking if download process needed for for: %s\n',dependency_name);
     if flag_allFoldersThere==0
-        fprintf(1,'Some dowload is needed for: %s\n',dependency_name);
         % Files do not exist yet - try unzipping them.
         save_file_name = tempname(root_directory_name);
         zip_file_name = websave(save_file_name,dependency_url);
@@ -228,16 +216,58 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
         % Is the file there?
         if ~exist(zip_file_name,'file')
-            error('The zip file: %s for dependency: %s did not download correctly. This is usually because permissions are restricted on the current directory. Check the code install (see README.md) and try again.\n',zip_file_name, dependency_name);
-        else
-            fprintf(1,'Download files found and copied locally for: %s\n',dependency_name);
+            error(['The zip file: %s for dependency: %s did not download correctly.\n' ...
+                'This is usually because permissions are restricted on ' ...
+                'the current directory. Check the code install ' ...
+                '(see README.md) and try again.\n'],zip_file_name, dependency_name);
         end
 
         % Try unzipping
         unzip(zip_file_name, dependency_folder_name);
 
-        % Did this work?
-        fprintf(1,'Checking that unzip worked for: %s\n',dependency_name);
+        % Did this work? If so, directory should not be empty
+        directory_contents = dir(dependency_folder_name);
+        if isempty(directory_contents)
+            error(['The necessary dependency: %s has an error in install ' ...
+                'where the zip file downloaded correctly, ' ...
+                'but the unzip operation did not put any content ' ...
+                'into the correct folder. ' ...
+                'This suggests a bad zip file or permissions error ' ...
+                'on the local computer.\n'],dependency_name);
+        end
+
+        % Check if is a nested install (for example, installing a folder
+        % "Toolsets" under a folder called "Toolsets"). This can be found
+        % if there's a folder whose name contains the dependency_name
+        flag_is_nested_install = 0;
+        for ith_entry = 1:length(directory_contents)
+            if contains(directory_contents(ith_entry).name,dependency_name)
+                if directory_contents(ith_entry).isdir
+                    flag_is_nested_install = 1;
+                    install_directory_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name);
+                    install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*.*');
+                    install_location_to = fullfile(directory_contents(ith_entry).folder);
+                end
+            end
+        end
+
+        if flag_is_nested_install
+            [status,message,message_ID] = movefile(install_files_from,install_location_to);
+            if 0==status
+                error(['Unable to move files from directory: %s\n ' ...
+                    'To: %s \n' ...
+                    'Reason message: %s\n' ...
+                    'And message_ID: %s\n'],install_files_from,install_location_to, message,message_ID);
+            end
+            [status,message,message_ID] = rmdir(install_directory_from);
+            if 0==status
+                error(['Unable remove directory: %s \n' ...
+                    'Reason message: %s \n' ...
+                    'And message_ID: %s\n'],install_directory_from,message,message_ID);
+            end
+        end
+
+        % Make sure the subfolders were created
         flag_allFoldersThere = 1;
         if ~isempty(dependency_subfolders)
             for ith_folder = 1:length(dependency_subfolders)
@@ -253,16 +283,20 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
                 end
             end
         end
-        
+         % If any are not there, then throw an error
         if flag_allFoldersThere==0
-            error('The necessary dependency: %s has an error in install, or error performing an unzip operation. Check the code install (see README.md) and try again.\n',dependency_name);
+            error(['The necessary dependency: %s has an error in install, ' ...
+                'or error performing an unzip operation. The subfolders ' ...
+                'requested by the code were not found after the unzip ' ...
+                'operation. This suggests a bad zip file, or a permissions ' ...
+                'error on the local computer, or that folders are ' ...
+                'specified that are not present on the remote code ' ...
+                'repository.\n'],dependency_name);
         else
             % Clean up the zip file
             delete(zip_file_name);
-            fprintf(1,'Installation complete: %s\n',dependency_name);
         end
-    else
-        fprintf(1,'No downloads seem to be needed for: %s\n',dependency_name);
+
     end
 
 
@@ -275,8 +309,6 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
     % In other words: DebugTools is a special case because folders not
     % added yet, and we use DebugTools for adding the other directories
     if strcmp(dependency_name(1:10),'DebugTools')
-        fprintf(1,'Adding path for Debug tools via file commands. Version installed is: %s\n',dependency_name);
-
         debugTools_function_folder = fullfile(root_directory_name, 'Utilities', dependency_name,'Functions');
 
         % Move into the folder, run the function, and move back
@@ -285,12 +317,12 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
         cd(root_directory_name);
     else
         try
-            fprintf(1,'Adding path for package to MATLAB environment: %s\n',dependency_folder_name);
             fcn_DebugTools_addSubdirectoriesToPath(dependency_folder_name,dependency_subfolders);
         catch
-            error('Package installer requires DebugTools package to be installed first. Please install that before installing this package');
+            error(['Package installer requires DebugTools package to be ' ...
+                'installed first. Please install that before ' ...
+                'installing this package']);
         end
-        fprintf(1,'Path successfully added for: %s\n',dependency_folder_name);
     end
 
 
@@ -305,7 +337,7 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
     % of the if statement, we fill in that variable. That way, the next
     % time the code is run - assuming the if statement ran to the end -
     % this section of code will NOT be run twice.
-    fprintf(1,'Setting global flag so that install does not repeat for: %s\n\n',dependency_name);
+
     eval(sprintf('%s = 1;',flag_varname));
 end
 
@@ -333,9 +365,6 @@ if flag_do_debug
 end
 
 end % Ends function fcn_DebugTools_installDependencies
-
-
-
 
 %% Functions follow
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

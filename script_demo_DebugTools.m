@@ -56,11 +56,36 @@ end
 %                                |_|                                               |___/                               
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% Demonstrate how to clear out workspace
+if 1==1
+    % Clear out the variables
+    clear global flag* FLAG*
+
+    % Clear out any path directories under Utilities
+    path_dirs = regexp(path,'[;]','split');
+    utilities_dir = fullfile(pwd,filesep,'Utilities');
+    for ith_dir = 1:length(path_dirs)
+        utility_flag = strfind(path_dirs{ith_dir},utilities_dir);
+        if ~isempty(utility_flag)
+            rmpath(path_dirs{ith_dir});
+        end
+    end
+
+    % Delete the Utilities folder, to be extra clean!
+    if  exist(utilities_dir,'dir')
+        [success_flag,message,message_ID] = rmdir(utilities_dir,'s');
+        if 0==success_flag
+            error('Unable remove directory: %s \nReason message: %s \nand message_ID: %s\n',utilities_dir, message,message_ID);
+        end
+    end
+
+end
+
 %% Demonstrate workspace install from URL
 % see script_test_fcn_DebugTools_installDependencies
 flag_show_warnings = 0;
 
-% NOTE: this installs under the Utililities directory
+% NOTE: this installs under the Utilities directory
 dependency_name = 'DebugTools_v2023_01_25';
 dependency_subfolders = {'Functions','Data'};
 dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
@@ -206,4 +231,93 @@ formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How sh
 N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
 fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
 
-
+%% Demonstration of fcn_DebugTools_cprintf - color-formatted printing
+% Comprehensive list
+fprintf(1,'\n');
+fprintf(1,'Comprehensive list of fcn_DebugTools_cprintf options:\n');
+fprintf(1,'\n');
+fprintf(1,'Possible pre-defined STYLE names. NOTE: the STYLE entries are not case sensitive:\n');
+fcn_DebugTools_cprintf('Text',                   '\t ''Text'' - default: black \n');
+fcn_DebugTools_cprintf('Keywords',               '\t ''Keywords'' - default: blue \n');
+fcn_DebugTools_cprintf('Comments',               '\t ''Comments'' - default: green \n');
+fcn_DebugTools_cprintf('Strings',                '\t ''Strings'' - default: purple \n');
+fcn_DebugTools_cprintf('UnterminatedStrings',    '\t ''UnterminatedStrings'' - default: dark red \n');
+fcn_DebugTools_cprintf('SystemCommands',         '\t ''SystemCommands'' - default: orange \n');
+fcn_DebugTools_cprintf('Errors',                 '\t ''Errors'' - default: light red \n');
+fcn_DebugTools_cprintf('Hyperlinks',             '\t ''Hyperlinks'' - default: underlined blue \n');
+fprintf(1,'\n');
+fprintf(1,'Possible pre-defined COLOR names. NOTE: the COLOR entries are not case sensitive:\n')
+fcn_DebugTools_cprintf('Black',                  '\t ''Black'' - default: black \n');
+fcn_DebugTools_cprintf('Cyan',                   '\t ''Cyan'' - default: cyan \n');
+fcn_DebugTools_cprintf('Magenta',                '\t ''Magenta'' - default: magenta \n');
+fcn_DebugTools_cprintf('Blue',                   '\t ''Blue'' - default: blue \n');
+fcn_DebugTools_cprintf('Green',                  '\t ''Green'' - default: green \n');
+fcn_DebugTools_cprintf('Red',                    '\t ''Red'' - default: red \n');
+fcn_DebugTools_cprintf('Yellow',                 '\t ''Yellow'' - default: yellow \n');
+fcn_DebugTools_cprintf('White',                  '\t ''White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
+fprintf(1,'\n');
+fprintf(1,'Possible UNDERLINED (-) or (_) names. NOTE: not case sensitive:\n')
+fcn_DebugTools_cprintf('-Text',                   '\t ''Text'' - default: black \n');
+fcn_DebugTools_cprintf('-Keywords',               '\t ''Keywords'' - default: blue \n');
+fcn_DebugTools_cprintf('-Comments',               '\t ''Comments'' - default: green \n');
+fcn_DebugTools_cprintf('-Strings',                '\t ''Strings'' - default: purple \n');
+fcn_DebugTools_cprintf('-UnterminatedStrings',    '\t ''UnterminatedStrings'' - default: dark red \n');
+fcn_DebugTools_cprintf('-SystemCommands',         '\t ''SystemCommands'' - default: orange \n');
+fcn_DebugTools_cprintf('-Errors',                 '\t ''Errors'' - default: light red \n');
+fcn_DebugTools_cprintf('-Hyperlinks',             '\t ''Hyperlinks'' - default: underlined blue \n');
+fcn_DebugTools_cprintf('-Black',                  '\t ''Black'' - default: black \n');
+fcn_DebugTools_cprintf('-Cyan',                   '\t ''Cyan'' - default: cyan \n');
+fcn_DebugTools_cprintf('-Magenta',                '\t ''Magenta'' - default: magenta \n');
+fcn_DebugTools_cprintf('-Blue',                   '\t ''Blue'' - default: blue \n');
+fcn_DebugTools_cprintf('-Green',                  '\t ''Green'' - default: green \n');
+fcn_DebugTools_cprintf('-Red',                    '\t ''Red'' - default: red \n');
+fcn_DebugTools_cprintf('-Yellow',                 '\t ''Yellow'' - default: yellow \n');
+fcn_DebugTools_cprintf('-White',                  '\t ''White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
+fprintf(1,'\n');
+fprintf(1,'Possible BOLD (*) names. NOTE: not case sensitive:\n')
+fcn_DebugTools_cprintf('*Text',                   '\t ''Text'' - default: black \n');
+fcn_DebugTools_cprintf('*Keywords',               '\t ''Keywords'' - default: blue \n');
+fcn_DebugTools_cprintf('*Comments',               '\t ''Comments'' - default: green \n');
+fcn_DebugTools_cprintf('*Strings',                '\t ''Strings'' - default: purple \n');
+fcn_DebugTools_cprintf('*UnterminatedStrings',    '\t ''UnterminatedStrings'' - default: dark red \n');
+fcn_DebugTools_cprintf('*SystemCommands',         '\t ''SystemCommands'' - default: orange \n');
+fcn_DebugTools_cprintf('*Errors',                 '\t ''Errors'' - default: light red \n');
+fcn_DebugTools_cprintf('Hyperlinks',             '\t ''Hyperlinks'' - DOES NOT WORK!\n')
+fcn_DebugTools_cprintf('*Black',                  '\t ''Black'' - default: black \n');
+fcn_DebugTools_cprintf('*Cyan',                   '\t ''Cyan'' - default: cyan \n');
+fcn_DebugTools_cprintf('*Magenta',                '\t ''Magenta'' - default: magenta \n');
+fcn_DebugTools_cprintf('*Blue',                   '\t ''Blue'' - default: blue \n');
+fcn_DebugTools_cprintf('*Green',                  '\t ''Green'' - default: green \n');
+fcn_DebugTools_cprintf('*Red',                    '\t ''Red'' - default: red \n');
+fcn_DebugTools_cprintf('*Yellow',                 '\t ''Yellow'' - default: yellow \n');
+fcn_DebugTools_cprintf('*White',                  '\t ''White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
+fprintf(1,'\n');
+fprintf(1,'Possible BOLD (*) names. NOTE: not case sensitive:\n')
+fcn_DebugTools_cprintf('*Text',                   '\t ''Text'' - default: black \n');
+fcn_DebugTools_cprintf('*Keywords',               '\t ''Keywords'' - default: blue \n');
+fcn_DebugTools_cprintf('*Comments',               '\t ''Comments'' - default: green \n');
+fcn_DebugTools_cprintf('*Strings',                '\t ''Strings'' - default: purple \n');
+fcn_DebugTools_cprintf('*UnterminatedStrings',    '\t ''UnterminatedStrings'' - default: dark red \n');
+fcn_DebugTools_cprintf('*SystemCommands',         '\t ''SystemCommands'' - default: orange \n');
+fcn_DebugTools_cprintf('*Errors',                 '\t ''Errors'' - default: light red \n');
+fcn_DebugTools_cprintf('Hyperlinks',             '\t ''Hyperlinks'' - DOES NOT WORK!\n')
+fcn_DebugTools_cprintf('*Black',                  '\t ''Black'' - default: black \n');
+fcn_DebugTools_cprintf('*Cyan',                   '\t ''Cyan'' - default: cyan \n');
+fcn_DebugTools_cprintf('*Magenta',                '\t ''Magenta'' - default: magenta \n');
+fcn_DebugTools_cprintf('*Blue',                   '\t ''Blue'' - default: blue \n');
+fcn_DebugTools_cprintf('*Green',                  '\t ''Green'' - default: green \n');
+fcn_DebugTools_cprintf('*Red',                    '\t ''Red'' - default: red \n');
+fcn_DebugTools_cprintf('*Yellow',                 '\t ''Yellow'' - default: yellow \n');
+fcn_DebugTools_cprintf('*White',                  '\t ''White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
+fprintf(1,'\n');
+fprintf(1,'Color range listing examples: G are rows, B are columns\n')
+for ith_R = 0:0.25:1
+    fcn_DebugTools_cprintf([ith_R,0,0],'RGB setting: [%.1f G B]\n',ith_R);
+    for ith_G = 0:0.25:1
+        for ith_B = 0:0.25:1
+            fcn_DebugTools_cprintf([ith_R,ith_G,ith_B],'[%.1f %.1f]',ith_G, ith_B);
+        end
+        fprintf(1,'\n');
+    end
+    fprintf(1,'\n');
+end
