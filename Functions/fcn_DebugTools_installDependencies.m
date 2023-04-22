@@ -190,7 +190,7 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
     % Do the subfolders exist?
     flag_allFoldersThere = 1;
-    if isempty(dependency_subfolders)
+    if isempty(dependency_subfolders{1})
         flag_allFoldersThere = 0;
     else
         for ith_folder = 1:length(dependency_subfolders)
