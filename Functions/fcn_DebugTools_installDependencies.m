@@ -269,7 +269,7 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
         % Make sure the subfolders were created
         flag_allFoldersThere = 1;
-        if ~isempty(dependency_subfolders)
+        if ~isempty(dependency_subfolders{1})
             for ith_folder = 1:length(dependency_subfolders)
                 subfolder_name = dependency_subfolders{ith_folder};
                 
