@@ -9,7 +9,6 @@
 %      -- first write of the code
 
 close all;
-clc;
 
 
 %% BASIC example 1 - string is too long
@@ -88,19 +87,19 @@ end % Ends check to see if isempty
 %% Fail conditions
 if 1==0
     %% Bad string (not a string)
-    clc
+    
     test_string = 2;
-    fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(test_string,10);
+    fcn_DebugTools_debugPrintStringToNCharacters(test_string,10);
 
     %% Bad integer (not numeric)
-    clc
+    
     test_string = 'abc';
     test_integer = 'a';
-    fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(test_string,test_integer);
+    fcn_DebugTools_debugPrintStringToNCharacters(test_string,test_integer);
 
     %% Bad integer (not integer)
-    clc
+    
     test_string = 'abc';
     test_integer = 2.3;
-    fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(test_string,test_integer);
+    fcn_DebugTools_debugPrintStringToNCharacters(test_string,test_integer);
 end

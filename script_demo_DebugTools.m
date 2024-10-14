@@ -14,7 +14,8 @@
 % -- vastly improved README file
 % 2023_01_25: sbrennan@psu.edu
 % -- added install from URL
-
+% 2024_10_14: sbrennan@psu.edu
+% -- added directory utilities
 
 %% Set up workspace
 if ~exist('flag_DebugTools_Was_Initialized','var')
@@ -122,6 +123,146 @@ if ~exist('flag_DebugTools_Folders_Initialized','var')
     flag_DebugTools_Folders_Initialized = 1;
 end
 
+%% fcn_DataClean_listDirectoryContents
+% Creates a list of specified root directories, including all
+% subdirectories, of a given query. Allows specification whether to keep
+% either files, directories, or both.
+%
+% FORMAT:
+%
+%      directory_filelist = fcn_DataClean_listDirectoryContents(rootdirs, (fileQueryString), (flag_fileOrDirectory), (fid))
+
+% List which directory/directories need to be loaded
+clear rootdirs
+% rootdirs{1} = 'D:\MappingVanData\RawBags\OnRoad\PA653Normalville\2024-08-22';
+rootdirs{1} = fullfile(cd,'Functions');
+
+
+% Specify the fileQueryString
+fileQueryString = '*.m'; % The more specific, the better to avoid accidental loading of wrong information
+
+% Specify the flag_fileOrDirectory
+flag_fileOrDirectory = 0; % 0 = a file, 1 = directory, 2 = both
+
+% Specify the fid
+fid = -1; % 1 --> print to console
+
+% Call the function
+directory_filelist = fcn_DebugTools_listDirectoryContents(rootdirs, (fileQueryString), (flag_fileOrDirectory), (fid));
+
+% Check the results
+assert(isstruct(directory_filelist));
+assert(length(directory_filelist)>1);
+
+
+%% fcn_DebugTools_printDirectoryListing
+% Prints a listing of a directory into either a console, a file, or a
+% markdown file with markdown formatting.
+%
+% FORMAT:
+%
+%      fcn_DebugTools_printDirectoryListing(directory_filelist, (titleString), (rootDirectoryString), (fid))
+%
+% INPUTS:
+%
+%      directory_filelist: a structure array that is the output of a
+%      "dir" command. A typical output can be generated using:
+%      directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+%
+%      (OPTIONAL INPUTS)
+%
+%      titleString: a title put at the top of the listing. The default is:
+%      "CONTENTS FOUND:" 
+%
+%      rootDirectoryString: a string to specify the root directory of the query,
+%      thus forcing a MARKDOWN print style. The default is empty, to NOT
+%      print in MARKDOWN
+%
+%      fid: the fileID where to print. Default is 1, to print results to
+%      the console. If set to -1, skips any input checking or debugging, no
+%      prints will be generated, and sets up code to maximize speed.
+%
+% OUTPUTS:
+%
+%      (none)
+% List which directory/directories need to be loaded
+
+directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Functions')},'*.m',0);
+
+
+titleString = 'This is a listing of Functions';
+rootDirectoryString = [];
+fid = 1;
+fcn_DebugTools_printDirectoryListing(directory_filelist, (titleString), (rootDirectoryString), (fid))
+
+
+
+%% fcn_DebugTools_makeDirectory
+% Creates a directory given a directory path, even if directory is a full
+% path, directory would not exist as a direct subfolder in current folder.
+% Note: the directory can only be made as a deeper folder within current
+% folder.
+%
+% FORMAT:
+%
+%      fcn_DebugTools_makeDirectory(directoryPath, (fid))
+%
+% INPUTS:
+%
+%      directoryPath: a string containing the path to the directory to
+%      create
+%
+%      (OPTIONAL INPUTS)
+%
+%      fid: the fileID where to print. Default is 1, to print results to
+%      the console. If set to -1, skips any input checking or debugging, no
+%      prints will be generated, and sets up code to maximize speed.
+
+directoryPath = fullfile(cd,'Junk','Junk','Junk');
+assert(7~=exist(directoryPath,'dir'));
+
+fid = 1;
+
+fcn_DebugTools_makeDirectory(directoryPath,fid);
+
+assert(7==exist(directoryPath,'dir'));
+rmdir('Junk','s');
+
+
+%% fcn_DebugTools_sortDirectoryListingByTime
+% Given a directory listing of files that have names ending in date
+% formats, for example: filename_yyyy-MM-dd-HH-mm-ss,sorts the files
+% by date. Useful to sort bag files whose names contain dates, for example:
+%       mapping_van_2024-08-05-14-45-26_0
+%
+% FORMAT:
+%
+%      sorted_directory_filelist = fcn_DebugTools_sortDirectoryListingByTime(directory_filelist, (fid))
+%
+% INPUTS:
+%
+%      directory_filelist: a structure array that is the output of a
+%      "dir" command. A typical output can be generated using:
+%      directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+%
+%      (OPTIONAL INPUTS)
+%
+%      fid: the fileID where to print. Default is 1, to print results to
+%      the console. If set to -1, skips any input checking or debugging, no
+%      prints will be generated, and sets up code to maximize speed.
+%
+% OUTPUTS:
+%
+%      sorted_directory_filelist: a structure array similar to the output
+%      of a "dir" command, but where the listings are sorted by date
+
+directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Data')},'ExampleDateSorting*.txt',0);
+
+sorted_directory_filelist = fcn_DebugTools_sortDirectoryListingByTime(directory_filelist);
+
+fcn_DebugTools_printDirectoryListing(sorted_directory_filelist);
+
+
 %% Input CHecking
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   _____                   _      _____ _               _    _             
@@ -195,7 +336,6 @@ stringNumber = fcn_DebugTools_number2string(2.333333333); % Empty result
 assert(isequal(stringNumber,'2.33'));
 
 %% Demonstration of codes related to fcn_DebugTools_debugPrintStringToNCharacters
-clc; % Clear the console
 
 % BASIC example 1 - string is too long
 test_string = 'This is a really, really, really long string but we only want the first 10 characters';

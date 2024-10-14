@@ -14,7 +14,6 @@
 % -- copied code out of AutoExam and into DebugTools
 
 close all;
-clc;
 
 
 %% Basic case - example

@@ -9,7 +9,6 @@
 % -- first write of the code (this is just a wrapper for cprint)
 
 close all;
-clc;
 
 
 

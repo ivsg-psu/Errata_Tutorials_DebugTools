@@ -70,6 +70,9 @@ if flag_check_inputs
     narginchk(1,1);
 
     % Check the inputString input, make sure is character type
+    if iscell(inputString)
+        inputString = inputString{1};
+    end
     fcn_DebugTools_checkInputsToFunctions(inputString, '_of_chars');
 
 
@@ -86,6 +89,11 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+if iscell(inputString)
+    inputString = inputString{1};
+end
 
 % Check for complex string cases in answer
 

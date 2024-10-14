@@ -43,11 +43,26 @@ if ~success_flag
     error('Unable to remove the example Utilities directory. Reason: %s with message ID: %s\n',error_message,message_ID);
 elseif ~isempty(error_message)
     if flag_show_warnings
-        warning('The Utilities directory was removed, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
+        warning('The Utilities directory was removed, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID); %#ok<UNRCH>
     end
 end
 
 %% Call the function again, to show that global flag blocks directory creation
+
+% Define the name of subfolder to be created in "Utilities" subfolder
+dependency_name = 'DebugTools_v2023_01_25';
+
+% Define sub-subfolders that are in the code package that also need to be
+% added to the MATLAB path after install. Leave empty ({}) to only add
+% the subfolder path without any sub-subfolder path additions.
+dependency_subfolders = {'Functions','Data'};
+
+% Define a universal resource locator (URL) pointing to the zip file to
+% install. For example, here is the zip file location to the Debugtools
+% package on GitHub:
+dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
+
+
 % Call the function to do the install
 fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url)
 disp('Library NOT installed! Verify this now, as it will be checked to complete the demo');
@@ -62,11 +77,26 @@ if success_flag
     error('Was unexpectedly able to delete the Utilities directory. This should NOT have happened. Reason: %s with message ID: %s\n',error_message,message_ID);
 elseif ~isempty(error_message)
     if flag_show_warnings
-        warning('The Utilities directory was NOT removed, which is correct. We confirm this because MATLAB throws the warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
+        warning('The Utilities directory was NOT removed, which is correct. We confirm this because MATLAB throws the warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID); %#ok<UNRCH>
     end
 end
 
 %% Call the function again, with override flag
+
+% Define the name of subfolder to be created in "Utilities" subfolder
+dependency_name = 'DebugTools_v2023_01_25';
+
+% Define sub-subfolders that are in the code package that also need to be
+% added to the MATLAB path after install. Leave empty ({}) to only add
+% the subfolder path without any sub-subfolder path additions.
+dependency_subfolders = {'Functions','Data'};
+
+% Define a universal resource locator (URL) pointing to the zip file to
+% install. For example, here is the zip file location to the Debugtools
+% package on GitHub:
+dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
+
+
 % Call the function to do the install, with override
 override = 1;
 fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url,override)
@@ -89,7 +119,7 @@ if ~success_flag
     error('Unable to remove the example Utilities directory. Reason: %s with message ID: %s\n',error_message,message_ID);
 elseif ~isempty(error_message)
     if flag_show_warnings
-        warning('The Utilities directory was removed, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
+        warning('The Utilities directory was removed, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID); %#ok<UNRCH>
     end
 end
 

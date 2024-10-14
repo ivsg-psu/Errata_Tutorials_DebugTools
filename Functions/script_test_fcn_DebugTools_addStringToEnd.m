@@ -9,7 +9,6 @@
 % -- first write of the code
 
 close all;
-clc;
 
 
 
