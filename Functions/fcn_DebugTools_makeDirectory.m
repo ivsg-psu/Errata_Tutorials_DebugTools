@@ -137,43 +137,40 @@ flag_do_plots = 0; % Nothing to plot
 
 
 if 7~=exist(directoryPath,'dir')
-    % Need to make the directory
+      % Need to make the directory
 
     % Find full path
     full_path_directory_to_create = fullfile(directoryPath);
 
-    % Find part below current directory
-    relativePath = extractAfter(full_path_directory_to_create,cat(2,cd(),filesep));
+    % Split the relativePath into parts, and use this to find which portion
+    % currently exists
+    pathParts = split(full_path_directory_to_create,filesep);
+    previousParentPath = ''; % Start with an empty path
+    for ith_directory = 1:length(pathParts)
+        directoryToCheck = pathParts{ith_directory};
+        fullPathDirectoryToCheck = fullfile(previousParentPath,directoryToCheck);
 
-    [successFlag,message] = mkdir(cd,relativePath);
+        % Does the directory exist, or do we need to make it?
+        if 7~=exist(fullPathDirectoryToCheck,'dir')
+            break; % Exit the for-loop
+        end
+
+        previousParentPath = fullfile(previousParentPath,directoryToCheck);
+
+    end
+
+
+    % Find part after existing directory
+    relativePath = extractAfter(full_path_directory_to_create,cat(2,previousParentPath,filesep));
+
+    [successFlag,message] = mkdir(previousParentPath,relativePath);
     if 1~=successFlag 
         warning('on','backtrace');
-        warning('Unable to create directory: %s. Message given:',fullPathDirectoryToCheck,message);
+        warning('Unable to create directory:\n\t %s \nwith relative path: \n\t%s \nMessage given: %s\n',full_path_directory_to_create, relativePath, message);
         error('Image save specified that directory be created, but cannot create directory. Unable to continue.');
     end
     
-    % % Split the relativePath into parts
-    % pathParts = split(relativePath,filesep);
-    % previousParentPath = cd();
-    % for ith_directory = 1:length(pathParts)
-    %     directoryToCheck = pathParts{ith_directory};
-    %     fullPathDirectoryToCheck = fullfile(previousParentPath,directoryToCheck);
-    % 
-    %     % Does the directory exist, or do we need to make it?
-    %     if 7~=exist(fullPathDirectoryToCheck,'dir')
-    %         % Need to make the directory
-    %         successFlag = mkdir(previousParentPath,directoryToCheck);
-    %         if 1~=successFlag
-    %             warning('on','backtrace');
-    %             warning('Unable to create directory: %s',fullPathDirectoryToCheck)
-    %             error('Image save specified that directory be created, but cannot create directory. Unable to continue.');
-    %         end
-    %     end
-    % 
-    %     previousParentPath = fullfile(previousParentPath,directoryToCheck);
-    % 
-    % end
-
+   
     if fid>0
         fprintf(fid,'Successfully created directory: %s\n',full_path_directory_to_create);
     end
