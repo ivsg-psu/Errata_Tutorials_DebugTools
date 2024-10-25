@@ -16,6 +16,9 @@
 % -- added install from URL
 % 2024_10_14: sbrennan@psu.edu
 % -- added directory utilities
+% 2024_10_25 - S. Brennan
+% -- Added directory comparison and query tools, cleaned up README.md
+
 
 %% Set up workspace
 if ~exist('flag_DebugTools_Was_Initialized','var')
@@ -57,7 +60,7 @@ end
 %                                |_|                                               |___/                               
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%% Demonstrate how to clear out workspace
+%% Demonstrate: Clearing package installs and path linkages to packages
 if 1==1
     % Clear out the variables
     clear global flag* FLAG*
@@ -82,7 +85,7 @@ if 1==1
 
 end
 
-%% Demonstrate workspace install from URL
+%% Demonstrate: Package installs from GitHub URLs
 % see script_test_fcn_DebugTools_installDependencies
 flag_show_warnings = 0;
 
@@ -184,18 +187,78 @@ assert(length(directory_filelist)>1);
 %
 % OUTPUTS:
 %
-%      (none)
-% List which directory/directories need to be loaded
+%      (prints to console)
 
+
+% Create a directory filelist by querying the "Functions" folder for all .m
+% files
 directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Functions')},'*.m',0);
 
-
-titleString = 'This is a listing of Functions';
+% Print the results with a titleString
+titleString = 'This is a listing of all mfiles in the Functions folder';
 rootDirectoryString = [];
 fid = 1;
 fcn_DebugTools_printDirectoryListing(directory_filelist, (titleString), (rootDirectoryString), (fid))
 
+%% fcn_DebugTools_countBytesInDirectoryListing
+% Counts the number of bytes in a directory listing and as well the number of folders and files in that listing, excluding degenerate folders
+%
+% FORMAT:
+%
+%      [totalBytes, Nfolders, Nfiles] = fcn_INTERNAL_countBytesInDirectoryListing(directory_listing, (indicies),(fid))
+%
+% INPUTS:
+%
+%      directory_listing: a structure that is the output of MATLAB's "dir"
+%      command that includes filename, bytes, etc.
+%
+%      (OPTIONAL INPUTS)
+%
+%      indicies: which indicies to include in the count. Default is to use
+%      all files in the directory listing.
+%
+%      fid: the fileID where to print. Default is 0, to NOT print results to
+%      the console. If set to -1, skips any input checking or debugging, no
+%      prints will be generated, and sets up code to maximize speed.
+%
+% OUTPUTS:
+%
+%      totalBytes: the total number of bytes in the directory listing or,
+%      if indicies are specified, the total of just the chosen indicies in
+%      the directory listing.
+%
+%      Nfolders: the total number of folders in the listing, excluding
+%      degenerate folders ('.' and '..').
+%
+%      Nfiles: the total number of files in the listing
 
+% Implementation example:
+
+directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+
+indicies = 1:10;
+fid = 1;
+[totalBytes, Nfolders, Nfiles] = fcn_DebugTools_countBytesInDirectoryListing(directory_filelist,(indicies),(fid));
+
+assert(totalBytes>=0);
+assert(Nfolders>=0);
+assert(Nfiles>=0);
+assert((Nfiles+Nfolders)<=length(indicies)); % Note: some indicies may be degenerate folders such as '.' and '..' - these are not counted
+
+% Produced the following:
+% Total number of files and folders indexed: 10, containing 1,660 bytes, 6 folders, and 2 files
+% Breakdown:
+% 		FOLDERS:                                                              	    BYTES (in and below):
+% 		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\.git                  	               51,667,259
+% 		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Data                  	                      330
+% 		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Documents             	                7,106,499
+% 		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Example Code Snippets 	                   23,296
+% 		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions             	                  284,354
+% 		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Images                	                1,983,583
+% 
+% 		FILES:                                                                	                   BYTES:
+% 		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\.gitignore            	                      523
+% 		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\LICENSE               	                    1,137
 
 %% fcn_DebugTools_makeDirectory
 % Creates a directory given a directory path, even if directory is a full
@@ -263,6 +326,115 @@ sorted_directory_filelist = fcn_DebugTools_sortDirectoryListingByTime(directory_
 fcn_DebugTools_printDirectoryListing(sorted_directory_filelist);
 
 
+%% fcn_DebugTools_confirmTimeToProcessDirectory
+% Calculates the time it takes to process a directory listing and confirms
+% with the user that this is acceptable.
+%
+% FORMAT:
+%
+%      [flag_keepGoing, timeEstimateInSeconds] = fcn_DebugTools_confirmTimeToProcessDirectory(directory_listing, bytesPerSecond, (indexRange),(fid))
+%
+% INPUTS:
+%
+%      directory_listing: a structure that is the output of MATLAB's "dir"
+%      command that includes filename, bytes, etc.
+%
+%      (OPTIONAL INPUTS)
+%
+%      indexRange: which indicies to include in the count. Default is to use
+%      all files in the directory listing.
+%
+%      fid: the fileID where to print. Default is 0, to NOT print results to
+%      the console. If set to -1, skips any input checking or debugging, no
+%      prints will be generated, and sets up code to maximize speed.
+%
+% OUTPUTS:
+%
+%      flag_keepGoing: outputs a 1 if user accepts, 0 otherwise
+%
+%      timeEstimateInSeconds: how many seconds the processing is estimated
+%      to take
+
+directory_listing = fcn_DebugTools_listDirectoryContents({cd});
+bytesPerSecond = 10000000;
+indexRange = [];
+fid = 1;
+[flag_keepGoing, timeEstimateInSeconds] = fcn_DebugTools_confirmTimeToProcessDirectory(directory_listing, bytesPerSecond, (indexRange),(fid));
+
+assert((flag_keepGoing==0) || (flag_keepGoing==1));
+assert(timeEstimateInSeconds>=0);
+
+%% fcn_DebugTools_compareDirectoryListings
+% compares a source and destination directory to check if files are located
+% in destination directory that match the source directory. 
+%
+% FORMAT:
+%
+%      flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (typeExtension), (fid))
+%
+% INPUTS:
+%
+%      directoryListing_source: a structure array that is the output of a
+%      "dir" command. A typical output can be generated using:
+%      directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+%
+%      sourceRootString: a string that lists the root of the
+%      directoryListing_source, e.g. the bottom directory of the source
+%      above which the content organization should be mirrored in the
+%      destination directory
+%
+%      destinationRootString: a string that lists the root of the
+%      directoryListing_source, e.g. the bottom directory of the source
+%      above which the content organization should be mirrored in the
+%      destination directory
+%
+%      (OPTIONAL INPUTS)
+%
+%      flag_matchingType: a flag that sets the type of matching. Values
+%      include:
+%          
+%           1: matches same type to same type (e.g., if the listings are
+%           files in the source, matches to files in the destination. If
+%           the listings are folders in the source, looks for folders in
+%           the destination.
+%
+%           2: fileToFolder - matches files in the source to folders in the
+%           destination
+%
+%           3: folderToFile - matches folders in the source to files in the
+%           destination
+% 
+%      typeExtension: the file type extension to add or omit, if
+%      fileToFolder or folderToFile is set. Default is to use '.m'
+%
+%      fid: the fileID where to print. Default is 0, to NOT print results to
+%      the console. If set to -1, skips any input checking or debugging, no
+%      prints will be generated, and sets up code to maximize speed.
+%
+% OUTPUTS:
+%
+%      flags_wasMatched: a flag vector of Nx1 where N is the number of
+%      listings in the source directory. The flag is set to 1 if the
+%      listing in the source was found in the destination, and set to 0 if
+%      not found.
+
+% Set strings that list where the "root" potions of the source and
+% destination directories are located
+sourceRootString      = fullfile(cd,'Data','Example_compareDirectoryListings','SourceDirectory');
+destinationRootString = fullfile(cd,'Data','Example_compareDirectoryListings','DestinationDirectory');
+
+
+% Create a directory filelist by querying the "Functions" folder for all .m
+% files
+file_or_folder = 0; % Returns only files
+directoryListing_source = fcn_DebugTools_listDirectoryContents({sourceRootString},'TestFolder*.m',file_or_folder);
+
+% Call the function fcn_DebugTools_compareDirectoryListings
+flag_matchingType = 1; % Same to same
+flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (fid));
+
+assert(isequal(flags_wasMatched,[1 1 0]'));
+
 %% Input CHecking
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   _____                   _      _____ _               _    _             
@@ -295,20 +467,112 @@ result = fcn_DebugTools_doStringsMatch(student_answer,correct_answers);
 assert(result==false);
 
 %% Demonstrate fcn_DebugTools_extractNumberFromStringCell
+% Extracting a numeric value embedded in a string
+
 % Choose a hard situation: Decimal number, negative, in cell array with leading zeros and text
 result = fcn_DebugTools_extractNumberFromStringCell({'My number is -0000.4'});
 assert(isequal(result,{'-0.4'}));
 
 %% Demonstrate fcn_DebugTools_parseStringIntoCells
+% Parsing a comma separated string into cells
+
 % Choose a very Complex input
 inputString = 'This,isatest,of';
 result = fcn_DebugTools_parseStringIntoCells(inputString);
 assert(isequal(result,[{'This'},{'isatest'},{'of'}]));
 
 %% Demonstrate fcn_DebugTools_convertVariableToCellString
+% Converting a mixed input cell array into comma separated string
+
 % Multiple mixed character, numeric in cell array ending in string with commas
 result = fcn_DebugTools_convertVariableToCellString([{'D'},{2},'abc , 123']);
 assert(isequal(result,{'D, 2, abc , 123'}));
+
+%% fcn_DebugTools_queryNumberRange
+%  Query user to select index range
+%
+% queries the user to select a number based on a flag vector, and
+% optionally can confirm the selection is valid if user selects a number
+% range that overlaps indicies where a flag value is equal to 1
+%
+% FORMAT:
+%
+%      [flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid))
+%
+% INPUTS:
+%
+%      flags_toCheck: a list of flags, either 1 or 0, that indicate that
+%      the number is either "done" (value = 1) or "not done" (value = 0).
+%      The query defaults to the first "not done" value (the first 0).
+%      Then, based on the user's entry, the query defaults to
+%      subsequent-to-start last "not done" or 0 value in flags_toCheck. For
+%      example, if flags_toCheck = [1 1 0 0 0 1 1 0 0 1], then the default start
+%      index will be 3 as this is the first index in flags_toCheck where a
+%      0 appears. If the user however selects a starting index of 6, then
+%      the prompt will give a default ending index of 9, as this is the
+%      last 0 value to appear after the 6 index.
+%
+%      (OPTIONAL INPUTS)
+%
+%      queryEndString: a string that appears at the end of the number query
+%      given at each prompt, filled in as the XXX in the form:
+%      "What is the starting numberXXXXX?". For example, if some enters:
+%      " of the file(s) to parse", then the prompt will be:
+%      "What is the starting number of the files to parse?". Default is
+%      empty.
+%
+%      flag_confirmOverwrite: set to 1 to force the user to confirm
+%      "overwrite" if the user selects a number range such that it overlaps
+%      with one of the indicies where flags_toCheck is 1. Or, set to 0 to
+%      skip this checking.  Default is 1
+%
+%      directory_filelist: a structure array that is the output of a
+%      "dir" command. This is used to show which files corresponding to
+%      flags_toCheck will be overwritten. A typical output can be generated
+%      using: directory_filelist =
+%      fcn_DebugTools_listDirectoryContents({cd});
+%
+%      fid: the fileID where to print. Default is 0, to NOT print results to
+%      the console. If set to -1, skips any input checking or debugging, no
+%      prints will be generated, and sets up code to maximize speed.
+%
+% OUTPUTS:
+%
+%      flag_keepGoing: outputs a 1 if user accepts, 0 otherwise
+%
+%      startingIndex: the user-selected first index
+%
+%      endingIndex: the user-selected first index
+
+
+rng(1);
+
+% Create a directory filelist by querying the "Functions" folder for all .m
+% files
+directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Functions')},'*.m',0);
+
+dirNames = {directory_filelist.name}';
+dirScripts = contains(dirNames,'script');
+celldirScripts = mat2cell(dirScripts,ones(1,length(dirNames)));
+dirScriptYesNo = fcn_DebugTools_convertBinaryToYesNoStrings(dirScripts);
+
+cellArrayHeaders = {'m-filename                                                         ', 'Script flag?   ', 'Script?   '};
+cellArrayValues = [dirNames, celldirScripts, dirScriptYesNo];
+
+% Print to screen
+fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, ([]), (fid))
+
+
+% Set up call to function
+flags_toCheck = dirScripts;
+queryEndString = ' function to change to script';
+flag_confirmOverwrite = 1;
+fid = 1;
+[flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid));
+
+assert(flag_keepGoing==1 || flag_keepGoing==0);
+assert(startingIndex>0 && startingIndex<=length(flags_toCheck));
+assert(endingIndex>=startingIndex && endingIndex<=length(flags_toCheck));
 
 %% Output formatting
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -321,11 +585,6 @@ assert(isequal(result,{'D, 2, abc , 123'}));
 %                   | |                                                                __/ |
 %                   |_|                                                               |___/ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% fcn_DebugTools_addStringToEnd.m 
-input_string = 'test';
-value_to_add = 2;
-output_string = fcn_DebugTools_addStringToEnd(input_string,value_to_add);
-assert(isequal(output_string,'test 2'));
 
 %% fcn_DebugTools_number2string.m 
 % % prints a "pretty" version of a string, e.g avoiding weirdly odd numbers
@@ -335,7 +594,47 @@ assert(isequal(output_string,'test 2'));
 stringNumber = fcn_DebugTools_number2string(2.333333333); % Empty result
 assert(isequal(stringNumber,'2.33'));
 
+%% fcn_DebugTools_addStringToEnd.m 
+% The function: fcn_DebugTools_addStringToEnd.m appends a number, cell
+% string, or string to the end of a string, producing a string. 
+
+input_string = 'test';
+value_to_add = 2;
+output_string = fcn_DebugTools_addStringToEnd(input_string,value_to_add);
+assert(isequal(output_string,'test 2'));
+
+%% fcn_DebugTools_convertBinaryToYesNoStrings
+% Converts Nx1 of scalar 1 or 0 vectors into Nx1 cell arrays containing
+% 'yes' or 'no' corresponding to the 1's or 0's respectively
+%
+% FORMAT:
+%
+%      cellArrrayYesNo = fcn_DebugTools_convertBinaryToYesNoStrings(flags_binary, (fid))
+%
+% INPUTS:
+%
+%      flags_binary: a column array, [N x 1], of 1's or 0's
+%
+%      (OPTIONAL INPUTS)
+%
+%      fid: the fileID where to print. Default is 0, to NOT print results to
+%      the console. If set to -1, skips any input checking or debugging, no
+%      prints will be generated, and sets up code to maximize speed.
+%
+% OUTPUTS:
+%
+%      cellArrrayYesNo: a cell array of N rows, 1 column, of 'yes' or 'no'
+%      strings
+
+flags_binary = [0; 1; 0];
+cellArrrayYesNo = fcn_DebugTools_convertBinaryToYesNoStrings(flags_binary);
+
+assert(isequal(cellArrrayYesNo,{'no';'yes';'no'}))
+
+
 %% Demonstration of codes related to fcn_DebugTools_debugPrintStringToNCharacters
+% The function: fcn_DebugTools_debugPrintStringToNCharacters converts
+% strings into fixed-length forms, so that they print cleanly. For example, the following 2 basic examples: 
 
 % BASIC example 1 - string is too long
 test_string = 'This is a really, really, really long string but we only want the first 10 characters';
@@ -348,6 +647,9 @@ fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(test_string,4
 fprintf(1,'The string: %s\nwas converted to: "%s"\n',test_string,fixed_length_string);
 
 %% Demonstration of fixed-formatting table printing
+% The function: fcn_DebugTools_debugPrintTableToNCharacters, given a matrix
+% of data, prints the data in user-specified width to the workspace. 
+
 % Fill in test data
 Npoints = 10;
 point_IDs = (1:Npoints)';
@@ -370,6 +672,65 @@ header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-c
 formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
 N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
 fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+
+%% fcn_DebugTools_printNumeredDirectoryList
+% prints a directory file list alongside lists of flags and details.
+%
+% FORMAT:
+%
+%      fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, (directoryRoot), (fid))
+%
+% INPUTS:
+%
+%      directory_filelist: a structure array that is the output of a
+%      "dir" command. A typical output can be generated using:
+%      directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+%
+%      cellArrayHeaders: a [Nx1] cell array of strings representing the
+%      headers. Note: the printing width of each column is inhereted by the
+%      length of each string.
+%
+%      cellArrayValues: a cell array of the contents to be printed
+%
+%      (OPTIONAL INPUTS)
+%
+%      directoryRoot: a string representing the root of the directory
+%      listing. By default, this is empty. However, in some folder
+%      printings, the listing is intended for relative and not absolute
+%      folder locations. By entering a string for the "root" of the
+%      directory listing, the folders are printed in "relative to root"
+%      format which makes printing more simple.
+%
+%      fid: the fileID where to print. Default is 0, to NOT print results to
+%      the console. If set to -1, skips any input checking or debugging, no
+%      prints will be generated, and sets up code to maximize speed.
+%
+% OUTPUTS:
+%
+%      (printing to console)
+%
+
+rng(1);
+
+% Create a directory filelist by querying the "Functions" folder for all .m
+% files
+directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Functions')},'*.m',0);
+
+dirNames = {directory_filelist.name}';
+dirBytes = [directory_filelist.bytes]';
+celldirBytes = mat2cell(dirBytes,ones(1,length(dirNames)));
+dirBigFile = dirBytes>1000;
+celldirBigFile = mat2cell(dirBigFile,ones(1,length(dirNames)));
+dirBigFileYesNo = fcn_DebugTools_convertBinaryToYesNoStrings(dirBigFile);
+dirFloat = rand(length(directory_filelist),1).*10.^(10*randn(length(directory_filelist),1));
+celldirFloat = mat2cell(dirFloat,ones(1,length(dirNames)));
+
+cellArrayHeaders = {'m-filename                                                         ', 'bytes    ', 'big file?   ', 'Some yes or no  ', 'Some float   '};
+cellArrayValues = [dirNames, celldirBytes, celldirBigFile, dirBigFileYesNo, celldirFloat];
+
+% Call the function
+fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, ([]), (fid))
+
 
 %% Demonstration of fcn_DebugTools_cprintf - color-formatted printing
 % Comprehensive list
@@ -397,58 +758,40 @@ fcn_DebugTools_cprintf('Yellow',                 '\t ''Yellow'' - default: yello
 fcn_DebugTools_cprintf('White',                  '\t ''White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
 fprintf(1,'\n');
 fprintf(1,'Possible UNDERLINED (-) or (_) names. NOTE: not case sensitive:\n')
-fcn_DebugTools_cprintf('-Text',                   '\t ''Text'' - default: black \n');
-fcn_DebugTools_cprintf('-Keywords',               '\t ''Keywords'' - default: blue \n');
-fcn_DebugTools_cprintf('-Comments',               '\t ''Comments'' - default: green \n');
-fcn_DebugTools_cprintf('-Strings',                '\t ''Strings'' - default: purple \n');
-fcn_DebugTools_cprintf('-UnterminatedStrings',    '\t ''UnterminatedStrings'' - default: dark red \n');
-fcn_DebugTools_cprintf('-SystemCommands',         '\t ''SystemCommands'' - default: orange \n');
-fcn_DebugTools_cprintf('-Errors',                 '\t ''Errors'' - default: light red \n');
-fcn_DebugTools_cprintf('-Hyperlinks',             '\t ''Hyperlinks'' - default: underlined blue \n');
-fcn_DebugTools_cprintf('-Black',                  '\t ''Black'' - default: black \n');
-fcn_DebugTools_cprintf('-Cyan',                   '\t ''Cyan'' - default: cyan \n');
-fcn_DebugTools_cprintf('-Magenta',                '\t ''Magenta'' - default: magenta \n');
-fcn_DebugTools_cprintf('-Blue',                   '\t ''Blue'' - default: blue \n');
-fcn_DebugTools_cprintf('-Green',                  '\t ''Green'' - default: green \n');
-fcn_DebugTools_cprintf('-Red',                    '\t ''Red'' - default: red \n');
-fcn_DebugTools_cprintf('-Yellow',                 '\t ''Yellow'' - default: yellow \n');
-fcn_DebugTools_cprintf('-White',                  '\t ''White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
+fcn_DebugTools_cprintf('-Text',                   '\t ''-Text'' - default: black \n');
+fcn_DebugTools_cprintf('-Keywords',               '\t ''-Keywords'' - default: blue \n');
+fcn_DebugTools_cprintf('-Comments',               '\t ''-Comments'' - default: green \n');
+fcn_DebugTools_cprintf('-Strings',                '\t ''-Strings'' - default: purple \n');
+fcn_DebugTools_cprintf('-UnterminatedStrings',    '\t ''-UnterminatedStrings'' - default: dark red \n');
+fcn_DebugTools_cprintf('-SystemCommands',         '\t ''-SystemCommands'' - default: orange \n');
+fcn_DebugTools_cprintf('-Errors',                 '\t ''-Errors'' - default: light red \n');
+fcn_DebugTools_cprintf('-Hyperlinks',             '\t ''-Hyperlinks'' - default: underlined blue \n');
+fcn_DebugTools_cprintf('-Black',                  '\t ''-Black'' - default: black \n');
+fcn_DebugTools_cprintf('-Cyan',                   '\t ''-Cyan'' - default: cyan \n');
+fcn_DebugTools_cprintf('-Magenta',                '\t ''-Magenta'' - default: magenta \n');
+fcn_DebugTools_cprintf('-Blue',                   '\t ''-Blue'' - default: blue \n');
+fcn_DebugTools_cprintf('-Green',                  '\t ''-Green'' - default: green \n');
+fcn_DebugTools_cprintf('-Red',                    '\t ''-Red'' - default: red \n');
+fcn_DebugTools_cprintf('-Yellow',                 '\t ''-Yellow'' - default: yellow \n');
+fcn_DebugTools_cprintf('-White',                  '\t ''-White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
 fprintf(1,'\n');
 fprintf(1,'Possible BOLD (*) names. NOTE: not case sensitive:\n')
-fcn_DebugTools_cprintf('*Text',                   '\t ''Text'' - default: black \n');
-fcn_DebugTools_cprintf('*Keywords',               '\t ''Keywords'' - default: blue \n');
-fcn_DebugTools_cprintf('*Comments',               '\t ''Comments'' - default: green \n');
-fcn_DebugTools_cprintf('*Strings',                '\t ''Strings'' - default: purple \n');
-fcn_DebugTools_cprintf('*UnterminatedStrings',    '\t ''UnterminatedStrings'' - default: dark red \n');
-fcn_DebugTools_cprintf('*SystemCommands',         '\t ''SystemCommands'' - default: orange \n');
-fcn_DebugTools_cprintf('*Errors',                 '\t ''Errors'' - default: light red \n');
-fcn_DebugTools_cprintf('Hyperlinks',             '\t ''Hyperlinks'' - DOES NOT WORK!\n')
-fcn_DebugTools_cprintf('*Black',                  '\t ''Black'' - default: black \n');
-fcn_DebugTools_cprintf('*Cyan',                   '\t ''Cyan'' - default: cyan \n');
-fcn_DebugTools_cprintf('*Magenta',                '\t ''Magenta'' - default: magenta \n');
-fcn_DebugTools_cprintf('*Blue',                   '\t ''Blue'' - default: blue \n');
-fcn_DebugTools_cprintf('*Green',                  '\t ''Green'' - default: green \n');
-fcn_DebugTools_cprintf('*Red',                    '\t ''Red'' - default: red \n');
-fcn_DebugTools_cprintf('*Yellow',                 '\t ''Yellow'' - default: yellow \n');
-fcn_DebugTools_cprintf('*White',                  '\t ''White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
-fprintf(1,'\n');
-fprintf(1,'Possible BOLD (*) names. NOTE: not case sensitive:\n')
-fcn_DebugTools_cprintf('*Text',                   '\t ''Text'' - default: black \n');
-fcn_DebugTools_cprintf('*Keywords',               '\t ''Keywords'' - default: blue \n');
-fcn_DebugTools_cprintf('*Comments',               '\t ''Comments'' - default: green \n');
-fcn_DebugTools_cprintf('*Strings',                '\t ''Strings'' - default: purple \n');
-fcn_DebugTools_cprintf('*UnterminatedStrings',    '\t ''UnterminatedStrings'' - default: dark red \n');
-fcn_DebugTools_cprintf('*SystemCommands',         '\t ''SystemCommands'' - default: orange \n');
-fcn_DebugTools_cprintf('*Errors',                 '\t ''Errors'' - default: light red \n');
-fcn_DebugTools_cprintf('Hyperlinks',             '\t ''Hyperlinks'' - DOES NOT WORK!\n')
-fcn_DebugTools_cprintf('*Black',                  '\t ''Black'' - default: black \n');
-fcn_DebugTools_cprintf('*Cyan',                   '\t ''Cyan'' - default: cyan \n');
-fcn_DebugTools_cprintf('*Magenta',                '\t ''Magenta'' - default: magenta \n');
-fcn_DebugTools_cprintf('*Blue',                   '\t ''Blue'' - default: blue \n');
-fcn_DebugTools_cprintf('*Green',                  '\t ''Green'' - default: green \n');
-fcn_DebugTools_cprintf('*Red',                    '\t ''Red'' - default: red \n');
-fcn_DebugTools_cprintf('*Yellow',                 '\t ''Yellow'' - default: yellow \n');
-fcn_DebugTools_cprintf('*White',                  '\t ''White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
+fcn_DebugTools_cprintf('*Text',                   '\t ''*Text'' - default: black \n');
+fcn_DebugTools_cprintf('*Keywords',               '\t ''*Keywords'' - default: blue \n');
+fcn_DebugTools_cprintf('*Comments',               '\t ''*Comments'' - default: green \n');
+fcn_DebugTools_cprintf('*Strings',                '\t ''*Strings'' - default: purple \n');
+fcn_DebugTools_cprintf('*UnterminatedStrings',    '\t ''*UnterminatedStrings'' - default: dark red \n');
+fcn_DebugTools_cprintf('*SystemCommands',         '\t ''*SystemCommands'' - default: orange \n');
+fcn_DebugTools_cprintf('*Errors',                 '\t ''*Errors'' - default: light red \n');
+fcn_DebugTools_cprintf('Hyperlinks',              '\t ''*Hyperlinks'' - DOES NOT WORK!\n')
+fcn_DebugTools_cprintf('*Black',                  '\t ''*Black'' - default: black \n');
+fcn_DebugTools_cprintf('*Cyan',                   '\t ''*Cyan'' - default: cyan \n');
+fcn_DebugTools_cprintf('*Magenta',                '\t ''*Magenta'' - default: magenta \n');
+fcn_DebugTools_cprintf('*Blue',                   '\t ''*Blue'' - default: blue \n');
+fcn_DebugTools_cprintf('*Green',                  '\t ''*Green'' - default: green \n');
+fcn_DebugTools_cprintf('*Red',                    '\t ''*Red'' - default: red \n');
+fcn_DebugTools_cprintf('*Yellow',                 '\t ''*Yellow'' - default: yellow \n');
+fcn_DebugTools_cprintf('*White',                  '\t ''*White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
 fprintf(1,'\n');
 fprintf(1,'Color range listing examples: G are rows, B are columns\n')
 for ith_R = 0:0.25:1

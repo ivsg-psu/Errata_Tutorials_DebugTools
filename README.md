@@ -54,8 +54,16 @@ This repo provides common tools used for debugging MATLAB codes within IVSG, and
     </li>
     <li><a href="#functions-for-workspace-management">Functions for Workspace Management</a>
 	    <ul>
-      <li><a href="#automatically-installing-matlab-packages">Automatically installing MATLAB packages</li>      
-	    <li><a href="#adding-subdirectories-to-the-path">Adding subdirectories to the pathTop-Level Directories</li>
+      <li><a href="#clearing-package-installs">Clearing package installs and path linkages to packages</li>      
+      <li><a href="#package-installs-from-github-urls">Package installs from GitHub URLs</li>      
+	    <li><a href="#adding-subdirectories-to-the-path">Adding subdirectories to the path</li>
+	    <li><a href="#querying-directory-and-subdirectory-content">Querying directory and subdirectory content</li>    
+	    <li><a href="#printing-a-directory-listing">Printing a directory listing</li>    
+	    <li><a href="#counting-the-bytes-folders-and-files-in-a-directory-listing">Counting the bytes, folders, and files in a directory listing</li>
+	    <li><a href="#making-a-directory">Making a directory</li>
+	    <li><a href="#sorting-a-directory-listing-by-filename-time">Sorting a directory listing by filename time</li>
+      <li><a href="#estimating-directory-processing-time">Estimating directory processing time</li>
+      <li><a href="#comparing-directory-listings">Comparing directory listings</li>
 	    </ul>
     </li>
     <li><a href="#functions-for-input-checking">Functions for Input Checking</a>
@@ -63,15 +71,18 @@ This repo provides common tools used for debugging MATLAB codes within IVSG, and
 	    <li><a href="#checking-inputs-to-functions">Checking inputs to functions</li>
         <li><a href="#checking-if-strings-partially-match">Checking if strings partially match</li>    
         <li><a href="#extracting-a-numeric-value-embedded-in-a-string">Extracting a numeric value embedded in a string </li>
-        <li><a href="#converting-mixed-input-lists-into-comma-separated-string">Converting mixed input lists into comma sparated string</li>            
+        <li><a href="#parsing-a-comma-separated-string-into-cells">Parsing a comma separated string into cells</li>       
+        <li><a href="#query-user-to-select-index-range">Query user to select index range</li>
 	    </ul>
     </li>
     <li><a href="#functions-for-output-formatting">Functions for Output Formatting</a>
 	    <ul>
 	    <li><a href="#converting-numbers-to-human-friendly-strings">Converting numbers to human friendly strings</li>
-        <li><a href="#appending-arbitrary-values-to-a-string">Appending arbitrary values to a string</li>    
+        <li><a href="#appending-arbitrary-values-to-a-string">Appending arbitrary values to a string</li>   
+        <li><a href="#converting-flags-into-yes-and-no-strings">Converting flags into yes and no strings </li>           
         <li><a href="#printing-results-to-fixed-length-strings">Printing results to fixed length strings</li>  
-        <li><a href="#printing-matrices-to-fixed-length-columns">Printing matrices to fixed length columns</li>           
+        <li><a href="#printing-matrices-to-fixed-length-columns">Printing matrices to fixed length columns</li>   
+        <li><a href="#printing-directory-listings-alongside-flags-and-data">Printing directory listings alongside flags and data</li>
 	    </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -172,7 +183,9 @@ The following are the top level directories within the repository:
 <a href="#debugtools">Back to top</a>
 
 <!-- FUNCTION STRUCTURE -->
+
 ### Function Structure
+
 Each of the functions described as follows has a consistent structure: each has an associated test script, using the convention
 
 ```sh
@@ -191,8 +204,54 @@ for any function to view function details.
 
 <!-- FUNCTIONS FOR WORKSPACE MANAGEMENT -->
 ## Functions for Workspace Management
-### Automatically installing MATLAB packages
-fcn_DebugTools_installDependencies.m : installs code packages that are specified by a URL pointing to a zip file into a default local subfolder, "Utilities", under the root folder. It also adds either the package subfoder or any specified sub-subfolders to the MATLAB path.
+
+### Clearing Package Installs
+Before installing code packages from GitHub links (see below for demos of this), it is strongly recommended that old packages be removed. The code below appears at the time of most code libraries and achieves this. 
+
+NOTE: this is not functionalized because, for the function to be shared, a package must be installed - which somewhat defeats the point of clearing packages. 
+
+NOTE: it is commented out via the "if 1==0" test using an "if" statement. This is to simplify and clarify if and when the code is allowed, or not. If the code were simply commented out, a user might assume the code is not ready for execution.
+
+```Matlab
+if 1==0
+    % Clear out the variables
+    clear global flag* FLAG*
+
+    % Clear out any path directories under Utilities
+    path_dirs = regexp(path,'[;]','split');
+    utilities_dir = fullfile(pwd,filesep,'Utilities');
+    for ith_dir = 1:length(path_dirs)
+        utility_flag = strfind(path_dirs{ith_dir},utilities_dir);
+        if ~isempty(utility_flag)
+            rmpath(path_dirs{ith_dir});
+        end
+    end
+
+    % Delete the Utilities folder, to be extra clean!
+    if  exist(utilities_dir,'dir')
+        [success_flag,message,message_ID] = rmdir(utilities_dir,'s');
+        if 0==success_flag
+            error('Unable remove directory: %s \nReason message: %s \nand message_ID: %s\n',utilities_dir, message,message_ID);
+        end
+    end
+
+end
+```
+<a href="#debugtools">Back to top</a>
+
+***
+
+### Package installs from GitHub URLs
+
+Package installs are a key tool used in most codes. This allows large segments of code to be debugged and tested independently (packages), released carefully when major changes are ready for sharing (versioning), and then linked quickly and clearly into other codes without copy/pasting or interfering with the versioning of other codes (e.g., install as a utility).
+
+To be clear, a "Utility" is a package or set of codes that is needed for operation of the current code, but the package itself is never edited or changed - it is simply used as-is. This distinction is important: if a bug or change is needed in a Utility, it must be changed in the SOURCE repository; otherwise, the "local" changes will not be saved or shared with others.
+
+Often, these utilities contain subfolder features that are reused. Functions for example are usually located in a "Functions" subdirectory and/or data in a "Data" subdirectory. The installation process of packages allows one to specify which dependency subfolders, for example "Functions" and "Data", to include in the MATLAB path after the package installation.
+
+The installation of packages from the GitHub management tool is done via the function: fcn_DebugTools_installDependencies.m 
+
+fcn_DebugTools_installDependencies: installs code packages that are specified by a URL pointing to a zip file into a default local subfolder, "Utilities", under the root folder. It also adds either the package subfoder or any specified sub-subfolders to the MATLAB path.
 
 If the Utilities folder does not exist, it is created.
 
@@ -225,19 +284,6 @@ dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/m
 fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url)
 ```
 
-### Adding subdirectories to the path
-
-fcn_DebugTools_addSubdirectoriesToPath.m : This function adds given subdirectories to the root path, and causes an error to be thrown if the directory is not found. It is typically used within a flag-checking if-statement, such as below
-
-```Matlab
-%% Demonstrate how to add subdirectories
-if ~exist('flag_DebugTools_Folders_Initialized','var')
-    fcn_DebugTools_addSubdirectoriesToPath(pwd,{'Functions','Data'});
-
-    % set a flag so we do not have to do this again
-    flag_DebugTools_Folders_Initialized = 1;
-end
-```
 Note, the first time code is run, the location of this function is not going to be known. So typically, the initialization codes must be hard-coded first. The first part of the demo code for the DebugTools library does this, adn the code below is from the Laps class library to demonstrate how it is done for codes that are using DebugTools as a utility, which is more typical.
 
 ```Matlab
@@ -312,13 +358,408 @@ end
     fcn_Laps_plotSegmentZoneDefinition.m : Plots a segment zone, allowing user-defined colors. This function is mostly used to support fcn_Laps_plotZoneDefinition.m 
     </li>
   -->  
+
+<a href="#debugtools">Back to top</a>
+
+***
+
+### Adding subdirectories to the path
+
+fcn_DebugTools_addSubdirectoriesToPath.m : This function adds given subdirectories to the root path, and causes an error to be thrown if the directory is not found. It is typically used within a flag-checking if-statement, such as below
+
+```Matlab
+%% Demonstrate how to add subdirectories
+if ~exist('flag_DebugTools_Folders_Initialized','var')
+    fcn_DebugTools_addSubdirectoriesToPath(pwd,{'Functions','Data'});
+
+    % set a flag so we do not have to do this again
+    flag_DebugTools_Folders_Initialized = 1;
+end
+```
 <a href="#debugtools">Back to top</a>    
+
+***
+
+### Querying directory and subdirectory content
+
+fcn_DataClean_listDirectoryContents - Creates a list of specified root directories, including all subdirectories, of a given query. Allows specification whether to keep either files, directories, or both.
+
+FORMAT:
+
+```Matlab
+     directory_filelist = fcn_DataClean_listDirectoryContents(rootdirs, (fileQueryString), (flag_fileOrDirectory), (fid))
+```
+
+Here is an example usage:
+
+```Matlab
+% List which directory/directories need to be loaded
+clear rootdirs
+rootdirs{1} = fullfile(cd,'Functions');
+
+% Specify the fileQueryString
+fileQueryString = '*.m'; % The more specific, the better to avoid accidental loading of wrong information
+
+% Specify the flag_fileOrDirectory
+flag_fileOrDirectory = 0; % 0 = a file, 1 = directory, 2 = both
+
+% Specify the fid
+fid = -1; % 1 --> print to console
+
+% Call the function
+directory_filelist = fcn_DebugTools_listDirectoryContents(rootdirs, (fileQueryString), (flag_fileOrDirectory), (fid));
+
+% Check the results
+assert(isstruct(directory_filelist));
+assert(length(directory_filelist)>1);
+```
+
+<a href="#debugtools">Back to top</a>    
+
+***
+
+### Printing a directory listing
+
+Prints a listing of a directory into either a console, a file, or a
+markdown file with markdown formatting.
+
+FORMAT:
+
+```Matlab
+     fcn_DebugTools_printDirectoryListing(directory_filelist, (titleString), (rootDirectoryString), (fid))
+```
+
+INPUTS:
+
+     directory_filelist: a structure array that is the output of a
+     "dir" command. A typical output can be generated using:
+     directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+
+     (OPTIONAL INPUTS)
+
+     titleString: a title put at the top of the listing. The default is:
+     "CONTENTS FOUND:" 
+
+     rootDirectoryString: a string to specify the root directory of the query,
+     thus forcing a MARKDOWN print style. The default is empty, to NOT
+     print in MARKDOWN
+
+     fid: the fileID where to print. Default is 1, to print results to
+     the console. If set to -1, skips any input checking or debugging, no
+     prints will be generated, and sets up code to maximize speed.
+
+OUTPUTS:
+
+     (prints to console)
+
+
+Here is an example usage:
+
+```Matlab
+% Create a directory filelist by querying the "Functions" folder for all .m
+% files
+directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Functions')},'*.m',0);
+
+% Print the results with a titleString
+titleString = 'This is a listing of all mfiles in the Functions folder';
+rootDirectoryString = [];
+fid = 1;
+fcn_DebugTools_printDirectoryListing(directory_filelist, (titleString), (rootDirectoryString), (fid))
+```
+
+<a href="#debugtools">Back to top</a>    
+
+***
+
+
+### Counting the bytes folders and files in a directory listing
+
+The function fcn_DebugTools_countBytesInDirectoryListing counts the number of bytes in a directory listing and as well the number of folders and files in that listing, excluding degenerate folders
+
+FORMAT:
+
+     [totalBytes, Nfolders, Nfiles] = fcn_INTERNAL_countBytesInDirectoryListing(directory_listing, (indicies),(fid))
+
+INPUTS:
+
+     directory_listing: a structure that is the output of MATLAB's "dir"
+     command that includes filename, bytes, etc.
+
+     (OPTIONAL INPUTS)
+
+     indicies: which indicies to include in the count. Default is to use
+     all files in the directory listing.
+
+     fid: the fileID where to print. Default is 0, to NOT print results to
+     the console. If set to -1, skips any input checking or debugging, no
+     prints will be generated, and sets up code to maximize speed.
+
+OUTPUTS:
+
+     totalBytes: the total number of bytes in the directory listing or,
+     if indicies are specified, the total of just the chosen indicies in
+     the directory listing.
+
+     Nfolders: the total number of folders in the listing, excluding
+     degenerate folders ('.' and '..').
+
+     Nfiles: the total number of files in the listing
+Here is an example usage:
+
+```Matlab
+directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+
+indicies = 1:10;
+fid = 1;
+[totalBytes, Nfolders, Nfiles] = fcn_DebugTools_countBytesInDirectoryListing(directory_filelist,(indicies),(fid));
+
+assert(totalBytes>=0);
+assert(Nfolders>=0);
+assert(Nfiles>=0);
+assert((Nfiles+Nfolders)<=length(indicies)); % Note: some indicies may be degenerate folders such as '.' and '..' - these are not counted
+```
+
+Produces the following:
+
+```
+Total number of files and folders indexed: 10, containing 1,660 bytes, 6 folders, and 2 files
+Breakdown:
+		FOLDERS:                                                              	    BYTES (in and below):
+		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\.git                  	               51,667,259
+		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Data                  	                      330
+		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Documents             	                7,106,499
+		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Example Code Snippets 	                   23,296
+		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions             	                  284,354
+		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Images                	                1,983,583
+
+		FILES:                                                                	                   BYTES:
+		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\.gitignore            	                      523
+		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\LICENSE               	                    1,137
+```
+
+<a href="#debugtools">Back to top</a>    
+
+***
+
+### Making a directory
+
+The function  fcn_DebugTools_makeDirectory creates a directory given a directory path, even if directory is a full path, and even if the created directory would not exist as a direct subfolder in current folder.
+
+FORMAT:
+
+```Matlab
+     fcn_DebugTools_makeDirectory(directoryPath, (fid))
+```
+
+INPUTS:
+
+     directoryPath: a string containing the path to the directory to
+     create
+
+     (OPTIONAL INPUTS)
+
+     fid: the fileID where to print. Default is 1, to print results to
+     the console. If set to -1, skips any input checking or debugging, no
+     prints will be generated, and sets up code to maximize speed.
+
+Here is an example implementation:
+
+```Matlab
+directoryPath = fullfile(cd,'Junk','Junk','Junk');
+assert(7~=exist(directoryPath,'dir'));
+
+fid = 1;
+
+fcn_DebugTools_makeDirectory(directoryPath,fid);
+
+assert(7==exist(directoryPath,'dir'));
+rmdir('Junk','s');
+```
+
+<a href="#debugtools">Back to top</a>    
+
+***
+
+### Sorting a directory listing by filename time
+
+The function, fcn_DebugTools_sortDirectoryListingByTime, sorts directory listings by the filename time, e.g. the date/time format that is embedded within the filename.
+
+Given a directory listing of files that have names ending in date
+formats, for example: filename_yyyy-MM-dd-HH-mm-ss,sorts the files
+by date. Useful to sort bag files whose names contain dates, for example:
+      mapping_van_2024-08-05-14-45-26_0
+
+FORMAT:
+
+     sorted_directory_filelist = fcn_DebugTools_sortDirectoryListingByTime(directory_filelist, (fid))
+
+INPUTS:
+
+     directory_filelist: a structure array that is the output of a
+     "dir" command. A typical output can be generated using:
+     directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+
+     (OPTIONAL INPUTS)
+
+     fid: the fileID where to print. Default is 1, to print results to
+     the console. If set to -1, skips any input checking or debugging, no
+     prints will be generated, and sets up code to maximize speed.
+
+OUTPUTS:
+
+     sorted_directory_filelist: a structure array similar to the output
+     of a "dir" command, but where the listings are sorted by date     
+
+Here is an example implementation:
+
+```Matlab
+
+directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Data')},'ExampleDateSorting*.txt',0);
+
+sorted_directory_filelist = fcn_DebugTools_sortDirectoryListingByTime(directory_filelist);
+
+fcn_DebugTools_printDirectoryListing(sorted_directory_filelist);
+```
+
+<a href="#debugtools">Back to top</a>    
+
+***
+
+### Estimating directory processing time
+
+The function, fcn_DebugTools_confirmTimeToProcessDirectory
+Calculates the time it takes to process a directory listing and confirms
+with the user that this is acceptable.
+
+FORMAT:
+
+     [flag_keepGoing, timeEstimateInSeconds] = fcn_DebugTools_confirmTimeToProcessDirectory(directory_listing, bytesPerSecond, (indexRange),(fid))
+
+INPUTS:
+
+     directory_listing: a structure that is the output of MATLAB's "dir"
+     command that includes filename, bytes, etc.
+
+     (OPTIONAL INPUTS)
+
+     indexRange: which indicies to include in the count. Default is to use
+     all files in the directory listing.
+
+     fid: the fileID where to print. Default is 0, to NOT print results to
+     the console. If set to -1, skips any input checking or debugging, no
+     prints will be generated, and sets up code to maximize speed.
+
+OUTPUTS:
+
+     flag_keepGoing: outputs a 1 if user accepts, 0 otherwise
+
+     timeEstimateInSeconds: how many seconds the processing is estimated
+     to take
+
+Here is an example implementation:
+
+```Matlab
+directory_listing = fcn_DebugTools_listDirectoryContents({cd});
+bytesPerSecond = 10000000;
+indexRange = [];
+fid = 1;
+[flag_keepGoing, timeEstimateInSeconds] = fcn_DebugTools_confirmTimeToProcessDirectory(directory_listing, bytesPerSecond, (indexRange),(fid));
+
+assert((flag_keepGoing==0) || (flag_keepGoing==1));
+assert(timeEstimateInSeconds>=0);
+```
+
+<a href="#debugtools">Back to top</a>    
+
+***
+
+### Comparing directory listings
+
+The function, 
+fcn_DebugTools_compareDirectoryListings
+compares a source and destination directory to check if files are located
+in destination directory that match the source directory. 
+
+FORMAT:
+
+     flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (typeExtension), (fid))
+
+INPUTS:
+
+     directoryListing_source: a structure array that is the output of a
+     "dir" command. A typical output can be generated using:
+     directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+
+     sourceRootString: a string that lists the root of the
+     directoryListing_source, e.g. the bottom directory of the source
+     above which the content organization should be mirrored in the
+     destination directory
+
+     destinationRootString: a string that lists the root of the
+     directoryListing_source, e.g. the bottom directory of the source
+     above which the content organization should be mirrored in the
+     destination directory
+
+     (OPTIONAL INPUTS)
+
+     flag_matchingType: a flag that sets the type of matching. Values
+     include:
+
+          1: matches same type to same type (e.g., if the listings are
+          files in the source, matches to files in the destination. If
+          the listings are folders in the source, looks for folders in
+          the destination.
+
+          2: fileToFolder - matches files in the source to folders in the
+          destination
+
+          3: folderToFile - matches folders in the source to files in the
+          destination
+
+     typeExtension: the file type extension to add or omit, if
+     fileToFolder or folderToFile is set. Default is to use '.m'
+
+     fid: the fileID where to print. Default is 0, to NOT print results to
+     the console. If set to -1, skips any input checking or debugging, no
+     prints will be generated, and sets up code to maximize speed.
+
+OUTPUTS:
+
+     flags_wasMatched: a flag vector of Nx1 where N is the number of
+     listings in the source directory. The flag is set to 1 if the
+     listing in the source was found in the destination, and set to 0 if
+     not found.
+
+Here is an example implementation:
+
+```Matlab
+% Set strings that list where the "root" potions of the source and
+% destination directories are located
+sourceRootString      = fullfile(cd,'Data','Example_compareDirectoryListings','SourceDirectory');
+destinationRootString = fullfile(cd,'Data','Example_compareDirectoryListings','DestinationDirectory');
+
+
+% Create a directory filelist by querying the "Functions" folder for all .m
+% files
+file_or_folder = 0; % Returns only files
+directoryListing_source = fcn_DebugTools_listDirectoryContents({sourceRootString},'TestFolder*.m',file_or_folder);
+
+% Call the function fcn_DebugTools_compareDirectoryListings
+flag_matchingType = 1; % Same to same
+flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (fid));
+
+assert(isequal(flags_wasMatched,[1 1 0]'));
+```
+
+<a href="#debugtools">Back to top</a>    
+
+***
 
 ## Functions for Input Checking
 
 ### Checking inputs to functions
-<ul>
-	<li> The function: fcn_DebugTools_checkInputsToFunctions checks to see if an input meets specified requirements. It is a VERY powerful tool that is commonly used at the top of most codes in the IVSG toolset. For example, the following code checks to see if the input has 2 columns, and 5 or less rows. If it does, it gives no error:
+
+The function: fcn_DebugTools_checkInputsToFunctions checks to see if an input meets specified requirements. It is a VERY powerful tool that is commonly used at the top of most codes in the IVSG toolset. For example, the following code checks to see if the input has 2 columns, and 5 or less rows. If it does, it gives no error:
 
 ```Matlab
 %% Check that an input has 2 columns, 
@@ -397,14 +838,14 @@ Here are a listing of all active input checking options:
 	"likestructure"
 		Takes a structure input as the 3rd argument to serve as a template. Ensures that the input has the same structure fields.
 ```
-</li>	
-</ul>
 
 <a href="#debugtools">Back to top</a>
 
+***
+
 ### Checking if strings partially match
-<ul>
-<li> The function: fcn_DebugTools_doStringsMatch checks to see a string entry, usually from a prompt to a human user, matches or partially matches a given set of inputs, for example if "y" matches "Yes". This function can also handle cases where the user must select from a set of choices (a through d, for example) and confirms that one and only one of those choices was selected:
+
+The function: fcn_DebugTools_doStringsMatch checks to see a string entry, usually from a prompt to a human user, matches or partially matches a given set of inputs, for example if "y" matches "Yes". This function can also handle cases where the user must select from a set of choices (a through d, for example) and confirms that one and only one of those choices was selected:
 
 ```Matlab
 %% simple string comparisons, student answer is part of correct answer so returns true, ignoring case
@@ -419,29 +860,28 @@ correct_answers = 'abc';
 result = fcn_DebugTools_doStringsMatch(student_answer,correct_answers);
 assert(result==false);
 ```
-</li>
-</ul>
 
 <a href="#debugtools">Back to top</a>
 
+***
+
 ### Extracting a numeric value embedded in a string
-<ul>
-<li> The function fcn_DebugTools_extractNumberFromStringCell takes a char type in a cell, and finds the first number within that is numeric, and then returns the string for this number. It is robust in that weird entries also work, such as '-0004.2'. This function is particularly useful to parse human-input numbers.
+
+The function fcn_DebugTools_extractNumberFromStringCell takes a char type in a cell, and finds the first number within that is numeric, and then returns the string for this number. It is robust in that weird entries also work, such as '-0004.2'. This function is particularly useful to parse human-input numbers.
 	
 ```Matlab
 %% Decimal number, negative, in cell array with leading zeros and text
 result = fcn_DebugTools_extractNumberFromStringCell({'My number is -0000.4'});
 assert(isequal(result,{'-0.4'}));
 ```
-	
-</li>
-</ul>
 
 <a href="#debugtools">Back to top</a>
 
-### Extracting a numeric value embedded in a string
-<ul>
-<li> The function fcn_DebugTools_parseStringIntoCells parses a string containing comma-separated elements, parsing out the elements into cells.
+***
+
+### Parsing a comma separated string into cells
+
+The function fcn_DebugTools_parseStringIntoCells parses a string containing comma-separated elements, parsing out the elements into cells.
 
 ```Matlab
 %% Demonstrate fcn_DebugTools_parseStringIntoCells
@@ -451,14 +891,13 @@ result = fcn_DebugTools_parseStringIntoCells(inputString);
 assert(isequal(result,[{'This'},{'isatest'},{'of'}]));
 ```
 
-</li>
-</ul>
-
 <a href="#debugtools">Back to top</a>
 
-### Converting mixed input lists into comma separated string
-<ul>
-<li> The function fcn_DebugTools_parseStringIntoCells parses a string containing comma-separated elements, parsing out the elements into cells.
+***
+
+### Converting a mixed input cell array into comma separated string
+
+The function fcn_DebugTools_parseStringIntoCells parses a string containing comma-separated elements, parsing out the elements into cells.
 
 ```Matlab
 %% Demonstrate fcn_DebugTools_convertVariableToCellString
@@ -467,16 +906,107 @@ result = fcn_DebugTools_convertVariableToCellString([{'D'},{2},'abc , 123']);
 assert(isequal(result,{'D, 2, abc , 123'}));
 ```
 
-</li>
-</ul>
+<a href="#debugtools">Back to top</a>
+
+***
+
+### Query user to select index range
+
+The function
+
+fcn_DebugTools_queryNumberRange
+
+queries the user to select a number based on a flag vector, and
+optionally can confirm the selection is valid if user selects a number
+range that overlaps indicies where a flag value is equal to 1
+
+FORMAT:
+
+     [flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid))
+
+INPUTS:
+
+     flags_toCheck: a list of flags, either 1 or 0, that indicate that
+     the number is either "done" (value = 1) or "not done" (value = 0).
+     The query defaults to the first "not done" value (the first 0).
+     Then, based on the user's entry, the query defaults to
+     subsequent-to-start last "not done" or 0 value in flags_toCheck. For
+     example, if flags_toCheck = [1 1 0 0 0 1 1 0 0 1], then the default start
+     index will be 3 as this is the first index in flags_toCheck where a
+     0 appears. If the user however selects a starting index of 6, then
+     the prompt will give a default ending index of 9, as this is the
+     last 0 value to appear after the 6 index.
+
+     (OPTIONAL INPUTS)
+
+     queryEndString: a string that appears at the end of the number query
+     given at each prompt, filled in as the XXX in the form:
+     "What is the starting numberXXXXX?". For example, if some enters:
+     " of the file(s) to parse", then the prompt will be:
+     "What is the starting number of the files to parse?". Default is
+     empty.
+
+     flag_confirmOverwrite: set to 1 to force the user to confirm
+     "overwrite" if the user selects a number range such that it overlaps
+     with one of the indicies where flags_toCheck is 1. Or, set to 0 to
+     skip this checking.  Default is 1
+
+     directory_filelist: a structure array that is the output of a
+     "dir" command. This is used to show which files corresponding to
+     flags_toCheck will be overwritten. A typical output can be generated
+     using: directory_filelist =
+     fcn_DebugTools_listDirectoryContents({cd});
+
+     fid: the fileID where to print. Default is 0, to NOT print results to
+     the console. If set to -1, skips any input checking or debugging, no
+     prints will be generated, and sets up code to maximize speed.
+
+OUTPUTS:
+
+     flag_keepGoing: outputs a 1 if user accepts, 0 otherwise
+
+     startingIndex: the user-selected first index
+
+     endingIndex: the user-selected first index
+
+```Matlab
+rng(1);
+
+% Create a directory filelist by querying the "Functions" folder for all .m
+% files
+directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Functions')},'*.m',0);
+
+dirNames = {directory_filelist.name}';
+dirScripts = contains(dirNames,'script');
+celldirScripts = mat2cell(dirScripts,ones(1,length(dirNames)));
+dirScriptYesNo = fcn_DebugTools_convertBinaryToYesNoStrings(dirScripts);
+
+cellArrayHeaders = {'m-filename                                                         ', 'Script flag?   ', 'Script?   '};
+cellArrayValues = [dirNames, celldirScripts, dirScriptYesNo];
+
+% Print to screen
+fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, ([]), (fid))
+
+
+% Set up call to function
+flags_toCheck = dirScripts;
+queryEndString = ' function to change to script';
+flag_confirmOverwrite = 1;
+fid = 1;
+[flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid));
+
+assert(flag_keepGoing==1 || flag_keepGoing==0);
+assert(startingIndex>0 && startingIndex<=length(flags_toCheck));
+assert(endingIndex>=startingIndex && endingIndex<=length(flags_toCheck));
+```
 
 <a href="#debugtools">Back to top</a>
 
+***
 ## Functions for Output Formatting
 
 ### Converting numbers to human friendly strings
-<ul>
-<li>
+
 The function: fcn_DebugTools_number2string.m prints a "pretty" version of a string, e.g avoiding weirdly odd numbers of decimal places or strangely formatted printing.
 
 ```Matlab
@@ -492,14 +1022,13 @@ Produces the following result:
 2.33
 ```
 
-</li>
-</ul>
 
 <a href="#debugtools">Back to top</a>
 
+***
+
 ### Appending arbitrary values to a string
-<ul>
-<li>
+
 The function: fcn_DebugTools_addStringToEnd.m appends a number, cell string, or string to the end of a string, producing a string.
 
 ```Matlab
@@ -515,15 +1044,51 @@ Produces the following result:
 test 2
 ```
 
-</li>
-</ul>
 
 <a href="#debugtools">Back to top</a>
 
+***
+
+### Converting flags into yes and no strings
+
+The function: fcn_DebugTools_convertBinaryToYesNoStrings
+Converts Nx1 of scalar 1 or 0 vectors into Nx1 cell arrays containing
+'yes' or 'no' corresponding to the 1's or 0's respectively
+
+FORMAT:
+
+     cellArrrayYesNo = fcn_DebugTools_convertBinaryToYesNoStrings(flags_binary, (fid))
+
+INPUTS:
+
+     flags_binary: a column array, [N x 1], of 1's or 0's
+
+     (OPTIONAL INPUTS)
+
+     fid: the fileID where to print. Default is 0, to NOT print results to
+     the console. If set to -1, skips any input checking or debugging, no
+     prints will be generated, and sets up code to maximize speed.
+
+OUTPUTS:
+
+     cellArrrayYesNo: a cell array of N rows, 1 column, of 'yes' or 'no'
+     strings
+
+```Matlab
+flags_binary = [0; 1; 0];
+cellArrrayYesNo = fcn_DebugTools_convertBinaryToYesNoStrings(flags_binary);
+
+assert(isequal(cellArrrayYesNo,{'no';'yes';'no'}))
+```
+
+<a href="#debugtools">Back to top</a>
+
+***
+
+
 ### Printing results to fixed length strings
-<ul>
-<li>
-    The function: fcn_DebugTools_debugPrintStringToNCharacters converts strings into fixed-length forms, so that they print cleanly. For example, the following 2 basic examples:
+
+The function: fcn_DebugTools_debugPrintStringToNCharacters converts strings into fixed-length forms, so that they print cleanly. For example, the following 2 basic examples:
 
 ```Matlab
 % BASIC example 1 - string is too long
@@ -543,15 +1108,14 @@ was converted to: "This is a "
 The string: Tiny string but should be 40 chars
 was converted to: "Tiny string but should be 40 chars      "
 ```
-</li>
-</ul>
 
 <a href="#debugtools">Back to top</a>
 
+***
+
 ### Printing matrices to fixed length columns
-<ul>
-<li>
-    The function: fcn_DebugTools_debugPrintTableToNCharacters, given a matrix of data, prints the data in user-specified width to the workspace.
+
+The function: fcn_DebugTools_debugPrintTableToNCharacters, given a matrix of data, prints the data in user-specified width to the workspace.
 
 ```Matlab
 %% Fill in test data
@@ -602,9 +1166,126 @@ Data Location X      Location Y      s-coo s-coo
 9    0.467910465808  0.861595759984  0.014 10.17 
 10   0.860827351058  0.711735093008  0.622 608.8 
 ```
-</li>
-</ul>
+
 <a href="#debugtools">Back to top</a>
+
+***
+
+### Printing directory listings alongside flags and data
+
+fcn_DebugTools_printNumeredDirectoryList
+prints a directory file list alongside lists of flags and details.
+
+FORMAT:
+
+     fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, (directoryRoot), (fid))
+
+INPUTS:
+
+     directory_filelist: a structure array that is the output of a
+     "dir" command. A typical output can be generated using:
+     directory_filelist = fcn_DebugTools_listDirectoryContents({cd});
+
+     cellArrayHeaders: a [Nx1] cell array of strings representing the
+     headers. Note: the printing width of each column is inhereted by the
+     length of each string.
+
+     cellArrayValues: a cell array of the contents to be printed
+
+     (OPTIONAL INPUTS)
+
+     directoryRoot: a string representing the root of the directory
+     listing. By default, this is empty. However, in some folder
+     printings, the listing is intended for relative and not absolute
+     folder locations. By entering a string for the "root" of the
+     directory listing, the folders are printed in "relative to root"
+     format which makes printing more simple.
+
+     fid: the fileID where to print. Default is 0, to NOT print results to
+     the console. If set to -1, skips any input checking or debugging, no
+     prints will be generated, and sets up code to maximize speed.
+
+OUTPUTS:
+
+     (printing to console)
+
+
+```Matlab
+rng(1);
+
+% Create a directory filelist by querying the "Functions" folder for all .m
+% files
+directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Functions')},'*.m',0);
+
+dirNames = {directory_filelist.name}';
+dirBytes = [directory_filelist.bytes]';
+celldirBytes = mat2cell(dirBytes,ones(1,length(dirNames)));
+dirBigFile = dirBytes>1000;
+celldirBigFile = mat2cell(dirBigFile,ones(1,length(dirNames)));
+dirBigFileYesNo = fcn_DebugTools_convertBinaryToYesNoStrings(dirBigFile);
+dirFloat = rand(length(directory_filelist),1).*10.^(10*randn(length(directory_filelist),1));
+celldirFloat = mat2cell(dirFloat,ones(1,length(dirNames)));
+
+cellArrayHeaders = {'m-filename                                                         ', 'bytes    ', 'big file?   ', 'Some yes or no  ', 'Some float   '};
+cellArrayValues = [dirNames, celldirBytes, celldirBigFile, dirBigFileYesNo, celldirFloat];
+
+% Call the function
+fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, ([]), (fid))
+```
+
+Produces the following output:
+
+```
+		m-filename                                                         	bytes    	big file?   	Some yes or no  	Some float   	
+Folder: D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	class_DebugFlags.m                                                 	7999     	1           	yes             	4.5043e+05   	
+	2	fcn_DebugTools_addStringToEnd.m                                    	4157     	1           	yes             	3.1993e-06   	
+	3	fcn_DebugTools_addSubdirectoriesToPath.m                           	4420     	1           	yes             	3.2176e-06   	
+	4	fcn_DebugTools_checkInputsToFunctions.m                            	33103    	1           	yes             	3.9968e+05   	
+	5	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	7250     	1           	yes             	5.2864e-12   	
+	6	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	5068     	1           	yes             	3.2290e-05   	
+	7	fcn_DebugTools_convertVariableToCellString.m                       	4804     	1           	yes             	3.5981e-13   	
+	8	fcn_DebugTools_countBytesInDirectoryListing.m                      	8954     	1           	yes             	4.8157e-08   	
+	9	fcn_DebugTools_cprintf.m                                           	30654    	1           	yes             	7.2560e+08   	
+	10	fcn_DebugTools_debugPrintStringToNCharacters.m                     	3916     	1           	yes             	8.2165e-16   	
+	11	fcn_DebugTools_debugPrintTableToNCharacters.m                      	5190     	1           	yes             	1.1011e-06   	
+	12	fcn_DebugTools_doStringsMatch.m                                    	5335     	1           	yes             	0.3559       	
+	13	fcn_DebugTools_extractNumberFromStringCell.m                       	8371     	1           	yes             	3.5291e-16   	
+	14	fcn_DebugTools_installDependencies.m                               	15752    	1           	yes             	340.8413     	
+	15	fcn_DebugTools_listDirectoryContents.m                             	8955     	1           	yes             	1.7809e-22   	
+	16	fcn_DebugTools_makeDirectory.m                                     	7135     	1           	yes             	66.6470      	
+	17	fcn_DebugTools_number2string.m                                     	4449     	1           	yes             	7.5700e+03   	
+	18	fcn_DebugTools_parseStringIntoCells.m                              	5510     	1           	yes             	1.1136e-13   	
+	19	fcn_DebugTools_printDirectoryListing.m                             	8152     	1           	yes             	1.9731e-06   	
+	20	fcn_DebugTools_printNumeredDirectoryList.m                         	8904     	1           	yes             	1.7377e+05   	
+	21	fcn_DebugTools_sortDirectoryListingByTime.m                        	6900     	1           	yes             	0.0014       	
+	22	script_test_all_functions.m                                        	5976     	1           	yes             	2.5714e-19   	
+	23	script_test_class_DebugFlags.m                                     	2855     	1           	yes             	0.8006       	
+	24	script_test_fcn_DebugTools_addStringToEnd.m                        	1058     	1           	yes             	467.7462     	
+	25	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	1278     	1           	yes             	3.7871       	
+	26	script_test_fcn_DebugTools_checkInputsToFunctions.m                	47550    	1           	yes             	1.9317e+04   	
+	27	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	1340     	1           	yes             	1.4396e+03   	
+	28	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	658      	0           	no              	3.8633e+11   	
+	29	script_test_fcn_DebugTools_convertVariableToCellString.m           	1345     	1           	yes             	5.3961e-12   	
+	30	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	2545     	1           	yes             	1.2007e-18   	
+	31	script_test_fcn_DebugTools_cprintf.m                               	8027     	1           	yes             	1.4230e+07   	
+	32	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	4388     	1           	yes             	2.1994e-04   	
+	33	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	1953     	1           	yes             	6.8495e-13   	
+	34	script_test_fcn_DebugTools_doStringsMatch.m                        	3538     	1           	yes             	7.0015e+10   	
+	35	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	3605     	1           	yes             	5.8218e-06   	
+	36	script_test_fcn_DebugTools_installDependencies.m                   	5804     	1           	yes             	3.0643e+08   	
+	37	script_test_fcn_DebugTools_listDirectoryContents.m                 	4969     	1           	yes             	4.0625e+03   	
+	38	script_test_fcn_DebugTools_makeDirectory.m                         	933      	0           	no              	2.7887e+14   	
+	39	script_test_fcn_DebugTools_number2string.m                         	2866     	1           	yes             	539.0431     	
+	40	script_test_fcn_DebugTools_parseStringIntoCells.m                  	1017     	1           	yes             	2.1547e+06   	
+	41	script_test_fcn_DebugTools_printDirectoryListing.m                 	1286     	1           	yes             	5.7327e-07   	
+	42	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	2664     	1           	yes             	8.3490e-07   	
+	43	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	786      	0           	no              	3.6398e+15   	
+```
+
+<a href="#debugtools">Back to top</a>
+
+***
 
 
 <!-- USAGE EXAMPLES -->
