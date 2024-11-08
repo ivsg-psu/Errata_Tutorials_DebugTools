@@ -134,10 +134,10 @@ end
 
 % Does user want to specify typeExtension?
 typeExtension = '.m'; % Default
-if (4 <= nargin)
-    temp = varargin{1};
+if (5 <= nargin)
+    temp = varargin{2};
     if ~isempty(temp)
-        flag_matchingType = temp;
+        typeExtension = temp;
     end
 end
 
