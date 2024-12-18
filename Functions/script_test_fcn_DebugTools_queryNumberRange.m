@@ -25,19 +25,27 @@ cellArrayHeaders = {'m-filename                                                 
 cellArrayValues = [dirNames, celldirScripts, dirScriptYesNo];
 
 % Print to screen
+fid = 1;
 fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, ([]), (fid))
 
 
 % Set up call to function
 flags_toCheck = dirScripts;
 queryEndString = ' function to change to script';
+
+
+
+
+
 flag_confirmOverwrite = 1;
 fid = 1;
-[flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid));
+[flag_keepGoing, indiciesSelected] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid));
 
 assert(flag_keepGoing==1 || flag_keepGoing==0);
-assert(startingIndex>0 && startingIndex<=length(flags_toCheck));
-assert(endingIndex>=startingIndex && endingIndex<=length(flags_toCheck));
+if ~isempty(indiciesSelected)
+    assert(min(indiciesSelected)>0 && max(indiciesSelected)<=length(flags_toCheck));
+    assert(length(indiciesSelected)<=length(flags_toCheck));
+end
 
 
 %% Test 2: Simple example, no directory listing
@@ -65,11 +73,14 @@ flags_toCheck = dirScripts;
 queryEndString = ' function to change to script';
 flag_confirmOverwrite = 1;
 fid = 1;
-[flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), ([]), (fid));
+[flag_keepGoing, indiciesSelected] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), ([]), (fid));
 
 assert(flag_keepGoing==1 || flag_keepGoing==0);
-assert(startingIndex>0 && startingIndex<=length(flags_toCheck));
-assert(endingIndex>=startingIndex && endingIndex<=length(flags_toCheck));
+if ~isempty(indiciesSelected)
+    assert(min(indiciesSelected)>0 && max(indiciesSelected)<=length(flags_toCheck));
+    assert(length(indiciesSelected)<=length(flags_toCheck));
+end
+
 
 %% Test 3: Simple example, no directory listing, no overwrite confirm
 
@@ -96,11 +107,14 @@ flags_toCheck = dirScripts;
 queryEndString = ' function to change to script';
 flag_confirmOverwrite = 0;
 fid = 1;
-[flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), ([]), (fid));
+[flag_keepGoing, indiciesSelected] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), ([]), (fid));
 
 assert(flag_keepGoing==1 || flag_keepGoing==0);
-assert(startingIndex>0 && startingIndex<=length(flags_toCheck));
-assert(endingIndex>=startingIndex && endingIndex<=length(flags_toCheck));
+if ~isempty(indiciesSelected)
+    assert(min(indiciesSelected)>0 && max(indiciesSelected)<=length(flags_toCheck));
+    assert(length(indiciesSelected)<=length(flags_toCheck));
+end
+
 
 %% Test 4: Simple example, but flags are not continuous (checks end point)
 
@@ -127,11 +141,14 @@ flags_toCheck = dirScripts;
 queryEndString = ' function to change to script';
 flag_confirmOverwrite = 1;
 fid = 1;
-[flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid));
+[flag_keepGoing, indiciesSelected] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid));
 
 assert(flag_keepGoing==1 || flag_keepGoing==0);
-assert(startingIndex>0 && startingIndex<=length(flags_toCheck));
-assert(endingIndex>=startingIndex && endingIndex<=length(flags_toCheck));
+if ~isempty(indiciesSelected)
+    assert(min(indiciesSelected)>0 && max(indiciesSelected)<=length(flags_toCheck));
+    assert(length(indiciesSelected)<=length(flags_toCheck));
+end
+
 
 
 

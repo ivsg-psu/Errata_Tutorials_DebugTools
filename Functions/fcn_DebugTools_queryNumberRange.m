@@ -1,4 +1,4 @@
-function [flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, varargin)
+function [flag_keepGoing, indiciesSelected] = fcn_DebugTools_queryNumberRange(flags_toCheck, varargin)
 %fcn_DebugTools_queryNumberRange
 % queries the user to select a number based on a flag vector, and
 % optionally can confirm the selection is valid if user selects a number
@@ -6,7 +6,7 @@ function [flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumb
 %
 % FORMAT:
 %
-%      [flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid))
+%      [flag_keepGoing, indiciesSelected] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid))
 %
 % INPUTS:
 %
@@ -27,7 +27,7 @@ function [flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumb
 %      given at each prompt, filled in as the XXX in the form:
 %      "What is the starting numberXXXXX?". For example, if some enters:
 %      " of the file(s) to parse", then the prompt will be:
-%      "What is the starting number of the files to parse?". Default is
+%      "What is the starting number of the file(s) to parse?". Default is
 %      empty.
 %
 %      flag_confirmOverwrite: set to 1 to force the user to confirm
@@ -49,9 +49,7 @@ function [flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumb
 %
 %      flag_keepGoing: outputs a 1 if user accepts, 0 otherwise
 %
-%      startingIndex: the user-selected first index
-%
-%      endingIndex: the user-selected first index
+%      indiciesSelected: the user-selected indicies from the list
 %
 % DEPENDENCIES:
 %
@@ -68,6 +66,9 @@ function [flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumb
 % Revision history
 % 2024_10_24 - Sean Brennan, sbrennan@psu.edu
 % -- wrote the code originally, copying out of DataClean library
+% 2024_12_18 - Sean Brennan, sbrennan@psu.edu
+% -- added "all" option
+% -- changed starting and ending index outputs to indicies_selected
 
 %% Debugging and Input checks
 
@@ -193,91 +194,96 @@ if isempty(defaultStartIndex)
     defaultStartIndex = 1;
 end
 
-% Get user's inputs for starting number
+defaultEndIndex = fcn_INTERNAL_calcDefaultEndIndex(flags_toCheck,defaultStartIndex);
+
+% Fill in default output
+indiciesSelected = [];
+
+% Get user's choice 
 flag_goodReply = 0;
 warningCount = 0;
 while (0==flag_goodReply)
-    queryString = sprintf('What is the starting number%s? [default = %.0d]:', queryEndString, defaultStartIndex);
-    startingNumberString = input(queryString,'s');
-    startingIndex = str2double(startingNumberString);
-    if isempty(startingNumberString)
-        startingIndex = defaultStartIndex;
+    fprintf(1,'\nSelect from the following:\n');
+    fprintf(1,'\t S: Change the (S)tarting index from: %.0f\n', defaultStartIndex);
+    fprintf(1,'\t E: Change the (E)nding index from:   %.0f\n', defaultEndIndex);
+    fprintf(1,'\t P: (P)roceed using the above starting/ending indicies. \n');
+    fprintf(1,'\t A: Select (A)ll available indicies and proceed. \n');
+    fprintf(1,'\t Q: (Q)uit without proceeding. \n');
+    queryString = sprintf('Which of the above would you like to change? [default = exit]:');
+    choiceString = input(queryString,'s');
+    if isempty(choiceString) || strcmpi(choiceString,'q')
+        % User wants to quit
+        
+        flag_goodReply = 1;
+        flag_keepGoing = 0;        
+    elseif strcmpi(choiceString,'s')
+        % Fill in starting index
+
+        [defaultStartIndex, flag_keepGoing] = fcn_INTERNAL_getStartingNumber(queryEndString,defaultStartIndex, Nflags);
+        if defaultEndIndex<defaultStartIndex
+            defaultEndIndex = fcn_INTERNAL_calcDefaultEndIndex(flags_toCheck,defaultStartIndex);
+        end
+         
+
+    elseif strcmpi(choiceString,'e')       
+        % Fill in ending index
+
+        [defaultEndIndex, flag_keepGoing] = fcn_INTERNAL_getEndingNumber(queryEndString,defaultEndIndex, defaultStartIndex, Nflags);
+        if defaultEndIndex<defaultStartIndex
+            defaultStartIndex = defaultEndIndex;
+        end
+
+   elseif strcmpi(choiceString,'a')
+        % Select all available indicies
+
+  
+        indiciesSelected = find(flags_toCheck==0);
         flag_goodReply = 1;
         flag_keepGoing = 1;
 
-    elseif ~isnan(startingIndex) && (startingIndex>=1) && (startingIndex<=Nflags) && (round(startingIndex)==startingIndex)
-        % Starting index is not a character, in index range, and not a
-        % weird float
+   elseif strcmpi(choiceString,'p')
+
+        % Proceed with the starting and ending index range
+        indiciesSelected = (defaultStartIndex:defaultEndIndex);
         flag_goodReply = 1;
         flag_keepGoing = 1;
+
 
     else
+        % Bad input
         warningCount = warningCount+1;
+        
         if warningCount>3
             warning('Too many warnings - exiting process');
             flag_goodReply = 1;
             flag_keepGoing = 0;
         else
-            warning('Invalid input detected: %s (warning %.0d of 3, after 3 will exit)', startingNumberString, warningCount);
+            warning('Invalid input detected: %s (warning %.0d of 3, after 3 will exit)', choiceString, warningCount);
         end
     end
 end
 
-if 1==flag_keepGoing
-    flag_keepGoing = 0;
-    % Set all search area up to the start index to zero, forcing the next
-    % search to start after that point
-    tempSearchFlags = flags_toCheck;
-    tempSearchFlags(1:startingIndex,1) = 0;
 
-    firstParsedIndex = find(tempSearchFlags==1,1);
-    if isempty(firstParsedIndex)
-        defaultEndIndex = Nflags;
-    else
-        defaultEndIndex = firstParsedIndex-1;
-    end
+    
 
-    % Get user's inputs for ending number
-    flag_goodReply = 0;
-    warningCount = 0;
-    while (0==flag_goodReply)
-        queryString = sprintf('What is the ending number%s? [default = %.0d]:', queryEndString, defaultEndIndex);
-        endingNumberString = input(queryString,'s');
-        endingIndex = str2double(endingNumberString);
-        if isempty(endingNumberString)
-            endingIndex = defaultEndIndex;
-            flag_goodReply = 1;
-            flag_keepGoing = 1;
-        elseif ~isnan(endingIndex) && (endingIndex>=startingIndex) && (endingIndex<=Nflags) && (round(endingIndex)==endingIndex)
-            % endingIndex is not a character, in index range, and not a
-            % weird float
-            flag_goodReply = 1;
-            flag_keepGoing = 1;
-        else
-            warningCount = warningCount+1;
-            if warningCount>3
-                warning('Too many warnings - exiting process');
-                flag_goodReply = 1;
-                flag_keepGoing = 0;
-            else
-                warning('Invalid input detected: %s (warning %.0d of 3, after 3 will exit)', endingNumberString, warningCount);
-            end
-        end
-    end
-end
 
 
 %%% Make sure there are no overwritten files?
 if 1==flag_keepGoing && 0~=flag_confirmOverwrite
 
+    % Initialize the flag to "fail" mode, to force exit if something goes
+    % wrong
     flag_keepGoing = 0;
-    indiciesToCheck = startingIndex:endingIndex;    
-
-    if ~any(flags_toCheck(indiciesToCheck,1))
+ 
+    % Check if the flags_toCheck are all zero for the selected indicies. If
+    % so, no need to check the files for overwrite
+    if ~any(flags_toCheck(indiciesSelected,1))
+        % No overwrite can occur
         flag_keepGoing = 1;
     else
+        % Overwrite might occur!
         % Show which flags will be lost?
-        overwrittenIndicies = indiciesToCheck(flags_toCheck(indiciesToCheck)==1);
+        overwrittenIndicies = indiciesSelected(flags_toCheck(indiciesSelected)==1);
         if ~isempty(directory_filelist)
             fcn_DebugTools_printDirectoryListing(directory_filelist(overwrittenIndicies), ('THE FOLLOWING PREVIOUSLY PROCESSED FILES MAY BE OVERWRITTEN:'), ([]), (1));
         else
@@ -344,3 +350,93 @@ end % Ends main function
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
+%% fcn_INTERNAL_calcDefaultEndIndex
+function defaultEndIndex = fcn_INTERNAL_calcDefaultEndIndex(flags_toCheck,startingIndex)
+% Finds the last zero value in flags_toCheck after the startingIndex
+
+Nflags = length(flags_toCheck(:,1));
+
+% Set all search area up to the start index to zero, forcing the next
+% search to start after that point
+tempSearchFlags = flags_toCheck;
+tempSearchFlags(1:startingIndex,1) = 0;
+
+firstParsedIndex = find(tempSearchFlags==1,1);
+if isempty(firstParsedIndex)
+    defaultEndIndex = Nflags;
+else
+    defaultEndIndex = firstParsedIndex-1;
+end
+end % Ends fcn_INTERNAL_calcDefaultEndIndex
+
+
+%% fcn_INTERNAL_getStartingNumber
+function [startingIndex, flag_keepGoing] = fcn_INTERNAL_getStartingNumber(queryEndString,defaultStartIndex, Nflags)
+% Get user's inputs for starting number
+flag_goodReply = 0;
+warningCount = 0;
+while (0==flag_goodReply)
+    queryString = sprintf('What is the desired starting index%s? [default = %.0d]:', queryEndString, defaultStartIndex);
+    startingNumberString = input(queryString,'s');
+    startingIndex = str2double(startingNumberString);
+    if isempty(startingNumberString)
+        startingIndex = defaultStartIndex;
+        flag_goodReply = 1;
+        flag_keepGoing = 1;
+
+    elseif ~isnan(startingIndex) && (startingIndex>=1) && (startingIndex<=Nflags) && (round(startingIndex)==startingIndex)
+        % Starting index is not a character, in index range, and not a
+        % weird float
+        flag_goodReply = 1;
+        flag_keepGoing = 1;
+
+    else
+        warningCount = warningCount+1;
+        if warningCount>3
+            warning('Too many warnings - exiting process');
+            flag_goodReply = 1;
+            flag_keepGoing = 0;
+        else
+            warning('Invalid input detected: %s (warning %.0d of 3, after 3 will exit)', startingNumberString, warningCount);
+        end
+    end
+end
+
+end % Ends fcn_INTERNAL_getStartingNumber
+
+
+%% fcn_INTERNAL_getEndingNumber
+function [endingIndex, flag_keepGoing] = fcn_INTERNAL_getEndingNumber(queryEndString,defaultEndIndex, startingIndex, Nflags)
+
+
+flag_keepGoing = 0;
+
+% Get user's inputs for ending number
+flag_goodReply = 0;
+warningCount = 0;
+while (0==flag_goodReply)
+    queryString = sprintf('What is the ending number%s? [default = %.0d]:', queryEndString, defaultEndIndex);
+    endingNumberString = input(queryString,'s');
+    endingIndex = str2double(endingNumberString);
+    if isempty(endingNumberString)
+        endingIndex = defaultEndIndex;
+        flag_goodReply = 1;
+        flag_keepGoing = 1;
+    elseif ~isnan(endingIndex) && (endingIndex>=startingIndex) && (endingIndex<=Nflags) && (round(endingIndex)==endingIndex)
+        % endingIndex is not a character, in index range, and not a
+        % weird float
+        flag_goodReply = 1;
+        flag_keepGoing = 1;
+    else
+        warningCount = warningCount+1;
+        if warningCount>3
+            warning('Too many warnings - exiting process');
+            flag_goodReply = 1;
+            flag_keepGoing = 0;
+        else
+            warning('Invalid input detected: %s (warning %.0d of 3, after 3 will exit)', endingNumberString, warningCount);
+        end
+    end
+end
+
+end % Ends fcn_INTERNAL_getEndingNumber
