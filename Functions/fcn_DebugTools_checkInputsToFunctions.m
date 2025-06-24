@@ -657,7 +657,7 @@ if strcmpi(flags.structureToBeLikeName,'traversals')
     
     for i_traversal = 1:length(variable.traversal)
         try
-            fcn_Path_checkInputsToFunctions(...
+            fcn_DebugTools_checkInputsToFunctions(...
                 variable.traversal{i_traversal},'traversal');
         catch ME            
             errorStruct.message =sprintf('The variable: %s is expected to be a traversals type, and must have a subfield called traversal which is a cell array; for eexample: variable.traversal{2}. An error in structure type was found in the %.0d index. The detail is: %s',variable_name,i_traversal,ME.message);
