@@ -18,8 +18,13 @@
 % -- added DoesFileExist type
 % -- added DoesDirectoryExist type
 % -- improved documentation
-%%%%%%%%%%%%%%§
-
+% 2025_07_10 by S. Brennan
+% -- added NorMorecolumn_of_numbers type and tests
+% -- added structure comparison to see if bug with structure testing
+% -- commented out traversal and traversals type to deprecate Path library
+%    usage of these
+% -- added numeric testing
+% -- updated output options listing
 
 %% Echo options
 %   ______     _            ____        _   _                 
@@ -181,7 +186,7 @@ fcn_DebugTools_checkInputsToFunctions(TwoOrThreeColumn_of_numbers_test, '2or3col
 TwoOrThreeColumn_of_numbers_test = [4 1 3; 3 9 3; 2 7 3];
 fcn_DebugTools_checkInputsToFunctions(TwoOrThreeColumn_of_numbers_test, '2or3column_of_numbers',[3 3]);
 
-%% 2or3column_of_numbers
+%% NtoMcolumn_of_numbers
 %   _   _            __  __           _                               __                       _                   
 %  | \ | |          |  \/  |         | |                             / _|                     | |                  
 %  |  \| | ___  _ __| \  / | ___ ___ | |_   _ _ __ ___  _ __    ___ | |_ _ __  _   _ _ __ ___ | |__   ___ _ __ ___ 
@@ -199,6 +204,28 @@ fcn_DebugTools_checkInputsToFunctions(NorMColumn_of_numbers_test, '2or4column_of
 % Test 1 by 3
 NorMColumn_of_numbers_test = [4 2 1];
 fcn_DebugTools_checkInputsToFunctions(NorMColumn_of_numbers_test, '2or4column_of_numbers');
+
+
+%% NorMorecolumn_of_numbers
+%
+%  _   _            __  __                          _                               __                       _
+% | \ | |          |  \/  |                        | |                             / _|                     | |
+% |  \| | ___  _ __| \  / | ___  _ __ ___  ___ ___ | |_   _ _ __ ___  _ __    ___ | |_ _ __  _   _ _ __ ___ | |__   ___ _ __ ___
+% | . ` |/ _ \| '__| |\/| |/ _ \| '__/ _ \/ __/ _ \| | | | | '_ ` _ \| '_ \  / _ \|  _| '_ \| | | | '_ ` _ \| '_ \ / _ \ '__/ __|
+% | |\  | (_) | |  | |  | | (_) | | |  __/ (_| (_) | | |_| | | | | | | | | || (_) | | | | | | |_| | | | | | | |_) |  __/ |  \__ \
+% |_| \_|\___/|_|  |_|  |_|\___/|_|  \___|\___\___/|_|\__,_|_| |_| |_|_| |_| \___/|_| |_| |_|\__,_|_| |_| |_|_.__/ \___|_|  |___/
+%                                                                        ______   ______
+%                                                                       |______| |______|
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=NorMorecolumn_of_numbers
+
+%% Test the N or more column_of_numbers type (success)
+% Test 2 or more with 2 columns
+NorMColumn_of_numbers_test = [4 2];
+fcn_DebugTools_checkInputsToFunctions(NorMColumn_of_numbers_test, '2orMorecolumn_of_numbers');
+
+% Test 2 or more with 4 columns
+NorMColumn_of_numbers_test = [4 2 1 4];
+fcn_DebugTools_checkInputsToFunctions(NorMColumn_of_numbers_test, '2orMorecolumn_of_numbers');
 
 
 %% 2column_of_integers
@@ -235,6 +262,23 @@ fcn_DebugTools_checkInputsToFunctions(Twocolumn_of_integers_test, '2column_of_in
 % Maximum length is 3
 Twocolumn_of_integers_test = [4 1; 3 9; 2 7];
 fcn_DebugTools_checkInputsToFunctions(Twocolumn_of_integers_test, '2column_of_integers',[3 3]);
+
+%% Numbers Types
+%
+%             __                       _
+%            / _|                     | |
+%       ___ | |_ _ __  _   _ _ __ ___ | |__   ___ _ __ ___
+%      / _ \|  _| '_ \| | | | '_ ` _ \| '_ \ / _ \ '__/ __|
+%     | (_) | | | | | | |_| | | | | | | |_) |  __/ |  \__ \
+%      \___/|_| |_| |_|\__,_|_| |_| |_|_.__/ \___|_|  |___/
+%  ______   ______
+% |______| |______|
+%
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=_of_numbers
+
+% Basic numbers test
+Numbers_test = [0 1 -1 inf -inf nan];
+fcn_DebugTools_checkInputsToFunctions(Numbers_test, '_of_numbers');
 
 
 
@@ -312,7 +356,7 @@ fcn_DebugTools_checkInputsToFunctions(DirectoryExist_test, 'DoesDirectoryExist')
 %
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=PathLibraryTypes
 
-% Define a test structure and compare
+%% Define a test structure and compare
 template_structure = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
 structure_to_test = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
 fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
@@ -320,6 +364,21 @@ fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',templat
 %% Test the structure type (success since more fields)
 template_structure = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
 structure_to_test  = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{},'temp',{});
+fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
+
+%% Define a test structure and compare to correct structure, out of order
+template_structure = struct('id',{},'color',{},'primitive',{},'primparams',{},'aabb',{},'pointsX',{},'pointsY',{});
+clear structure_to_test
+structure_to_test = struct;
+structure_to_test.id = 2;
+structure_to_test.lalala = 2;
+structure_to_test.primitive = 2;
+structure_to_test.pointsY = 2;
+structure_to_test.pointsX = 2;
+structure_to_test.aabb = 2;
+structure_to_test.primparams = 2;
+structure_to_test.color = 2;
+
 fcn_DebugTools_checkInputsToFunctions(structure_to_test, 'likestructure',template_structure);
 
 %% Path Library Types
@@ -450,16 +509,16 @@ fcn_DebugTools_checkInputsToFunctions(paths_test, 'paths');
 %                                             
 
 
-%% Test the traversal type (success)
-% Fill in sample paths (as a starter)
-paths = fcn_Path_fillSamplePaths;
-
-% Convert paths to traversal structures
-for i_Path = 1:length(paths)
-    test_traversal = fcn_Path_convertPathToTraversalStructure(paths{i_Path});
-    all_traversals.traversal{i_Path} = test_traversal;
-end
-fcn_DebugTools_checkInputsToFunctions(test_traversal, 'traversal');
+% %% Test the traversal type (success)
+% % Fill in sample paths (as a starter)
+% paths = fcn_Path_fillSamplePaths;
+% 
+% % Convert paths to traversal structures
+% for i_Path = 1:length(paths)
+%     test_traversal = fcn_Path_convertPathToTraversalStructure(paths{i_Path});
+%     all_traversals.traversal{i_Path} = test_traversal;
+% end
+% fcn_DebugTools_checkInputsToFunctions(test_traversal, 'traversal');
 
 
 
@@ -474,18 +533,18 @@ fcn_DebugTools_checkInputsToFunctions(test_traversal, 'traversal');
 %                                                 
 %                                                 
 
-%% Test the traversals type (success)
-% Fill in sample paths (as a starter)
-paths = fcn_Path_fillSamplePaths;
-
-% Convert paths to traversal structures
-for i_Path = 1:length(paths)
-    test_traversal = fcn_Path_convertPathToTraversalStructure(paths{i_Path});
-    test_traversals.traversal{i_Path} = test_traversal;
-end
- 
-fcn_DebugTools_checkInputsToFunctions(test_traversals, 'traversals');
-
+% %% Test the traversals type (success)
+% % Fill in sample paths (as a starter)
+% paths = fcn_Path_fillSamplePaths;
+% 
+% % Convert paths to traversal structures
+% for i_Path = 1:length(paths)
+%     test_traversal = fcn_Path_convertPathToTraversalStructure(paths{i_Path});
+%     test_traversals.traversal{i_Path} = test_traversal;
+% end
+% 
+% fcn_DebugTools_checkInputsToFunctions(test_traversals, 'traversals');
+% 
 
 
 
@@ -685,6 +744,21 @@ if 1==0
     fcn_DebugTools_checkInputsToFunctions(NorMColumn_of_numbers_test, '2or4column_of_numbers');
 
 
+    %% NorMorecolumn_of_numbers
+    %
+    %  _   _            __  __                          _                               __                       _
+    % | \ | |          |  \/  |                        | |                             / _|                     | |
+    % |  \| | ___  _ __| \  / | ___  _ __ ___  ___ ___ | |_   _ _ __ ___  _ __    ___ | |_ _ __  _   _ _ __ ___ | |__   ___ _ __ ___
+    % | . ` |/ _ \| '__| |\/| |/ _ \| '__/ _ \/ __/ _ \| | | | | '_ ` _ \| '_ \  / _ \|  _| '_ \| | | | '_ ` _ \| '_ \ / _ \ '__/ __|
+    % | |\  | (_) | |  | |  | | (_) | | |  __/ (_| (_) | | |_| | | | | | | | | || (_) | | | | | | |_| | | | | | | |_) |  __/ |  \__ \
+    % |_| \_|\___/|_|  |_|  |_|\___/|_|  \___|\___\___/|_|\__,_|_| |_| |_|_| |_| \___/|_| |_| |_|\__,_|_| |_| |_|_.__/ \___|_|  |___/
+    %                                                                        ______   ______
+    %                                                                       |______| |______|
+    % See: http://patorjk.com/software/taag/#p=display&f=Big&t=NorMorecolumn_of_numbers
+
+    %% Test the N or more column_of_numbers type (fail as only 1 column)     
+    NorMColumn_of_numbers_test = 4;
+    fcn_DebugTools_checkInputsToFunctions(NorMColumn_of_numbers_test, '2orMorecolumn_of_numbers');
 
     %% 2column_of_integers
     %
@@ -733,6 +807,24 @@ if 1==0
      
     Twocolumn_of_integers_test = [4 1; 3 9; 2 7];
     fcn_DebugTools_checkInputsToFunctions(Twocolumn_of_integers_test, '2column_of_integers',[2 2]);
+
+    %% Numbers Types
+    %
+    %             __                       _
+    %            / _|                     | |
+    %       ___ | |_ _ __  _   _ _ __ ___ | |__   ___ _ __ ___
+    %      / _ \|  _| '_ \| | | | '_ ` _ \| '_ \ / _ \ '__/ __|
+    %     | (_) | | | | | | |_| | | | | | | |_) |  __/ |  \__ \
+    %      \___/|_| |_| |_|\__,_|_| |_| |_|_.__/ \___|_|  |___/
+    %  ______   ______
+    % |______| |______|
+    %
+    % See: http://patorjk.com/software/taag/#p=display&f=Big&t=_of_numbers
+
+    %% Basic numbers test (fail - not a number)
+    Numbers_test = 'a';
+    fcn_DebugTools_checkInputsToFunctions(Numbers_test, '_of_numbers');
+
 
     %% Char Types
     %    _____ _

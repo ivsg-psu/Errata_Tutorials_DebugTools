@@ -94,6 +94,13 @@ varargin...
 % -- added char type
 % -- added string type
 % -- improved documentation
+% 2025_07_10 by S. Brennan
+% -- added NorMorecolumn_of_numbers type and tests
+% -- added structure comparison to see if bug with structure testing
+% -- commented out traversal and traversals type to deprecate Path library
+%    usage of these
+% -- added numeric testing
+% -- updated output options listing
 
 % 
 % TO DO:
@@ -226,6 +233,7 @@ flags.check_required_columns  = 0; % Check the number of columns
 flags.minNrequiredcolumns  = 0; % No check
 flags.maxNrequiredcolumns  = 0; % No check
 flags.check_if_noNaN = 0; % Check that there are no NaN 
+flags.check_if_numeric = 0; % Check that the variable is numeric
 flags.check_if_integer = 0; % Check that the variable is an integer
 flags.check_if_char = 0; % Check that the variable is a character
 flags.check_if_string = 0; % Check that the variable is a string
@@ -348,10 +356,38 @@ if contains(variable_type_string,pattern)
     flag_pattern_was_matched = 1;
 end
 
+% Check the "NorMorecolumn_of" pattern, where N is a digit
+pattern = digitsPattern(1)+"orMorecolumn_of";
+if contains(variable_type_string,pattern)
+    
+    match = extract(variable_type_string,pattern);
+    string_result = match{1};
+    ncols_min = str2double(string_result(1));
+    ncols_max = inf;
+
+    flags.check_if_isnumeric = 1; % Must be a number
+    flags.check_required_columns  = 1; % Check the number of columns
+    flags.minNrequiredcolumns  = ncols_min; % Must be 1 columns
+    flags.maxNrequiredcolumns  = ncols_max; % Must be 1 columns
+    flags.check_if_noNaN = 1; % Check that there are no NaN
+    
+    flag_pattern_was_matched = 1;
+end
+
+
+
 % positive_XXX
 pattern = 'positive_';
 if contains(variable_type_string,pattern)
     flags.check_if_strictly_positive = 1; % Must be a number    
+    flag_pattern_was_matched = 1;
+end
+
+
+% XXX_of_numbers
+pattern = '_of_numbers';
+if contains(variable_type_string,pattern)
+    flags.check_if_numeric = 1; % Check that the variable is numeric
     flag_pattern_was_matched = 1;
 end
 
@@ -463,6 +499,14 @@ end
 if flags.check_if_noNaN   
     if any(isnan(variable),'all')        
         errorStruct.message =sprintf('The %s input must have no NaN values.',variable_name);
+        error(errorStruct);
+    end
+end
+
+% Numeric?
+if flags.check_if_numeric
+    if any(~isnumeric(variable),'all')        
+        errorStruct.message =sprintf('The %s input must be numeric.',variable_name);
         error(errorStruct);
     end
 end
@@ -657,7 +701,7 @@ if strcmpi(flags.structureToBeLikeName,'traversals')
     
     for i_traversal = 1:length(variable.traversal)
         try
-            fcn_DebugTools_checkInputsToFunctions(...
+            fcn_Path_checkInputsToFunctions(...
                 variable.traversal{i_traversal},'traversal');
         catch ME            
             errorStruct.message =sprintf('The variable: %s is expected to be a traversals type, and must have a subfield called traversal which is a cell array; for eexample: variable.traversal{2}. An error in structure type was found in the %.0d index. The detail is: %s',variable_name,i_traversal,ME.message);
@@ -679,11 +723,19 @@ allowable_inputs(num_inputs).description = 'checks that the input type is K x M 
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'NorMcolumn...';
-allowable_inputs(num_inputs).description = 'checks that the input type is of minimum K x M or maximum K x N of ...';
+allowable_inputs(num_inputs).description = 'checks that the input type is of minimum K x N to maximum K x M of ...';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'NorMorecolumn...';
+allowable_inputs(num_inputs).description = 'checks that the input type is of minimum K x N or maximum K x inf of ...';
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'positive_...';
 allowable_inputs(num_inputs).description = 'checks that the input type is positive ...';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = '_of_numbers...';
+allowable_inputs(num_inputs).description = 'checks that the input type is numeric (uses isnumeric)...';
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = '_of_integers...';
@@ -710,6 +762,10 @@ allowable_inputs(num_inputs).name = 'DoesDirectoryExist...';
 allowable_inputs(num_inputs).description = 'checks that the input type is an existing directory';
 
 num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'likestructure...';
+allowable_inputs(num_inputs).description = 'checks that the input structure has same fields as a template structure, even if out of order';
+
+num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'polytopes...';
 allowable_inputs(num_inputs).description = 'checks that the input type is a polytope type, e.g. a structure with fields: vertices, xv, yv, distances, mean, area, max_radius.';
 
@@ -720,7 +776,7 @@ allowable_inputs(num_inputs).description = 'checks that the input type is a stru
 % Specific cases follow
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = '1column_of_numbers';
-allowable_inputs(num_inputs).description = 'checks that the input type is a structure with fields: name, settings, AABB.';
+allowable_inputs(num_inputs).description = 'checks that the input type is N x 1. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N.';
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'positive_1column_of_numbers';
@@ -741,10 +797,6 @@ allowable_inputs(num_inputs).description = 'checks that the input type is N x 2 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = '2column_of_integers';
 allowable_inputs(num_inputs).description = 'checks that the input type is N x 2 and is an integer. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N. Another optional input is a rwo vector [A B] where, if B is greater than A, then the vector must be A or longer. If B is less than A, then the vector must be A or shorter. If B = A, then the vector must be length A, and no shorter or greater.';
-
-num_inputs = num_inputs+1;
-allowable_inputs(num_inputs).name = 'polytopes';
-allowable_inputs(num_inputs).description = 'a 1-by-n seven field structure of polytopes within the boundaries, where n <= number of polytopes with fields:  vertices: a m+1-by-2 matrix of xy points with row1 = rowm+1, where m is the number of the individual polytope vertices  xv: a 1-by-m vector of vertice x-coordinates  yv: a 1-by-m vector of vertice y-coordinates  distances: a 1-by-m vector of perimeter distances from one point to the next point, distances(i) = distance from vertices(i) to vertices(i+1) mean: centroid xy coordinate of the polytope area: area of the polytope max_radius: the largest distance from the centroid to any vertex';
 
 % Path library types
 num_inputs = num_inputs+1;
@@ -772,16 +824,12 @@ allowable_inputs(num_inputs).name = 'paths';
 allowable_inputs(num_inputs).description = 'Path library type: checks that the path type is N x 2 with N>=3';
 
 num_inputs = num_inputs+1;
-allowable_inputs(num_inputs).name = 'traversal';
+allowable_inputs(num_inputs).name = 'traversal (DEPRECATED)';
 allowable_inputs(num_inputs).description = 'Path library type: checks if a structure with X, Y, and Station, and that each has an N x 1 vector within all of same length. Further, the Station field must be strictly increasing.';
 
 num_inputs = num_inputs+1;
-allowable_inputs(num_inputs).name = 'traversals';
+allowable_inputs(num_inputs).name = 'traversals (DEPRECATED)';
 allowable_inputs(num_inputs).description = 'Path library type: checks if a structure containing a subfield that is a cell array of traveral{i}, e.g. "data.traversal{3}", with each traversal also meeting traversal requirements.';
-
-num_inputs = num_inputs+1;
-allowable_inputs(num_inputs).name = 'likestructure';
-allowable_inputs(num_inputs).description = 'Takes a structure input as the 3rd argument to serve as a template. Ensures that the input has the same structure fields.';
 
 end
 
