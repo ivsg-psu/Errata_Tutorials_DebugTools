@@ -101,6 +101,9 @@ varargin...
 %    usage of these
 % -- added numeric testing
 % -- updated output options listing
+% 2025_07_18 by S. Brennan
+% -- added positive and strictly positive variable checking to
+%    checkInputsToFunctions
 
 % 
 % TO DO:
@@ -228,6 +231,7 @@ end % Ends the function
 function flags = INTERNAL_fcn_setDefaultFlagsToOff %#ok<*DEFNU>
 % Set default flags all to "off" mode
 flags.check_if_isnumeric = 0; % Check to see if isnumeric
+flags.check_if_positive = 0; % Check to see if number is greater than or equal to zero
 flags.check_if_strictly_positive = 0; % Check to see if number is greater than zero, and not zero
 flags.check_required_columns  = 0; % Check the number of columns
 flags.minNrequiredcolumns  = 0; % No check
@@ -376,11 +380,17 @@ end
 
 
 
-% positive_XXX
+% positive_XXX and strictlypositive_XXX
 pattern = 'positive_';
 if contains(variable_type_string,pattern)
-    flags.check_if_strictly_positive = 1; % Must be a number    
+    flags.check_if_positive = 1;
     flag_pattern_was_matched = 1;
+
+    pattern = 'strictlypositive_';
+    if contains(variable_type_string,pattern)
+        flags.check_if_positive = 0; % No need to check this also
+        flags.check_if_strictly_positive = 1; 
+    end
 end
 
 
@@ -487,9 +497,17 @@ if flags.check_if_isnumeric
     end
 end
 
+% Positive?
+if flags.check_if_positive   
+    if any(variable<0,'all')
+        errorStruct.message =sprintf('The %s input must be positive, e.g. greater than or equal to zero.',variable_name);
+        error(errorStruct);
+    end
+end
+
 % Strictly positive?
 if flags.check_if_strictly_positive   
-    if any(variable<=0)
+    if any(variable<=0,'all')
         errorStruct.message =sprintf('The %s input must be strictly positive, e.g. greater than zero and not equal to zero.',variable_name);
         error(errorStruct);
     end
@@ -732,6 +750,10 @@ allowable_inputs(num_inputs).description = 'checks that the input type is of min
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'positive_...';
 allowable_inputs(num_inputs).description = 'checks that the input type is positive ...';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'strictlypositive_...';
+allowable_inputs(num_inputs).description = 'checks that the input type is strictlypositive ...';
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = '_of_numbers...';

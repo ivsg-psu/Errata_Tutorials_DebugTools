@@ -18,7 +18,17 @@
 % -- added directory utilities
 % 2024_10_25 - S. Brennan
 % -- Added directory comparison and query tools, cleaned up README.md
-
+% 2025_07_10 by S. Brennan
+% Inside: checkInputsToFunctions
+% -- added NorMorecolumn_of_numbers type and tests
+% -- added structure comparison to see if bug with structure testing
+% -- commented out traversal and traversals type to deprecate Path library
+%    usage of these
+% -- added numeric testing
+% -- updated output options listing
+% 2025_07_18 by S. Brennan
+% -- added positive and strictly positive variable checking to
+%    checkInputsToFunctions
 
 %% Set up workspace
 if ~exist('flag_DebugTools_Was_Initialized','var')

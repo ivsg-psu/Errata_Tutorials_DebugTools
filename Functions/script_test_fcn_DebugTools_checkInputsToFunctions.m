@@ -25,6 +25,10 @@
 %    usage of these
 % -- added numeric testing
 % -- updated output options listing
+% 2025_07_18 by S. Brennan
+% -- added positive and strictly positive variable checking to
+%    checkInputsToFunctions
+
 
 %% Echo options
 %   ______     _            ____        _   _                 
@@ -42,6 +46,42 @@ for ith_option = 1:length(options)
     fprintf('\t"%s"\n',options(ith_option).name)
     fprintf('\t\t%s\n',options(ith_option).description)    
 end
+
+%% positive_
+%                  _ _   _
+%                 (_) | (_)
+%  _ __   ___  ___ _| |_ ___   _____
+% | '_ \ / _ \/ __| | __| \ \ / / _ \
+% | |_) | (_) \__ \ | |_| |\ V /  __/
+% | .__/ \___/|___/_|\__|_| \_/ \___|
+% | |                             ______
+% |_|                            |______|
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=positive_
+
+%% Test the positive_ type (success)
+column_of_numbers_test = 4;
+fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'positive_');
+
+column_of_numbers_test = [4; 3; 2];
+fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'positive_');
+
+column_of_numbers_test = [4 0; 1 3; 2 0];
+fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'positive_',3);
+
+%% strictlypositive_
+%      _        _      _   _                       _ _   _
+%     | |      (_)    | | | |                     (_) | (_)
+%  ___| |_ _ __ _  ___| |_| |_   _ _ __   ___  ___ _| |_ ___   _____
+% / __| __| '__| |/ __| __| | | | | '_ \ / _ \/ __| | __| \ \ / / _ \
+% \__ \ |_| |  | | (__| |_| | |_| | |_) | (_) \__ \ | |_| |\ V /  __/
+% |___/\__|_|  |_|\___|\__|_|\__, | .__/ \___/|___/_|\__|_| \_/ \___|
+%                             __/ | |                             ______
+%                            |___/|_|                            |______|
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=strictlypositive_
+
+%% Test the strictlypositive_ type (success)
+column_of_numbers_test = [1 2; 3 4];
+fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'strictlypositive_');
 
 %% 1column_of_numbers
 % 
@@ -555,7 +595,43 @@ if 1==0
      
     column_of_numbers_test = [4 1];
     fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'dumb_text');
-    
+
+    %% positive_
+    %
+    %                  _ _   _
+    %                 (_) | (_)
+    %  _ __   ___  ___ _| |_ ___   _____
+    % | '_ \ / _ \/ __| | __| \ \ / / _ \
+    % | |_) | (_) \__ \ | |_| |\ V /  __/
+    % | .__/ \___/|___/_|\__|_| \_/ \___|
+    % | |                             ______
+    % |_|                            |______|
+    % See: http://patorjk.com/software/taag/#p=display&f=Big&t=positive_
+
+    %% Test the positive_ type (fail)
+    column_of_numbers_test = -1;
+    fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'positive_');
+
+    %% strictlypositive_
+    %      _        _      _   _                       _ _   _
+    %     | |      (_)    | | | |                     (_) | (_)
+    %  ___| |_ _ __ _  ___| |_| |_   _ _ __   ___  ___ _| |_ ___   _____
+    % / __| __| '__| |/ __| __| | | | | '_ \ / _ \/ __| | __| \ \ / / _ \
+    % \__ \ |_| |  | | (__| |_| | |_| | |_) | (_) \__ \ | |_| |\ V /  __/
+    % |___/\__|_|  |_|\___|\__|_|\__, | .__/ \___/|___/_|\__|_| \_/ \___|
+    %                             __/ | |                             ______
+    %                            |___/|_|                            |______|
+    % See: http://patorjk.com/software/taag/#p=display&f=Big&t=strictlypositive_
+
+    %% Test the strictlypositive_ type (fail)
+    column_of_numbers_test = -1;
+    fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'strictlypositive_');
+
+    %% Test the strictlypositive_ type (fail)
+    column_of_numbers_test = 0;
+    fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'strictlypositive_');
+
+
     %% 1column_of_numbers
     %
     %   __           _                               __                       _
