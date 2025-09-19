@@ -208,7 +208,7 @@ for jth_file = 1:length(directory_filelist)
         end
     end
     if 1==flag_printMarkdownReady
-        fprintf(fid,'%s\n',directory_filelist(jth_file).name);
+        fprintf(fid,'* %s\n',directory_filelist(jth_file).name);
     else
         fprintf(fid,'\t%s\n',directory_filelist(jth_file).name);
     end
