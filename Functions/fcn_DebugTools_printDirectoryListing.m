@@ -47,6 +47,8 @@ function fcn_DebugTools_printDirectoryListing(directory_filelist, varargin)
 % Revision history
 % 2024_09_13 - Sean Brennan, sbrennan@psu.edu
 % -- wrote the code originally, copying out of DataClean library
+% 2025_09_19 - Sean Brennan, sbrennan@psu.edu
+% -- minor bug fixes for when printing to markdown format
 
 %% Debugging and Input checks
 
@@ -197,14 +199,19 @@ for jth_file = 1:length(directory_filelist)
             else
                 cleanString = directoryParts;
             end
-            fprintf(fid,'\n## %s\n',cleanString);
+            if isempty(cleanString)
+                cleanString = '(root)';
+            end
+            fprintf(fid,'\n## %s\n\n',cleanString);
         else
             fprintf(fid,'Folder: %s\n',thisFolder);
         end
     end
-    %if (0==flag_fileOrDirectory) || (2==flag_fileOrDirectory)
-    fprintf(fid,'\t%s\n',directory_filelist(jth_file).name);
-    % end
+    if 1==flag_printMarkdownReady
+        fprintf(fid,'%s\n',directory_filelist(jth_file).name);
+    else
+        fprintf(fid,'\t%s\n',directory_filelist(jth_file).name);
+    end
 end
 
 
