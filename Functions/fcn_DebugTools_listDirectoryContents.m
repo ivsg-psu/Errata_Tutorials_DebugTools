@@ -184,8 +184,16 @@ for ith_rootDirectory = 1:length(rootdirs)
     if  fid>0
         fprintf(fid,'Loading directory candidates from directory: %s\n',rootdir);
     end
+
     directoryQuery = fullfile(rootdir, '**',fileQueryString);
     filelist = dir(directoryQuery);  % gets list of files and folders in any subfolder that start with name 'mapping_van_'
+
+    % For debugging
+    if 1==0 && length(fileQueryString)>3 && strcmp(fileQueryString(1:4),'hash')
+        rootdir = 'C:\MappingVanData\Temp';
+        fileQueryString = 'hashVelodyne_2*';
+        filelist = fcn_INTERNAL_queryHash(rootdir, fileQueryString);
+    end
 
     switch flag_fileOrDirectory
         case 0  
@@ -267,5 +275,30 @@ end % Ends main function
 %
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+%% fcn_INTERNAL_queryHash
+function all_filelist = fcn_INTERNAL_queryHash(rootdir, fileQueryString)
 
+% Check for folders in this rootdir that contain the fileQueryString
+% For debugging
+directoryQuery = fullfile(rootdir, fileQueryString);
+filelist = dir(directoryQuery);
+if ~isempty(filelist)
+    all_filelist = filelist;
+else
+    all_filelist = []; % Produce an empty result
+end
+
+% Check for sub-folders ONLY for folders that are not hash tables
+if ~contains(rootdir,'hash')
+    thisFolderContents = dir(rootdir);
+    % Keep directories only
+    directoriesToSearch = thisFolderContents(find([thisFolderContents.isdir].*[(~strcmp({thisFolderContents.name},'..'))].*[(~strcmp({thisFolderContents.name},'.'))]==1)); %#ok<NBRAK1,FNDSB>
+    for ith_directory = 1:length(directoriesToSearch)
+        folderToSearch = fullfile(directoriesToSearch(ith_directory).folder,directoriesToSearch(ith_directory).name);
+        searchResult = fcn_INTERNAL_queryHash(folderToSearch, fileQueryString);
+        all_filelist = [all_filelist; searchResult]; %#ok<AGROW>
+    end
+end
+
+end % Ends fcn_INTERNAL_queryHash
 

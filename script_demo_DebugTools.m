@@ -29,6 +29,10 @@
 % 2025_07_18 by S. Brennan
 % -- added positive and strictly positive variable checking to
 %    checkInputsToFunctions
+% 2025_09_18 - Sean Brennan
+% * In fcn_DebugTools_listDirectoryContents
+% -- fixed bug where string hash being checked but queries may not be long
+%    enough to do hash check during a debug test
 
 %% Set up workspace
 if ~exist('flag_DebugTools_Was_Initialized','var')
