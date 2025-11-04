@@ -2,7 +2,7 @@
 % Tests fcn_DebugTools_installDependencies
 % Written in 2023_01_25 by S.Brennan
 
-% Clear all prior global variable flags
+% Clear prior global variable flags
 clear global FLAG_*
 
 flag_show_warnings = 0; % Set to 1 to see the warnings go by. Should keep off for people who are not familiar with code.
@@ -124,7 +124,7 @@ elseif ~isempty(error_message)
 end
 
 
-% Clear all prior global variable flags so that this function works in
+% Clear prior global variable flags so that this function works in
 % future
 clear global FLAG_*
 

@@ -1,3 +1,5 @@
+# DebugTools
+
 <!--
 The following template is based on:
 Best-README-Template
@@ -16,7 +18,6 @@ Search for this, and you will find!
 <br />
   <p align="left">
 
-# DebugTools
 This repo provides common tools used for debugging MATLAB codes within IVSG, and includes input checking, print to workspace, parsing user inputs, and similar functions.
     <br />
     <!-- a href="https://github.com/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation"><strong>Explore the docs »</strong></a>
@@ -46,50 +47,51 @@ This repo provides common tools used for debugging MATLAB codes within IVSG, and
       </ul>
     </li>
     <li><a href="#repo-structure">Repo Structure</a>
-	    <ul>
-	    <li><a href="#directories">Directories</li>
-	    <li><a href="#dependencies">Dependencies</li>
-	    <li><a href="#function-structure">Function Structure</li>
-	    </ul>
+         <ul>
+           <li><a href="#directories">Directories</li>
+           <li><a href="#dependencies">Dependencies</li>
+           <li><a href="#function-structure">Function Structure</li>
+        </ul>
     </li>
     <li><a href="#functions-for-workspace-management">Functions for Workspace Management</a>
-	    <ul>
-      <li><a href="#clearing-package-installs">Clearing package installs and path linkages to packages</li>      
-      <li><a href="#package-installs-from-github-urls">Package installs from GitHub URLs</li>      
-	    <li><a href="#adding-subdirectories-to-the-path">Adding subdirectories to the path</li>
-	    <li><a href="#querying-directory-and-subdirectory-content">Querying directory and subdirectory content</li>    
-	    <li><a href="#printing-a-directory-listing">Printing a directory listing</li>    
-	    <li><a href="#counting-the-bytes-folders-and-files-in-a-directory-listing">Counting the bytes, folders, and files in a directory listing</li>
-	    <li><a href="#making-a-directory">Making a directory</li>
-	    <li><a href="#sorting-a-directory-listing-by-filename-time">Sorting a directory listing by filename time</li>
-      <li><a href="#estimating-directory-processing-time">Estimating directory processing time</li>
-      <li><a href="#comparing-directory-listings">Comparing directory listings</li>
-	    </ul>
+         <ul>
+             <li><a href="#clearing-package-installs">Clearing package installs and path linkages to packages</li>
+             <li><a href="#package-installs-from-github-urls">Package installs from GitHub URLs</li>
+             <li><a href="#adding-subdirectories-to-the-path">Adding subdirectories to the path</li>
+             <li><a href="#querying-directory-and-subdirectory-content">Listing directory and subdirectory content</li>
+             <li><a href="#printing-a-directory-listing">Printing a directory listing</li>
+             <li><a href="#counting-the-bytes-folders-and-files-in-a-directory-listing">Counting the bytes, folders, and files in a directory listing</li>
+             <li><a href="#making-a-directory">Making a directory</li>
+             <li><a href="#sorting-a-directory-listing-by-filename-time">Sorting a directory listing by filename time</li>
+             <li><a href="#estimating-directory-processing-time">Calculating and confirming directory processing time</li>
+             <li><a href="#comparing-directory-listings">Comparing directory listings</li>
+         </ul>
     </li>
     <li><a href="#functions-for-input-checking">Functions for Input Checking</a>
-	    <ul>
-	    <li><a href="#checking-inputs-to-functions">Checking inputs to functions</li>
-        <li><a href="#checking-if-strings-partially-match">Checking if strings partially match</li>    
-        <li><a href="#extracting-a-numeric-value-embedded-in-a-string">Extracting a numeric value embedded in a string </li>
-        <li><a href="#parsing-a-comma-separated-string-into-cells">Parsing a comma separated string into cells</li>       
-        <li><a href="#query-user-to-select-index-range">Query user to select index range</li>
-	    </ul>
+         <ul>
+             <li><a href="#checking-inputs-to-functions">Checking inputs to functions</li>
+             <li><a href="#checking-if-strings-partially-match">Checking if strings partially match</li>
+             <li><a href="#extracting-a-numeric-value-embedded-in-a-string">Extracting a numeric value embedded in a string </li>
+             <li><a href="#parsing-a-comma-separated-string-into-cells">Parsing a comma separated string into cells</li>
+             <li><a href="#query-user-to-select-index-range">Query user to select index range</li>
+             <li><a href="#break-column-of-data-by-nan-values-using-fcn_debugtools_breakarraybynans">Break a column of data with NaN separators into a cell array</li>
+     </ul>
     </li>
     <li><a href="#functions-for-output-formatting">Functions for Output Formatting</a>
-	    <ul>
-	    <li><a href="#converting-numbers-to-human-friendly-strings">Converting numbers to human friendly strings</li>
-        <li><a href="#appending-arbitrary-values-to-a-string">Appending arbitrary values to a string</li>   
-        <li><a href="#converting-flags-into-yes-and-no-strings">Converting flags into yes and no strings </li>           
+     <ul>
+     <li><a href="#converting-numbers-to-human-friendly-strings">Converting numbers to human friendly strings</li>
+        <li><a href="#appending-arbitrary-values-to-a-string">Appending arbitrary values to a string</li>
+        <li><a href="#converting-flags-into-yes-and-no-strings">Converting flags into yes and no strings </li>
         <li><a href="#printing-results-to-fixed-length-strings">Printing results to fixed length strings</li>  
-        <li><a href="#printing-matrices-to-fixed-length-columns">Printing matrices to fixed length columns</li>   
+        <li><a href="#printing-matrices-to-fixed-length-columns">Printing matrices to fixed length columns</li>
         <li><a href="#printing-directory-listings-alongside-flags-and-data">Printing directory listings alongside flags and data</li>
-	    </ul>
+     </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
-	    <ul>
-	    <li><a href="#examples">Examples</li>
-	    <li><a href="#definition-of-endpoints">Definition of Endpoints</li>
-	    </ul>
+     <ul>
+     <li><a href="#examples">Examples</li>
+     <li><a href="#definition-of-endpoints">Definition of Endpoints</li>
+     </ul>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -107,11 +109,11 @@ Often the codes used within IVSG require very common, repeated tools to be used 
 The general areas of functionality include:
 
 * Workspace management
-    * Path checking and creation
-* Input checking: 
-    * Testing whether inputs meet specifications required by code, such as whether or not they are integers, positive, contain 2 or 3 rows, only have 2 columns, etc.  
+  * Path checking and creation
+* Input checking:
+  * Testing whether inputs meet specifications required by code, such as whether or not they are integers, positive, contain 2 or 3 rows, only have 2 columns, etc.  
 * Output formatting
-    * Printing results to screen with a specified width.
+  * Printing results to screen with a specified width.
 
 <a href="#debugtools">Back to top</a>
 
@@ -122,12 +124,14 @@ To get a local copy up and running follow these simple steps.
 
 ### Installation
 
-1.  Make sure to run MATLAB 2020b or higher. Why? The "digitspattern" command used in the DebugTools was released late 2020 and this is used heavily in the Debug routines. If debugging is shut off, then earlier MATLAB versions will likely work.
+1. Make sure to run MATLAB 2020b or higher. Why? The "digitspattern" command used in the DebugTools was released late 2020 and this is used heavily in the Debug routines. If debugging is shut off, then earlier MATLAB versions will likely work.
 
 2. Clone the repo
-```sh
-git clone https://github.com/ivsg-psu/Errata_Tutorials_DebugTools
-```
+
+     ```sh
+     git clone https://github.com/ivsg-psu/Errata_Tutorials_DebugTools
+     ```
+
 3. Confirm it works! Run script_demo_DebugTools.m from the root directory root location. If the code works, the script should run without errors. This script produces numerous example cases, many of them shown in this README file.
 
 <a href="#debugtools">Back to top</a>
@@ -145,6 +149,7 @@ git clone https://github.com/ivsg-psu/Errata_Tutorials_DebugTools
    ```sh
    script_test_fcn_DebugTools_extractNumberFromStringCell
    ```
+
 For more examples, please refer to the [Documentation](https://github.com/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation/tree/main/Documents)
 
 <a href="#debugtools">Back to top</a>
@@ -154,14 +159,15 @@ For more examples, please refer to the [Documentation](https://github.com/ivsg-p
 ## Repo Structure
 
 ### Directories
+
 The following are the top level directories within the repository:
 <ul>
-	<li>/Data folder: Contains example data used for demonstrating the debugging tools.</li>
-	<li>/Documents folder: Presentations of best practices for debugging - many of which were made by prior students.</li>
-    	<li>/Example Code Snippets folder: Example codes demonstrating some very powerful capabilities in MATLAB including how to set up a class, how to set environmental variables, how to perform unit testing, and how to run multiple test scripts with logging.</li>
-	<li>/Functions folder: The majority of the code functionalities are implemented in this directory. All functions as well as test scripts are provided.</li>
-    	<li>/Images folder: Location of images used in this and or other README files.</li>
-	<li>/Utilities folder: (empty) Dependencies that are utilized but not implemented in this repository are placed in the Utilities directory. These can be single files but are most often folders containing other cloned repositories.</li>
+ <li>/Data folder: Contains example data used for demonstrating the debugging tools.</li>
+ <li>/Documents folder: Presentations of best practices for debugging - many of which were made by prior students.</li>
+     <li>/Example Code Snippets folder: Example codes demonstrating some very powerful capabilities in MATLAB including how to set up a class, how to set environmental variables, how to perform unit testing, and how to run multiple test scripts with logging.</li>
+ <li>/Functions folder: The majority of the code functionalities are implemented in this directory. All functions as well as test scripts are provided.</li>
+     <li>/Images folder: Location of images used in this and or other README files.</li>
+ <li>/Utilities folder: (empty) Dependencies that are utilized but not implemented in this repository are placed in the Utilities directory. These can be single files but are most often folders containing other cloned repositories.</li>
 </ul>
 
 <a href="#debugtools">Back to top</a>
@@ -191,6 +197,7 @@ Each of the functions described as follows has a consistent structure: each has 
 ```sh
 script_test_fcn_fcnname
 ```
+
 where fcnname is the function name as listed above.
 
 Also, each of the functions includes a well-documented header that explains inputs and outputs. These are supported by MATLAB's help style so that one can type:
@@ -198,6 +205,7 @@ Also, each of the functions includes a well-documented header that explains inpu
 ```sh
 help fcn_fcnname
 ```
+
 for any function to view function details.
 
 <a href="#debugtools">Back to top</a>
@@ -206,9 +214,10 @@ for any function to view function details.
 ## Functions for Workspace Management
 
 ### Clearing Package Installs
-Before installing code packages from GitHub links (see below for demos of this), it is strongly recommended that old packages be removed. The code below appears at the time of most code libraries and achieves this. 
 
-NOTE: this is not functionalized because, for the function to be shared, a package must be installed - which somewhat defeats the point of clearing packages. 
+Before installing code packages from GitHub links (see below for demos of this), it is strongly recommended that old packages be removed. The code below appears at the time of most code libraries and achieves this.
+
+NOTE: this is not functionalized because, for the function to be shared, a package must be installed - which somewhat defeats the point of clearing packages.
 
 NOTE: it is commented out via the "if 1==0" test using an "if" statement. This is to simplify and clarify if and when the code is allowed, or not. If the code were simply commented out, a user might assume the code is not ready for execution.
 
@@ -237,6 +246,7 @@ if 1==0
 
 end
 ```
+
 <a href="#debugtools">Back to top</a>
 
 ***
@@ -249,7 +259,7 @@ To be clear, a "Utility" is a package or set of codes that is needed for operati
 
 Often, these utilities contain subfolder features that are reused. Functions for example are usually located in a "Functions" subdirectory and/or data in a "Data" subdirectory. The installation process of packages allows one to specify which dependency subfolders, for example "Functions" and "Data", to include in the MATLAB path after the package installation.
 
-The installation of packages from the GitHub management tool is done via the function: fcn_DebugTools_installDependencies.m 
+The installation of packages from the GitHub management tool is done via the function: fcn_DebugTools_installDependencies.m
 
 fcn_DebugTools_installDependencies: installs code packages that are specified by a URL pointing to a zip file into a default local subfolder, "Utilities", under the root folder. It also adds either the package subfoder or any specified sub-subfolders to the MATLAB path.
 
@@ -262,7 +272,6 @@ If one does not wish to put these codes in different directories, the function c
 For path creation, if the "DebugTools" package is being installed, the code installs the package, then shifts temporarily into the package to complete the path definitions for MATLAB. If the DebugTools is not already installed, an error is thrown as these tools are needed for the path creation.
 
 Finally, the code sets a global flag to indicate that the folders are initialized so that, in this session, if the code is called again the folders will not be installed. This global flag can be overwritten by an optional flag input.
-
 
 ```Matlab
 %% Basic test case
@@ -376,7 +385,8 @@ if ~exist('flag_DebugTools_Folders_Initialized','var')
     flag_DebugTools_Folders_Initialized = 1;
 end
 ```
-<a href="#debugtools">Back to top</a>    
+
+<a href="#debugtools">Back to top</a>
 
 ***
 
@@ -414,7 +424,7 @@ assert(isstruct(directory_filelist));
 assert(length(directory_filelist)>1);
 ```
 
-<a href="#debugtools">Back to top</a>    
+<a href="#debugtools">Back to top</a>
 
 ***
 
@@ -427,7 +437,6 @@ FORMAT:
 
 ```Matlab
      fcn_DebugTools_printDirectoryListing(directory_filelist, (titleString), (rootDirectoryString), (fid))
-```
 
 INPUTS:
 
@@ -452,10 +461,8 @@ OUTPUTS:
 
      (prints to console)
 
-
 Here is an example usage:
 
-```Matlab
 % Create a directory filelist by querying the "Functions" folder for all .m
 % files
 directory_filelist = fcn_DebugTools_listDirectoryContents({fullfile(cd,'Functions')},'*.m',0);
@@ -467,14 +474,15 @@ fid = 1;
 fcn_DebugTools_printDirectoryListing(directory_filelist, (titleString), (rootDirectoryString), (fid))
 ```
 
-<a href="#debugtools">Back to top</a>    
+<a href="#debugtools">Back to top</a>
 
 ***
-
 
 ### Counting the bytes folders and files in a directory listing
 
 The function fcn_DebugTools_countBytesInDirectoryListing counts the number of bytes in a directory listing and as well the number of folders and files in that listing, excluding degenerate folders
+
+```Matlab
 
 FORMAT:
 
@@ -504,6 +512,8 @@ OUTPUTS:
      degenerate folders ('.' and '..').
 
      Nfiles: the total number of files in the listing
+```
+
 Here is an example usage:
 
 ```Matlab
@@ -521,23 +531,24 @@ assert((Nfiles+Nfolders)<=length(indicies)); % Note: some indicies may be degene
 
 Produces the following:
 
-```
+```Matlab
+
 Total number of files and folders indexed: 10, containing 1,660 bytes, 6 folders, and 2 files
 Breakdown:
-		FOLDERS:                                                              	    BYTES (in and below):
-		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\.git                  	               51,667,259
-		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Data                  	                      330
-		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Documents             	                7,106,499
-		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Example Code Snippets 	                   23,296
-		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions             	                  284,354
-		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Images                	                1,983,583
+  FOLDERS:                                                                   BYTES (in and below):
+  D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\.git                                  51,667,259
+  D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Data                                         330
+  D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Documents                              7,106,499
+  D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Example Code Snippets                     23,296
+  D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions                                284,354
+  D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Images                                 1,983,583
 
-		FILES:                                                                	                   BYTES:
-		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\.gitignore            	                      523
-		D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\LICENSE               	                    1,137
+  FILES:                                                                                    BYTES:
+  D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\.gitignore                                   523
+  D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\LICENSE                                    1,137
 ```
 
-<a href="#debugtools">Back to top</a>    
+<a href="#debugtools">Back to top</a>
 
 ***
 
@@ -549,7 +560,6 @@ FORMAT:
 
 ```Matlab
      fcn_DebugTools_makeDirectory(directoryPath, (fid))
-```
 
 INPUTS:
 
@@ -561,6 +571,8 @@ INPUTS:
      fid: the fileID where to print. Default is 1, to print results to
      the console. If set to -1, skips any input checking or debugging, no
      prints will be generated, and sets up code to maximize speed.
+
+```
 
 Here is an example implementation:
 
@@ -576,7 +588,7 @@ assert(7==exist(directoryPath,'dir'));
 rmdir('Junk','s');
 ```
 
-<a href="#debugtools">Back to top</a>    
+<a href="#debugtools">Back to top</a>
 
 ***
 
@@ -589,6 +601,7 @@ formats, for example: filename_yyyy-MM-dd-HH-mm-ss,sorts the files
 by date. Useful to sort bag files whose names contain dates, for example:
       mapping_van_2024-08-05-14-45-26_0
 
+```Matlab
 FORMAT:
 
      sorted_directory_filelist = fcn_DebugTools_sortDirectoryListingByTime(directory_filelist, (fid))
@@ -610,6 +623,8 @@ OUTPUTS:
      sorted_directory_filelist: a structure array similar to the output
      of a "dir" command, but where the listings are sorted by date     
 
+```
+
 Here is an example implementation:
 
 ```Matlab
@@ -621,7 +636,7 @@ sorted_directory_filelist = fcn_DebugTools_sortDirectoryListingByTime(directory_
 fcn_DebugTools_printDirectoryListing(sorted_directory_filelist);
 ```
 
-<a href="#debugtools">Back to top</a>    
+<a href="#debugtools">Back to top</a>
 
 ***
 
@@ -631,6 +646,7 @@ The function, fcn_DebugTools_confirmTimeToProcessDirectory
 Calculates the time it takes to process a directory listing and confirms
 with the user that this is acceptable.
 
+```Matlab
 FORMAT:
 
      [flag_keepGoing, timeEstimateInSeconds] = fcn_DebugTools_confirmTimeToProcessDirectory(directory_listing, bytesPerSecond, (indexRange),(fid))
@@ -656,6 +672,8 @@ OUTPUTS:
      timeEstimateInSeconds: how many seconds the processing is estimated
      to take
 
+```
+
 Here is an example implementation:
 
 ```Matlab
@@ -669,16 +687,18 @@ assert((flag_keepGoing==0) || (flag_keepGoing==1));
 assert(timeEstimateInSeconds>=0);
 ```
 
-<a href="#debugtools">Back to top</a>    
+<a href="#debugtools">Back to top</a>
 
 ***
 
 ### Comparing directory listings
 
-The function, 
+The function,
 fcn_DebugTools_compareDirectoryListings
 compares a source and destination directory to check if files are located
-in destination directory that match the source directory. 
+in destination directory that match the source directory.
+
+```Matlab
 
 FORMAT:
 
@@ -730,6 +750,8 @@ OUTPUTS:
      listing in the source was found in the destination, and set to 0 if
      not found.
 
+```
+
 Here is an example implementation:
 
 ```Matlab
@@ -751,7 +773,7 @@ flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_sour
 assert(isequal(flags_wasMatched,[1 1 0]'));
 ```
 
-<a href="#debugtools">Back to top</a>    
+<a href="#debugtools">Back to top</a>
 
 ***
 
@@ -781,62 +803,62 @@ end
 
 and it returns:
 
-```
+```Matlab
 Here are a listing of all active input checking options: 
-	"Mcolumn_of..."
-		checks that the input type is K x M of ...
-	"NorMcolumn..."
-		checks that the input type is of minimum K x M or maximum K x N of ...
-	"positive_..."
-		checks that the input type is positive ...
-	"_of_integers..."
-		checks that the input type is of_integers...
-	"_of_mixed..."
-		checks that the input type is numeric but can include NaN..
-	"_of_chars..."
-		checks that the input type is a char type (uses ischar)
-	"_of_strings..."
-		checks that the input type is a string type (uses isstring)
-	"DoesFileExist..."
-		checks that the input type is an existing file
-	"DoesDirectoryExist..."
-		checks that the input type is an existing directory
-	"polytopes..."
-		checks that the input type is a polytope type, e.g. a structure with fields: vertices, xv, yv, distances, mean, area, max_radius.
-	"mixedset..."
-		checks that the input type is a structure matching a given template..
-	"1column_of_numbers"
-		checks that the input type is a structure with fields: name, settings, AABB.
-	"positive_1column_of_numbers"
-		checks that the input type is N x 1 and is a strictly positive number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N.
-	"2column_of_numbers"
-		checks that the input type is N x 2 and is a number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N. Another optional input is a rwo vector [A B] where, if B is greater than A, then the vector must be A or longer. If B is less than A, then the vector must be A or shorter. If B = A, then the vector must be length A, and no shorter or greater.
-	"4column_of_numbers"
-		checks that the input type is N x 4 and is a number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N. Another optional input is a rwo vector [A B] where, if B is greater than A, then the vector must be A or longer. If B is less than A, then the vector must be A or shorter. If B = A, then the vector must be length A, and no shorter or greater.
-	"2or3column_of_numbers"
-		checks that the input type is N x 2 or N x 3 and is a number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N. Another optional input is a rwo vector [A B] where, if B is greater than A, then the vector must be A or longer. If B is less than A, then the vector must be A or shorter. If B = A, then the vector must be length A, and no shorter or greater.
-	"2column_of_integers"
-		checks that the input type is N x 2 and is an integer. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N. Another optional input is a rwo vector [A B] where, if B is greater than A, then the vector must be A or longer. If B is less than A, then the vector must be A or shorter. If B = A, then the vector must be length A, and no shorter or greater.
-	"polytopes"
-		a 1-by-n seven field structure of polytopes within the boundaries, where n <= number of polytopes with fields:  vertices: a m+1-by-2 matrix of xy points with row1 = rowm+1, where m is the number of the individual polytope vertices  xv: a 1-by-m vector of vertice x-coordinates  yv: a 1-by-m vector of vertice y-coordinates  distances: a 1-by-m vector of perimeter distances from one point to the next point, distances(i) = distance from vertices(i) to vertices(i+1) mean: centroid xy coordinate of the polytope area: area of the polytope max_radius: the largest distance from the centroid to any vertex
-	"station"
-		Path library type: checks that the station type is N x 1 and is a number.
-	"stations"
-		Path library type: checks that the station type is N x 1 and is a number, with N >= 2.
-	"path"
-		Path library type: checks that the path type is N x 2 with N>=2
-	"path2or3D"
-		Path library type: checks that the path type is N x 2 or N x 3, with N>=2
-	"elevated_path"
-		Path library type: checks that the elevated path type is N x 3 with N>=2
-	"paths"
-		Path library type: checks that the path type is N x 2 with N>=3
-	"traversal"
-		Path library type: checks if a structure with X, Y, and Station, and that each has an N x 1 vector within all of same length. Further, the Station field must be strictly increasing.
-	"traversals"
-		Path library type: checks if a structure containing a subfield that is a cell array of traveral{i}, e.g. "data.traversal{3}", with each traversal also meeting traversal requirements.
-	"likestructure"
-		Takes a structure input as the 3rd argument to serve as a template. Ensures that the input has the same structure fields.
+ "Mcolumn_of..."
+  checks that the input type is K x M of ...
+ "NorMcolumn..."
+  checks that the input type is of minimum K x M or maximum K x N of ...
+ "positive_..."
+  checks that the input type is positive ...
+ "_of_integers..."
+  checks that the input type is of_integers...
+ "_of_mixed..."
+  checks that the input type is numeric but can include NaN..
+ "_of_chars..."
+  checks that the input type is a char type (uses ischar)
+ "_of_strings..."
+  checks that the input type is a string type (uses isstring)
+ "DoesFileExist..."
+  checks that the input type is an existing file
+ "DoesDirectoryExist..."
+  checks that the input type is an existing directory
+ "polytopes..."
+  checks that the input type is a polytope type, e.g. a structure with fields: vertices, xv, yv, distances, mean, area, max_radius.
+ "mixedset..."
+  checks that the input type is a structure matching a given template..
+ "1column_of_numbers"
+  checks that the input type is a structure with fields: name, settings, AABB.
+ "positive_1column_of_numbers"
+  checks that the input type is N x 1 and is a strictly positive number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N.
+ "2column_of_numbers"
+  checks that the input type is N x 2 and is a number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N. Another optional input is a rwo vector [A B] where, if B is greater than A, then the vector must be A or longer. If B is less than A, then the vector must be A or shorter. If B = A, then the vector must be length A, and no shorter or greater.
+ "4column_of_numbers"
+  checks that the input type is N x 4 and is a number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N. Another optional input is a rwo vector [A B] where, if B is greater than A, then the vector must be A or longer. If B is less than A, then the vector must be A or shorter. If B = A, then the vector must be length A, and no shorter or greater.
+ "2or3column_of_numbers"
+  checks that the input type is N x 2 or N x 3 and is a number. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N. Another optional input is a rwo vector [A B] where, if B is greater than A, then the vector must be A or longer. If B is less than A, then the vector must be A or shorter. If B = A, then the vector must be length A, and no shorter or greater.
+ "2column_of_integers"
+  checks that the input type is N x 2 and is an integer. Optional input: an integer forcing the value of N, giving an error if the input variable does not have length N. Another optional input is a rwo vector [A B] where, if B is greater than A, then the vector must be A or longer. If B is less than A, then the vector must be A or shorter. If B = A, then the vector must be length A, and no shorter or greater.
+ "polytopes"
+  a 1-by-n seven field structure of polytopes within the boundaries, where n <= number of polytopes with fields:  vertices: a m+1-by-2 matrix of xy points with row1 = rowm+1, where m is the number of the individual polytope vertices  xv: a 1-by-m vector of vertice x-coordinates  yv: a 1-by-m vector of vertice y-coordinates  distances: a 1-by-m vector of perimeter distances from one point to the next point, distances(i) = distance from vertices(i) to vertices(i+1) mean: centroid xy coordinate of the polytope area: area of the polytope max_radius: the largest distance from the centroid to any vertex
+ "station"
+  Path library type: checks that the station type is N x 1 and is a number.
+ "stations"
+  Path library type: checks that the station type is N x 1 and is a number, with N >= 2.
+ "path"
+  Path library type: checks that the path type is N x 2 with N>=2
+ "path2or3D"
+  Path library type: checks that the path type is N x 2 or N x 3, with N>=2
+ "elevated_path"
+  Path library type: checks that the elevated path type is N x 3 with N>=2
+ "paths"
+  Path library type: checks that the path type is N x 2 with N>=3
+ "traversal"
+  Path library type: checks if a structure with X, Y, and Station, and that each has an N x 1 vector within all of same length. Further, the Station field must be strictly increasing.
+ "traversals"
+  Path library type: checks if a structure containing a subfield that is a cell array of traveral{i}, e.g. "data.traversal{3}", with each traversal also meeting traversal requirements.
+ "likestructure"
+  Takes a structure input as the 3rd argument to serve as a template. Ensures that the input has the same structure fields.
 ```
 
 <a href="#debugtools">Back to top</a>
@@ -868,7 +890,7 @@ assert(result==false);
 ### Extracting a numeric value embedded in a string
 
 The function fcn_DebugTools_extractNumberFromStringCell takes a char type in a cell, and finds the first number within that is numeric, and then returns the string for this number. It is robust in that weird entries also work, such as '-0004.2'. This function is particularly useful to parse human-input numbers.
-	
+
 ```Matlab
 %% Decimal number, negative, in cell array with leading zeros and text
 result = fcn_DebugTools_extractNumberFromStringCell({'My number is -0000.4'});
@@ -920,6 +942,7 @@ queries the user to select a number based on a flag vector, and
 optionally can confirm the selection is valid if user selects a number
 range that overlaps indicies where a flag value is equal to 1
 
+```Matlab
 FORMAT:
 
      [flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid))
@@ -968,6 +991,9 @@ OUTPUTS:
      startingIndex: the user-selected first index
 
      endingIndex: the user-selected first index
+```
+
+And here is an example usage:
 
 ```Matlab
 rng(1);
@@ -1003,6 +1029,70 @@ assert(endingIndex>=startingIndex && endingIndex<=length(flags_toCheck));
 <a href="#debugtools">Back to top</a>
 
 ***
+
+### Break column of data by NaN values using fcn_DebugTools_breakArrayByNans
+
+The function
+
+fcn_DebugTools_breakArrayByNans
+
+breaks an Nx1 column of data into cell arrays using NaN values as separators
+
+```Matlab
+fcn_DebugTools_breakArrayByNans   
+
+breaks data separated by nan into subdata organized into cell arrays. For
+example, 
+   test_data = [2; 3; 4; nan; 6; 7];
+   indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data);
+% Returns:
+   indicies_cell_array{1} = [1; 2; 3];
+   indicies_cell_array{2} = [5; 6];
+
+FORMAT:
+
+      indicies_cell_array = fcn_DebugTools_breakArrayByNans(input_array, (fig_num))
+
+INPUTS:
+
+      input_array: an Nx1 matrix where some rows contain NaN values
+
+     (OPTIONAL INPUTS)
+
+     fig_num: a figure number to plot results. If set to -1, skips any
+     input checking or debugging, no figures will be generated, and sets
+     up code to maximize speed.
+
+OUTPUTS:
+
+      indicies_cell_array: a cell array of indicies, one array for each
+      section of the matrix that is separated by NaN values
+
+```
+
+And here is an example usage:
+
+```Matlab
+test_data = [2; 3; 4; nan; 6; 7];
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+
+% Check variable types
+assert(iscell(indicies_cell_array))
+
+% Check variable sizes
+assert(size(indicies_cell_array,1)==1);
+assert(size(indicies_cell_array,2)==2);
+
+% Check variable values
+assert(isequal(indicies_cell_array{1},[1; 2; 3]));
+assert(isequal(indicies_cell_array{2},[5; 6]));
+
+```
+
+<a href="#debugtools">Back to top</a>
+
+***
+
 ## Functions for Output Formatting
 
 ### Converting numbers to human friendly strings
@@ -1018,10 +1108,9 @@ fprintf(1,'%s\n',stringNumber);
 
 Produces the following result:
 
-```
+```Matlab
 2.33
 ```
-
 
 <a href="#debugtools">Back to top</a>
 
@@ -1040,10 +1129,9 @@ assert(isequal(output_string,'test 2'));
 
 Produces the following result:
 
-```
+```Matlab
 test 2
 ```
-
 
 <a href="#debugtools">Back to top</a>
 
@@ -1055,6 +1143,7 @@ The function: fcn_DebugTools_convertBinaryToYesNoStrings
 Converts Nx1 of scalar 1 or 0 vectors into Nx1 cell arrays containing
 'yes' or 'no' corresponding to the 1's or 0's respectively
 
+```Matlab
 FORMAT:
 
      cellArrrayYesNo = fcn_DebugTools_convertBinaryToYesNoStrings(flags_binary, (fid))
@@ -1073,6 +1162,9 @@ OUTPUTS:
 
      cellArrrayYesNo: a cell array of N rows, 1 column, of 'yes' or 'no'
      strings
+```
+
+An example output is as follows:
 
 ```Matlab
 flags_binary = [0; 1; 0];
@@ -1084,7 +1176,6 @@ assert(isequal(cellArrrayYesNo,{'no';'yes';'no'}))
 <a href="#debugtools">Back to top</a>
 
 ***
-
 
 ### Printing results to fixed length strings
 
@@ -1101,8 +1192,10 @@ test_string = 'Tiny string but should be 40 chars';
 fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(test_string,40);
 fprintf(1,'The string: %s\nwas converted to: "%s"\n',test_string,fixed_length_string);
 ```
+
 Produces the following output:
-```
+
+```Matlab
 The string: This is a really, really, really long string but we only want the first 10 characters
 was converted to: "This is a "
 The string: Tiny string but should be 40 chars
@@ -1139,8 +1232,10 @@ formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How sh
 N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
 fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
 ```
+
 Produces the following output:
-```
+
+```Matlab
 Data ID         Location X      Location Y      s-coord 1       s-coord 2       
 1               0.083497561789  0.466512012381  0.872812993043  231.09536311113 
 2               0.279828920000  0.498104487123  0.938002006920  527.43396277663 
@@ -1176,6 +1271,8 @@ Data Location X      Location Y      s-coo s-coo
 fcn_DebugTools_printNumeredDirectoryList
 prints a directory file list alongside lists of flags and details.
 
+```Matlab
+
 FORMAT:
 
      fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, (directoryRoot), (fid))
@@ -1209,6 +1306,9 @@ OUTPUTS:
 
      (printing to console)
 
+```
+
+An example output is as follows:
 
 ```Matlab
 rng(1);
@@ -1235,66 +1335,64 @@ fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, c
 
 Produces the following output:
 
-```
-		m-filename                                                         	bytes    	big file?   	Some yes or no  	Some float   	
+```Matlab
+
+  m-filename                                                          bytes     big file?    Some yes or no   Some float    
 Folder: D:\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
-	1	class_DebugFlags.m                                                 	7999     	1           	yes             	4.5043e+05   	
-	2	fcn_DebugTools_addStringToEnd.m                                    	4157     	1           	yes             	3.1993e-06   	
-	3	fcn_DebugTools_addSubdirectoriesToPath.m                           	4420     	1           	yes             	3.2176e-06   	
-	4	fcn_DebugTools_checkInputsToFunctions.m                            	33103    	1           	yes             	3.9968e+05   	
-	5	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	7250     	1           	yes             	5.2864e-12   	
-	6	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	5068     	1           	yes             	3.2290e-05   	
-	7	fcn_DebugTools_convertVariableToCellString.m                       	4804     	1           	yes             	3.5981e-13   	
-	8	fcn_DebugTools_countBytesInDirectoryListing.m                      	8954     	1           	yes             	4.8157e-08   	
-	9	fcn_DebugTools_cprintf.m                                           	30654    	1           	yes             	7.2560e+08   	
-	10	fcn_DebugTools_debugPrintStringToNCharacters.m                     	3916     	1           	yes             	8.2165e-16   	
-	11	fcn_DebugTools_debugPrintTableToNCharacters.m                      	5190     	1           	yes             	1.1011e-06   	
-	12	fcn_DebugTools_doStringsMatch.m                                    	5335     	1           	yes             	0.3559       	
-	13	fcn_DebugTools_extractNumberFromStringCell.m                       	8371     	1           	yes             	3.5291e-16   	
-	14	fcn_DebugTools_installDependencies.m                               	15752    	1           	yes             	340.8413     	
-	15	fcn_DebugTools_listDirectoryContents.m                             	8955     	1           	yes             	1.7809e-22   	
-	16	fcn_DebugTools_makeDirectory.m                                     	7135     	1           	yes             	66.6470      	
-	17	fcn_DebugTools_number2string.m                                     	4449     	1           	yes             	7.5700e+03   	
-	18	fcn_DebugTools_parseStringIntoCells.m                              	5510     	1           	yes             	1.1136e-13   	
-	19	fcn_DebugTools_printDirectoryListing.m                             	8152     	1           	yes             	1.9731e-06   	
-	20	fcn_DebugTools_printNumeredDirectoryList.m                         	8904     	1           	yes             	1.7377e+05   	
-	21	fcn_DebugTools_sortDirectoryListingByTime.m                        	6900     	1           	yes             	0.0014       	
-	22	script_test_all_functions.m                                        	5976     	1           	yes             	2.5714e-19   	
-	23	script_test_class_DebugFlags.m                                     	2855     	1           	yes             	0.8006       	
-	24	script_test_fcn_DebugTools_addStringToEnd.m                        	1058     	1           	yes             	467.7462     	
-	25	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	1278     	1           	yes             	3.7871       	
-	26	script_test_fcn_DebugTools_checkInputsToFunctions.m                	47550    	1           	yes             	1.9317e+04   	
-	27	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	1340     	1           	yes             	1.4396e+03   	
-	28	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	658      	0           	no              	3.8633e+11   	
-	29	script_test_fcn_DebugTools_convertVariableToCellString.m           	1345     	1           	yes             	5.3961e-12   	
-	30	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	2545     	1           	yes             	1.2007e-18   	
-	31	script_test_fcn_DebugTools_cprintf.m                               	8027     	1           	yes             	1.4230e+07   	
-	32	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	4388     	1           	yes             	2.1994e-04   	
-	33	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	1953     	1           	yes             	6.8495e-13   	
-	34	script_test_fcn_DebugTools_doStringsMatch.m                        	3538     	1           	yes             	7.0015e+10   	
-	35	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	3605     	1           	yes             	5.8218e-06   	
-	36	script_test_fcn_DebugTools_installDependencies.m                   	5804     	1           	yes             	3.0643e+08   	
-	37	script_test_fcn_DebugTools_listDirectoryContents.m                 	4969     	1           	yes             	4.0625e+03   	
-	38	script_test_fcn_DebugTools_makeDirectory.m                         	933      	0           	no              	2.7887e+14   	
-	39	script_test_fcn_DebugTools_number2string.m                         	2866     	1           	yes             	539.0431     	
-	40	script_test_fcn_DebugTools_parseStringIntoCells.m                  	1017     	1           	yes             	2.1547e+06   	
-	41	script_test_fcn_DebugTools_printDirectoryListing.m                 	1286     	1           	yes             	5.7327e-07   	
-	42	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	2664     	1           	yes             	8.3490e-07   	
-	43	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	786      	0           	no              	3.6398e+15   	
+ 1 class_DebugFlags.m                                                  7999      1            yes              4.5043e+05    
+ 2 fcn_DebugTools_addStringToEnd.m                                     4157      1            yes              3.1993e-06    
+ 3 fcn_DebugTools_addSubdirectoriesToPath.m                            4420      1            yes              3.2176e-06    
+ 4 fcn_DebugTools_checkInputsToFunctions.m                             33103     1            yes              3.9968e+05    
+ 5 fcn_DebugTools_confirmTimeToProcessDirectory.m                      7250      1            yes              5.2864e-12    
+ 6 fcn_DebugTools_convertBinaryToYesNoStrings.m                        5068      1            yes              3.2290e-05    
+ 7 fcn_DebugTools_convertVariableToCellString.m                        4804      1            yes              3.5981e-13    
+ 8 fcn_DebugTools_countBytesInDirectoryListing.m                       8954      1            yes              4.8157e-08    
+ 9 fcn_DebugTools_cprintf.m                                            30654     1            yes              7.2560e+08    
+ 10 fcn_DebugTools_debugPrintStringToNCharacters.m                      3916      1            yes              8.2165e-16    
+ 11 fcn_DebugTools_debugPrintTableToNCharacters.m                       5190      1            yes              1.1011e-06    
+ 12 fcn_DebugTools_doStringsMatch.m                                     5335      1            yes              0.3559        
+ 13 fcn_DebugTools_extractNumberFromStringCell.m                        8371      1            yes              3.5291e-16    
+ 14 fcn_DebugTools_installDependencies.m                                15752     1            yes              340.8413      
+ 15 fcn_DebugTools_listDirectoryContents.m                              8955      1            yes              1.7809e-22    
+ 16 fcn_DebugTools_makeDirectory.m                                      7135      1            yes              66.6470       
+ 17 fcn_DebugTools_number2string.m                                      4449      1            yes              7.5700e+03    
+ 18 fcn_DebugTools_parseStringIntoCells.m                               5510      1            yes              1.1136e-13    
+ 19 fcn_DebugTools_printDirectoryListing.m                              8152      1            yes              1.9731e-06    
+ 20 fcn_DebugTools_printNumeredDirectoryList.m                          8904      1            yes              1.7377e+05    
+ 21 fcn_DebugTools_sortDirectoryListingByTime.m                         6900      1            yes              0.0014        
+ 22 script_test_all_functions.m                                         5976      1            yes              2.5714e-19    
+ 23 script_test_class_DebugFlags.m                                      2855      1            yes              0.8006        
+ 24 script_test_fcn_DebugTools_addStringToEnd.m                         1058      1            yes              467.7462      
+ 25 script_test_fcn_DebugTools_addSubdirectoriesToPath.m                1278      1            yes              3.7871        
+ 26 script_test_fcn_DebugTools_checkInputsToFunctions.m                 47550     1            yes              1.9317e+04    
+ 27 script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m          1340      1            yes              1.4396e+03    
+ 28 script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m            658       0            no               3.8633e+11    
+ 29 script_test_fcn_DebugTools_convertVariableToCellString.m            1345      1            yes              5.3961e-12    
+ 30 script_test_fcn_DebugTools_countBytesInDirectoryListing.m           2545      1            yes              1.2007e-18    
+ 31 script_test_fcn_DebugTools_cprintf.m                                8027      1            yes              1.4230e+07    
+ 32 script_test_fcn_DebugTools_debugPrintStringToNCharacters.m          4388      1            yes              2.1994e-04    
+ 33 script_test_fcn_DebugTools_debugPrintTableToNCharacters.m           1953      1            yes              6.8495e-13    
+ 34 script_test_fcn_DebugTools_doStringsMatch.m                         3538      1            yes              7.0015e+10    
+ 35 script_test_fcn_DebugTools_extractNumberFromStringCell.m            3605      1            yes              5.8218e-06    
+ 36 script_test_fcn_DebugTools_installDependencies.m                    5804      1            yes              3.0643e+08    
+ 37 script_test_fcn_DebugTools_listDirectoryContents.m                  4969      1            yes              4.0625e+03    
+ 38 script_test_fcn_DebugTools_makeDirectory.m                          933       0            no               2.7887e+14    
+ 39 script_test_fcn_DebugTools_number2string.m                          2866      1            yes              539.0431      
+ 40 script_test_fcn_DebugTools_parseStringIntoCells.m                   1017      1            yes              2.1547e+06    
+ 41 script_test_fcn_DebugTools_printDirectoryListing.m                  1286      1            yes              5.7327e-07    
+ 42 script_test_fcn_DebugTools_printNumeredDirectoryList.m              2664      1            yes              8.3490e-07    
+ 43 script_test_fcn_DebugTools_sortDirectoryListingByTime.m             786       0            no               3.6398e+15    
 ```
 
 <a href="#debugtools">Back to top</a>
 
 ***
 
-
 <!-- USAGE EXAMPLES -->
 ## Usage
 <!-- Use this space to show useful examples of how a project can be used.
 Additional screenshots, code examples and demos work well in this space. You may
 also link to more resources. -->
-
-
 
 <a href="#debugtools">Back to top</a>
 
@@ -1307,24 +1405,26 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Major release versions
 
-This code is still in development (alpha testing). 
+This code is still in development (alpha testing).
 The 2023-01-25 release includes the following addition:
+
 * Updated README
 * Added fcn_DebugTools_installDependencies to support automated URL-referenced install of code packages
 
 The 2023-01-18 release includes the following addition:
+
 * Updated README
 * Adding directory and file queries for input checking
 * String output functions (fixed-length printing)
 * Input functions (string parsing)
 * Table formatted fixed-column-width output
 
-
 <a href="#debugtools">Back to top</a>
 
 <!-- CONTACT -->
 ## Contact
-Sean Brennan - sbrennan@psu.edu
+
+Sean Brennan - <sbrennan@psu.edu>
 
 Project Link: [https://github.com/ivsg-psu/Errata_Tutorials_DebugTools](https://github.com/ivsg-psu/Errata_Tutorials_DebugTools)
 
@@ -1332,21 +1432,3 @@ Project Link: [https://github.com/ivsg-psu/Errata_Tutorials_DebugTools](https://
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation.svg?style=for-the-badge
-[contributors-url]: https://github.com/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation.svg?style=for-the-badge
-[forks-url]: https://github.com/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation/network/members
-[stars-shield]: https://img.shields.io/github/stars/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation.svg?style=for-the-badge
-[stars-url]: https://github.com/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation/stargazers
-[issues-shield]: https://img.shields.io/github/issues/ivsg-psu/reFeatureExtraction_Association_PointToPointAssociationpo.svg?style=for-the-badge
-[issues-url]: https://github.com/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation/issues
-[license-shield]: https://img.shields.io/github/license/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation.svg?style=for-the-badge
-[license-url]: https://github.com/ivsg-psu/FeatureExtraction_Association_PointToPointAssociation/blob/master/LICENSE.txt
-
-
-
-
-
-
-
-

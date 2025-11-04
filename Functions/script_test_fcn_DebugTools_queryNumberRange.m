@@ -65,6 +65,7 @@ cellArrayHeaders = {'m-filename                                                 
 cellArrayValues = [dirNames, celldirScripts, dirScriptYesNo];
 
 % Print to screen
+fid = 1;
 fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, ([]), (fid))
 
 
@@ -99,6 +100,7 @@ cellArrayHeaders = {'m-filename                                                 
 cellArrayValues = [dirNames, celldirScripts, dirScriptYesNo];
 
 % Print to screen
+fid = 1;
 fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, ([]), (fid))
 
 
@@ -133,6 +135,7 @@ cellArrayHeaders = {'m-filename                                                 
 cellArrayValues = [dirNames, celldirScripts, dirScriptYesNo];
 
 % Print to screen
+fid = 1;
 fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, ([]), (fid))
 
 

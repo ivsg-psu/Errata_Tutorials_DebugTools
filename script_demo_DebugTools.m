@@ -33,6 +33,14 @@
 % * In fcn_DebugTools_listDirectoryContents
 % -- fixed bug where string hash being checked but queries may not be long
 %    enough to do hash check during a debug test
+% 2025_11_04 - Sean Brennan
+% * In fcn_DebugTools_breakArrayByNans
+% -- added this function from the PlotRoad library
+% -- added global variables for DEBUGTOOLS libary
+% -- updated README.md
+% -- fixed bug in this main script in fcn_DebugTools_queryNumberRange,
+%    % where old output specification was used
+
 
 %% Set up workspace
 if ~exist('flag_DebugTools_Was_Initialized','var')
@@ -61,6 +69,12 @@ if ~exist('flag_DebugTools_Was_Initialized','var')
     % set a flag so we do not have to do this again
     flag_DebugTools_Was_Initialized = 1;
 end
+
+%% Set environment flags for input checking
+% These are values to set if we want to check inputs or do debugging
+setenv('MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS','1');
+setenv('MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG','0');
+
 
 %% Workspace Management
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,7 +146,7 @@ elseif ~isempty(error_message)
     end
 end
 
-%% Demonstrate how to add subdirectories
+%% Demonstrate how to add subdirectories to the path
 if ~exist('flag_DebugTools_Folders_Initialized','var')
     fcn_DebugTools_addSubdirectoriesToPath(pwd,{'Functions','Data'});
 
@@ -582,11 +596,56 @@ flags_toCheck = dirScripts;
 queryEndString = ' function to change to script';
 flag_confirmOverwrite = 1;
 fid = 1;
-[flag_keepGoing, startingIndex, endingIndex] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid));
+[flag_keepGoing, indiciesSelected] = fcn_DebugTools_queryNumberRange(flags_toCheck, (queryEndString), (flag_confirmOverwrite), (directory_filelist), (fid));
 
 assert(flag_keepGoing==1 || flag_keepGoing==0);
-assert(startingIndex>0 && startingIndex<=length(flags_toCheck));
-assert(endingIndex>=startingIndex && endingIndex<=length(flags_toCheck));
+if ~isempty(indiciesSelected)
+    assert(min(indiciesSelected)>0 && max(indiciesSelected)<=length(flags_toCheck));
+    assert(length(indiciesSelected)<=length(flags_toCheck));
+end
+
+%% Break column of data by NaN values using fcn_DebugTools_breakArrayByNans   
+% 
+% breaks data separated by nan into subdata organized into cell arrays. For
+% example, 
+%    test_data = [2; 3; 4; nan; 6; 7];
+%    indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data);
+% % Returns:
+%    indicies_cell_array{1} = [1; 2; 3];
+%    indicies_cell_array{2} = [5; 6];
+%
+% FORMAT:
+%
+%       indicies_cell_array = fcn_DebugTools_breakArrayByNans(input_array, (fig_num))
+%
+% INPUTS:
+%
+%       input_array: an Nx1 matrix where some rows contain NaN values
+%
+%      (OPTIONAL INPUTS)
+%
+%      fig_num: a figure number to plot results. If set to -1, skips any
+%      input checking or debugging, no figures will be generated, and sets
+%      up code to maximize speed.
+%
+% OUTPUTS:
+%
+%       indicies_cell_array: a cell array of indicies, one array for each
+%       section of the matrix that is separated by NaN values
+
+test_data = [2; 3; 4; nan; 6; 7];
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+
+% Check variable types
+assert(iscell(indicies_cell_array))
+
+% Check variable sizes
+assert(size(indicies_cell_array,1)==1);
+assert(size(indicies_cell_array,2)==2);
+
+% Check variable values
+assert(isequal(indicies_cell_array{1},[1; 2; 3]));
+assert(isequal(indicies_cell_array{2},[5; 6]));
 
 %% Output formatting
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

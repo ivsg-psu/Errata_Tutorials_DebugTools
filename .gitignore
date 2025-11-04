@@ -30,3 +30,7 @@ codegen/
 
 # Octave session info
 octave-workspace
+
+# IVSG folders
+Utilities/
+LargeData/

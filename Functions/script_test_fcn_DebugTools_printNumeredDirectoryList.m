@@ -29,6 +29,7 @@ cellArrayHeaders = {'m-filename                                                 
 cellArrayValues = [dirNames, celldirBytes, celldirBigFile, dirBigFileYesNo, celldirFloat];
 
 % Call the function
+fid = 1;
 fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, ([]), (fid))
 
 %% Test 2: Simple example with root specified
@@ -52,7 +53,9 @@ cellArrayHeaders = {'m-filename                                                 
 cellArrayValues = [dirNames, celldirBytes, celldirBigFile, dirBigFileYesNo, celldirFloat];
 
 % Call the function
-fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayHeaders, cellArrayValues, (fullfile(cd,'Functions')), (fid))
+fid = 1;
+fcn_DebugTools_printNumeredDirectoryList( ...
+    directory_filelist, cellArrayHeaders, cellArrayValues, (fullfile(cd,'Functions')), (fid))
 
 
 %% Fail conditions

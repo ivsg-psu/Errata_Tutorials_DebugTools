@@ -24,7 +24,10 @@ directoryListing_source = fcn_DebugTools_listDirectoryContents({sourceRootString
 % Call the function
 flag_matchingType = 1; % Same to same
 typeExtension = [];
-flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (typeExtension), (fid));
+fid = [];
+flags_wasMatched = fcn_DebugTools_compareDirectoryListings(...
+    directoryListing_source, sourceRootString, destinationRootString, ...
+    (flag_matchingType), (typeExtension), (fid));
 
 assert(isequal(flags_wasMatched,[1 1 0]'));
 
@@ -44,7 +47,11 @@ directoryListing_source = fcn_DebugTools_listDirectoryContents({sourceRootString
 % Call the function
 flag_matchingType = 1; % Same to same
 typeExtension = [];
-flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (typeExtension),  (fid));
+fid = [];
+
+flags_wasMatched = fcn_DebugTools_compareDirectoryListings( ...
+    directoryListing_source, sourceRootString, destinationRootString, ...
+    (flag_matchingType), (typeExtension),  (fid));
 
 assert(isequal(flags_wasMatched,[1 0 1]'));
 
@@ -64,7 +71,11 @@ directoryListing_source = fcn_DebugTools_listDirectoryContents({sourceRootString
 % Call the function
 flag_matchingType = 2; % fileToFolder
 typeExtension = [];
-flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (typeExtension),  (fid));
+fid = [];
+
+flags_wasMatched = fcn_DebugTools_compareDirectoryListings( ...
+    directoryListing_source, sourceRootString, destinationRootString, ...
+    (flag_matchingType), (typeExtension),  (fid));
 
 assert(isequal(flags_wasMatched,[1 0 1]'));
 
@@ -84,7 +95,11 @@ directoryListing_source = fcn_DebugTools_listDirectoryContents({sourceRootString
 % Call the function
 flag_matchingType = 3; % fileToFolder
 typeExtension = [];
-flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (typeExtension),  (fid));
+fid = [];
+
+flags_wasMatched = fcn_DebugTools_compareDirectoryListings( ...
+    directoryListing_source, sourceRootString, destinationRootString, ...
+    (flag_matchingType), (typeExtension),  (fid));
 
 assert(isequal(flags_wasMatched,[1 1 0]'));
 %% Fail conditions
