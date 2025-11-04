@@ -56,6 +56,7 @@ function indicies_cell_array = fcn_DebugTools_breakArrayByNans(input_array, vara
 % -- updated docstrings
 % -- added explicit return statements in several subsections where these 
 %    % were missing
+% -- bug fix in plotting input options (Nargin set wrong)
 
 %% Debugging and Input checks
 
@@ -115,8 +116,8 @@ if 0 == flag_max_speed
 end
 
 % Check to see if user specifies fig_num?
-flag_do_plots = 0;
-if (0==flag_max_speed) && (1<= nargin)
+flag_do_plots = 0; % Default is to NOT show plots
+if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp)
         fig_num = temp;
