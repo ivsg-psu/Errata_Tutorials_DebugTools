@@ -6,7 +6,8 @@
 % -- first written by S. Harnett
 
 %% startup
-close all; clear all; clc;
+close all; 
+
 %% clear environment variables
 setenv('ENV_FLAG_CHECK_INPUTS','')
 setenv('ENV_FLAG__DO_PLOT','')
@@ -80,3 +81,28 @@ assert(fig_num >= 1642251620957);
 
 % delete test fixture
 delete(my_last_debugger);
+
+
+%%
+% %% Debugging and Input checks
+% 
+% % Check if flag_max_speed set. This occurs if the fig_num variable input
+% % argument (varargin) is given a number of -1, which is not a valid figure
+% % number.
+% MAX_NARGIN = 2; % The largest Number of argument inputs to the function
+% flag_max_speed = 0;
+% if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
+%     flag_do_debug = 0; % % % % Flag to plot the results for debugging
+%     flag_check_inputs = 0; % Flag to perform input checking
+%     flag_max_speed = 1;
+% else
+%     % Check to see if we are externally setting debug mode to be "on"
+%     flag_do_debug = 0; % % % % Flag to plot the results for debugging
+%     flag_check_inputs = 1; % Flag to perform input checking
+%     MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
+%     MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
+%     if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
+%         flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG); 
+%         flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
+%     end
+% end

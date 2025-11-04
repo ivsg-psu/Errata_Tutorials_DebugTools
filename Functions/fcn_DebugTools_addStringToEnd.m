@@ -1,5 +1,5 @@
 
-function output_string = fcn_DebugTools_addStringToEnd(input_string,value_to_add,varargin)
+function output_string = fcn_DebugTools_addStringToEnd(input_string,value_to_add, varargin)
 %% fcn_DebugTools_addStringToEnd
 % Adds information to a string. The input is the starter string.
 % The value to add can be a cell array, string, or numeric. 

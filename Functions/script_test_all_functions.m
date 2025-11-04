@@ -12,14 +12,41 @@ close all;
 clc;
 
 
+% repoShortName = '_PlotRoad_';
+repoShortName = '_DebugTools_';
 
-directoryQuery = fullfile(pwd,'Functions','**','*.*');
+directoryQuery = fullfile(pwd,'Functions','*.*');
+% Use the following instead, if wish to do subdirectories
+% directoryQuery = fullfile(pwd,'Functions','**','*.*');
 
-all_files = dir(directoryQuery); %cat(2,'.',filesep,filesep,'script_test_fcn_*.m'));
-N_files = length(all_files);
+fileList = dir(directoryQuery); %cat(2,'.',filesep,filesep,'script_test_fcn_*.m'));
+
+
+% Filter out directories from the list
+fileList = fileList(~[fileList.isdir]);
+
+%% Make sure there's no 'clc' or 'clear all' commands
+queryString = 'clc';
+flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (-1));
+if sum(flagsStringWasFoundInFiles)>1
+    fcn_DebugTools_directoryStringQuery(fileList, queryString, 1);
+    error('A "clc" command was found in one of the functions other than script_test_all_functions - see listing above. This needs to be fixed before continuing because clc commands remove warnings and errors shown during function testing.');
+end
+
+queryString = 'clear all';
+flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (-1));
+if sum(flagsStringWasFoundInFiles)>1
+    fcn_DebugTools_directoryStringQuery(fileList, queryString, 1);
+    error('A "clear all" command was found in one of the functions other than script_test_all_functions - see listing above. This needs to be fixed before continuing because clc commands remove warnings and errors shown during function testing.');
+end
+
+%% Match functions to scripts
+
+N_files = length(fileList);
 testing_times = nan(N_files,1);
 
-diary(fullfile(pwd,'script_test_fcn_DebugTools_all_stdout.txt'));
+outputFile = cat(2,'script_test_fcn',repoShortName,'all_stdout.txt');
+diary(fullfile(pwd,outputFile));
 
 flags_isFile  = zeros(N_files,1);
 flags_isMfile = zeros(N_files,1);
@@ -31,11 +58,11 @@ flags_isMfileTestingScriptWithMatchingFunction = zeros(N_files,1);
 % Check all the files to see which ones should be tested
 for i_script = 1:N_files
     % Is this a file?
-    if ~all_files(i_script).isdir
+    if ~fileList(i_script).isdir
         flags_isFile(i_script,1) = 1;
     end
     
-    file_name_extended = all_files(i_script).name;
+    file_name_extended = fileList(i_script).name;
     
     % Is this an m-file?
     if (1==flags_isFile(i_script,1) ) && length(file_name_extended)>2 && strcmp(file_name_extended(end-1:end),'.m')
@@ -43,7 +70,7 @@ for i_script = 1:N_files
 
         % Is this a repeated m-file?
         for jth_file = 1:N_files
-            nameToTest = all_files(jth_file).name;
+            nameToTest = fileList(jth_file).name;
             if (i_script~=jth_file) && strcmp(file_name_extended,nameToTest)
                 flags_isMfileRepeated(jth_file,1) = 1;
             end
@@ -52,7 +79,7 @@ for i_script = 1:N_files
 
 
     % Is this an m-file testing script?
-    flag_file_was_found = 0;
+    flag_mfile_was_found = 0;
     if (1==flags_isMfile(i_script,1) ) && length(file_name_extended)>19 && strcmp(file_name_extended(1:16),'script_test_fcn_')
         flags_isMfileTestingScript(i_script,1) = 1;
 
@@ -60,16 +87,16 @@ for i_script = 1:N_files
         testMfileName = file_name_extended(13:end);
         fullPath = which(testMfileName);
         for jth_file = 1:N_files
-            listedFullName = fullfile(all_files(jth_file).folder,all_files(jth_file).name);
+            listedFullName = fullfile(fileList(jth_file).folder,fileList(jth_file).name);
             if strcmp(fullPath,listedFullName)
                 flags_isMfileTestedFunction(jth_file,1) = 1;
-                flag_file_was_found = 1;
+                flag_mfile_was_found = 1;
             end
         end
     end
 
     % Is this an m-file testing script with matching function?
-    if (1==flags_isMfileTestingScript(i_script,1) ) && (1==flag_file_was_found)
+    if (1==flags_isMfileTestingScript(i_script,1) ) && (1==flag_mfile_was_found)
         flags_isMfileTestingScriptWithMatchingFunction(i_script,1) = 1;
     end
 
@@ -84,7 +111,7 @@ if ~isempty(indicies_filesToTest)
     fcn_DebugTools_cprintf('*blue','The following scripts were found that will be tested:\n');
     for ith_file = 1:length(indicies_filesToTest)
         currentFileIndex = indicies_filesToTest(ith_file);
-        fprintf(1,'\t%s\n',all_files(currentFileIndex).name)
+        fprintf(1,'\t%s\n',fileList(currentFileIndex).name)
     end    
 end
 
@@ -94,7 +121,7 @@ if ~isempty(indicies_missedFiles)
     fcn_DebugTools_cprintf('*red','The following files were found, but do not seem to be matlab functions or scripts:\n');
     for ith_file = 1:length(indicies_missedFiles)
         currentFileIndex = indicies_missedFiles(ith_file);
-        fcn_DebugTools_cprintf('*red','\t%s\n',all_files(currentFileIndex).name)
+        fcn_DebugTools_cprintf('*red','\t%s\n',fileList(currentFileIndex).name)
     end    
 end
 
@@ -104,7 +131,7 @@ if ~isempty(indicies_missedMfiles)
     fcn_DebugTools_cprintf('*red','The following m-files were found, but do not have a test script:\n');
     for ith_file = 1:length(indicies_missedMfiles)
         currentFileIndex = indicies_missedMfiles(ith_file);
-        fcn_DebugTools_cprintf('*red','\t%s\n',all_files(currentFileIndex).name)
+        fcn_DebugTools_cprintf('*red','\t%s\n',fileList(currentFileIndex).name)
     end    
 end
 
@@ -114,7 +141,7 @@ if ~isempty(indicies_missedScripts)
     fcn_DebugTools_cprintf('*red','The following test scripts were found, but do not have a matching function:\n');
     for ith_file = 1:length(indicies_missedScripts)
         currentFileIndex = indicies_missedScripts(ith_file);
-        fcn_DebugTools_cprintf('*red','\t%s\n',all_files(currentFileIndex).name)
+        fcn_DebugTools_cprintf('*red','\t%s\n',fileList(currentFileIndex).name)
     end    
 end
 
@@ -124,9 +151,23 @@ if ~isempty(indicies_repeatedFiles)
     fcn_DebugTools_cprintf('*red','The following files seem to be repeated:\n');
     for ith_file = 1:length(indicies_repeatedFiles)
         currentFileIndex = indicies_repeatedFiles(ith_file);
-        fcn_DebugTools_cprintf('*red','\t%s\n',all_files(currentFileIndex).name)
+        fcn_DebugTools_cprintf('*red','\t%s\n',fileList(currentFileIndex).name)
     end    
 end
+
+%% Make sure all functions have correct global variables
+temp = fileList(indicies_filesToTest);
+for ith_file = 1:length(temp)
+    temp(ith_file).name = extractAfter(temp(ith_file).name,'script_test_');
+end
+queryString = upper(repoShortName);
+flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(temp, queryString, (-1));
+if ~all(flagsStringWasFoundInFiles)
+    fcn_DebugTools_directoryStringQuery(temp, queryString, 1);
+    warning('backtrace','on');
+    warning('The global variable: %s is expected in every file, but was not found. See above listing.',queryString);
+end
+
 
 %% Test the good scripts
 NtestScripts = length(indicies_filesToTest);
@@ -134,7 +175,7 @@ fprintf(1,'\nSTARTING TESTS:\n');
 allResults = cell(NtestScripts,1);
 for ith_testScript = 1:NtestScripts
     currentFileIndex = indicies_filesToTest(ith_testScript);
-    file_name_extended = all_files(currentFileIndex).name;
+    file_name_extended = fileList(currentFileIndex).name;
     file_name = erase(file_name_extended,'.m');
     file_name_trunc = erase(file_name,'script_');
     fcn_DebugTools_cprintf('*blue','%s\n','   ');

@@ -40,7 +40,12 @@
 % -- updated README.md
 % -- fixed bug in this main script in fcn_DebugTools_queryNumberRange,
 %    % where old output specification was used
+% -- added function fcn_DebugTools_directoryStringQuery
+% -- updated script_test_all_functions
 
+%% To-Do list
+% 2025_XX_XX - Your name, email
+% -- add to-do item here
 
 %% Set up workspace
 if ~exist('flag_DebugTools_Was_Initialized','var')
@@ -462,6 +467,63 @@ flag_matchingType = 1; % Same to same
 flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (fid));
 
 assert(isequal(flags_wasMatched,[1 1 0]'));
+
+%% fcn_DebugTools_directoryStringQuery
+% Searches the given fileList for a queryString, returning 1 if the string
+% is found in the file, 0 otherwise.
+%
+% FORMAT:
+%
+%      fcn_DebugTools_directoryStringQuery(fileList, queryString,(fig_num));
+%
+% INPUTS:
+%
+%      fileList: the output of a directory command, a structure containing
+%      the files to search
+%
+%      queryString: the string to search
+%
+%      (OPTIONAL INPUTS)
+%
+%     fig_num: a figure number to plot results. If set to -1, skips any
+%     input checking or debugging, no figures will be generated, and sets
+%     up code to maximize speed. As well, if given, this forces the
+%     variable types to be displayed as output and as well makes the input
+%     check process verbose
+%
+%
+% OUTPUTS:
+%
+%     flagsStringWasFoundInFiles: for each of the N entries in fileList,
+%     returns logical 1 if the query string is found, 0 if not.
+
+% Basic test case looking for ''ghglglgh (only in this file)'''
+
+fig_num = 10001; 
+titleString = sprintf('DEMO case: Basic test case looking for ''ghglglgh (only in this file)''');
+fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
+figure(fig_num); close(fig_num);
+
+% Get a list of all files in the directory
+fileList = dir(fullfile(pwd,'Functions', '*.*')); % Adjust file extension as needed
+
+% Filter out directories from the list
+fileList = fileList(~[fileList.isdir]);
+
+queryString = 'ghglglgh (only in this file)';
+
+flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (fig_num));
+
+% Check variable types
+assert(islogical(flagsStringWasFoundInFiles))
+
+% Check variable sizes
+assert(size(flagsStringWasFoundInFiles,1)==length(fileList));
+assert(size(flagsStringWasFoundInFiles,2)==1);
+
+% Check variable values
+% This file and the ASV file
+assert(sum(flagsStringWasFoundInFiles)>=1 || (flagsStringWasFoundInFiles)<=2);
 
 %% Input CHecking
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

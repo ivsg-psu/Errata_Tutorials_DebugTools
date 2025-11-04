@@ -65,6 +65,7 @@ This repo provides common tools used for debugging MATLAB codes within IVSG, and
              <li><a href="#sorting-a-directory-listing-by-filename-time">Sorting a directory listing by filename time</li>
              <li><a href="#estimating-directory-processing-time">Calculating and confirming directory processing time</li>
              <li><a href="#comparing-directory-listings">Comparing directory listings</li>
+             <li><a href="#search-a-filelist-for-a-querystring">Search a fileList for a queryStrings</li>
          </ul>
     </li>
     <li><a href="#functions-for-input-checking">Functions for Input Checking</a>
@@ -771,6 +772,76 @@ flag_matchingType = 1; % Same to same
 flags_wasMatched = fcn_DebugTools_compareDirectoryListings(directoryListing_source, sourceRootString, destinationRootString, (flag_matchingType), (fid));
 
 assert(isequal(flags_wasMatched,[1 1 0]'));
+```
+
+<a href="#debugtools">Back to top</a>
+
+***
+
+### Search a fileList for a queryString
+
+fcn_DebugTools_directoryStringQuery
+Searches the given fileList for a queryString, returning 1 if the string
+is found in the file, 0 otherwise.
+
+```Matlab
+
+FORMAT:
+
+     fcn_DebugTools_directoryStringQuery(fileList, queryString,(fig_num));
+
+INPUTS:
+
+     fileList: the output of a directory command, a structure containing
+     the files to search
+
+     queryString: the string to search
+
+     (OPTIONAL INPUTS)
+
+    fig_num: a figure number to plot results. If set to -1, skips any
+    input checking or debugging, no figures will be generated, and sets
+    up code to maximize speed. As well, if given, this forces the
+    variable types to be displayed as output and as well makes the input
+    check process verbose
+
+
+OUTPUTS:
+
+    flagsStringWasFoundInFiles: for each of the N entries in fileList,
+    returns logical 1 if the query string is found, 0 if not.
+
+```
+Here is an example implementation:
+
+```Matlab
+% Basic test case looking for ''ghglglgh (only in this file)'''
+
+fig_num = 10001; 
+titleString = sprintf('DEMO case: Basic test case looking for ''ghglglgh (only in this file)''');
+fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
+figure(fig_num); close(fig_num);
+
+% Get a list of all files in the directory
+fileList = dir(fullfile(pwd,'Functions', '*.*')); % Adjust file extension as needed
+
+% Filter out directories from the list
+fileList = fileList(~[fileList.isdir]);
+
+queryString = 'ghglglgh (only in this file)';
+
+flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (fig_num));
+
+% Check variable types
+assert(islogical(flagsStringWasFoundInFiles))
+
+% Check variable sizes
+assert(size(flagsStringWasFoundInFiles,1)==length(fileList));
+assert(size(flagsStringWasFoundInFiles,2)==1);
+
+% Check variable values
+% This file and the ASV file
+assert(sum(flagsStringWasFoundInFiles)>=1 || (flagsStringWasFoundInFiles)<=2);
 ```
 
 <a href="#debugtools">Back to top</a>

@@ -58,6 +58,9 @@ function indicies_cell_array = fcn_DebugTools_breakArrayByNans(input_array, vara
 %    % were missing
 % -- bug fix in plotting input options (Nargin set wrong)
 
+% TO DO
+% -- Add input argument checking
+
 %% Debugging and Input checks
 
 % Check if flag_max_speed set. This occurs if the fig_num variable input
