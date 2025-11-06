@@ -3,7 +3,7 @@ varargout...
 ] = ...
 fcn_DebugTools_checkInputsToFunctions( ...
 variable, ...
-variable_type_string, ...
+variableTypeString, ...
 varargin...
 ) %#ok<*STOUT,*INUSD>
 % fcn_DebugTools_checkInputsToFunctions
@@ -29,7 +29,7 @@ varargin...
 %    ] = ...
 %    fcn_DebugTools_checkInputsToFunctions( ...
 %    variable, ...
-%    variable_type_string, ...
+%    variableTypeString, ...
 %    (required_length), ...
 %    (fig_num) ...
 %    )
@@ -38,7 +38,7 @@ varargin...
 % 
 %     variable: the variable to check
 % 
-%     variable_type_string: a string representing the variable type to 
+%     variableTypeString: a string representing the variable type to 
 %     check. Call the function with any figure number to see allowable 
 %     options.
 % 
@@ -83,7 +83,6 @@ varargin...
 
 % 
 % REVISION HISTORY:
-% 
 % 2021_12_12 by S. Brennan
 % -- first write of function
 % 2022_04_03 by S. Brennan
@@ -104,24 +103,52 @@ varargin...
 % 2025_07_18 by S. Brennan
 % -- added positive and strictly positive variable checking to
 %    checkInputsToFunctions
+% 2025_11_06 by S. Brennan
+% -- updated header and input checking to current format
+% -- updated plotting flag name, for consistency
+%    % * from flag_do_plot
+%    % * to flag_do_plots
+% -- changed input variable name for consistency
+%    % * from variable_type_string
+%    % * to variableTypeString
 
 % 
 % TO DO:
-% 
 % -- fill in to-do items here.
 
 %% Debugging and Input checks
-flag_check_inputs = 1; % Set equal to 1 to check the input arguments 
-flag_do_plot = 0;      % Set equal to 1 for plotting 
-flag_do_debug = 0;     % Set equal to 1 for debugging 
+
+% Check if flag_max_speed set. This occurs if the fig_num variable input
+% argument (varargin) is given a number of -1, which is not a valid figure
+% number.
+MAX_NARGIN = 4; % The largest Number of argument inputs to the function
+flag_max_speed = 0;
+if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
+    flag_do_debug = 0; % % % % Flag to plot the results for debugging
+    flag_check_inputs = 0; % Flag to perform input checking
+    flag_max_speed = 1;
+else
+    % Check to see if we are externally setting debug mode to be "on"
+    flag_do_debug = 0; % % % % Flag to plot the results for debugging
+    flag_check_inputs = 1; % Flag to perform input checking
+    MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
+    MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
+    if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
+        flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG); 
+        flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
+    end
+end
+
+% flag_do_debug = 1;
 
 if flag_do_debug
-    fig_for_debug = 159;
     st = dbstack; %#ok<*UNRCH>
     fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-end 
-
-%% check input arguments?
+    debug_fig_num = 999978;
+else
+    debug_fig_num = [];
+end
+%% check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   _____                   _
 %  |_   _|                 | |
@@ -134,17 +161,36 @@ end
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-if 1 == flag_check_inputs
-    if nargout==0
+if 0 == flag_max_speed
+    if flag_check_inputs == 1
         % Are there the right number of inputs?
-        narginchk(2,4);
-        
-        % Check the variable_type_string input, make sure it is characters
-        if ~ischar(variable_type_string)
-            error('The variable_type_string input must be a character type, for example: ''Path'' ');
+        narginchk(0,MAX_NARGIN);
+
+        if nargin>=2
+            % Check the variableTypeString input, make sure it is characters
+            if ~ischar(variableTypeString)
+                error('The variableTypeString input must be a character type, for example: ''Path'' ');
+            end
         end
+
     end
+end
+
+% Check to see if user specifies fig_num?
+flag_do_plots = 0; % Default is to NOT show plots
+if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
+    temp = varargin{end};
+    if ~isempty(temp)
+        fig_num = temp;
+        flag_do_plots = 1;
+    end
+end
+
+% Setup figures if there is debugging
+if flag_do_debug
+    fig_debug = 159; 
+else
+    fig_debug = []; %#ok<*NASGU>
 end
 
 %% Start of main code
@@ -182,7 +228,7 @@ if nargin == 3
 end
 
 % Grab flag settings for current input
-flags = INTERNAL_fcn_setFlagsByType(flags,variable_type_string);
+flags = INTERNAL_fcn_setFlagsByType(flags,variableTypeString);
 
 % Check that variable meets requirements
 INTERNAL_confirmVariable(flags,variable,variable_name);
@@ -204,7 +250,7 @@ INTERNAL_confirmVariable(flags,variable,variable_name);
 
 
 
-if flag_do_plot
+if flag_do_plots
     % Nothing to plot here
 end % Ends the flag_do_plot if statement    
 
@@ -261,40 +307,40 @@ flags.third_input = [];
 end
 
 %%
-function flags = INTERNAL_fcn_setFlagsByType(flags, variable_type_string)
+function flags = INTERNAL_fcn_setFlagsByType(flags, variableTypeString)
 
 flag_pattern_was_matched = 0;
 
 % Convert path library variable types into regular queries
-if strcmp(variable_type_string,'station')
-    variable_type_string = '1column_of_numbers';
+if strcmp(variableTypeString,'station')
+    variableTypeString = '1column_of_numbers';
 end
-if strcmp(variable_type_string,'stations')
-    variable_type_string = '1column_of_numbers';
+if strcmp(variableTypeString,'stations')
+    variableTypeString = '1column_of_numbers';
     flags.check_requiredRowLength = 1;     % Must check for required length
     flags.rowLengthRangeRequired = [2 3];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
 end
-if strcmp(variable_type_string,'path')
-    variable_type_string = '2column_of_numbers';
+if strcmp(variableTypeString,'path')
+    variableTypeString = '2column_of_numbers';
     flags.check_requiredRowLength = 1;     % Must check for required length
     flags.rowLengthRangeRequired = [2 3];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
 end
-if strcmp(variable_type_string,'path2or3D')
-    variable_type_string = '2or3column_of_numbers';
+if strcmp(variableTypeString,'path2or3D')
+    variableTypeString = '2or3column_of_numbers';
     flags.check_requiredRowLength = 1;     % Must check for required length
     flags.rowLengthRangeRequired = [2 3];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
 end
-if strcmp(variable_type_string,'elevated_path')
-    variable_type_string = '3column_of_numbers';
+if strcmp(variableTypeString,'elevated_path')
+    variableTypeString = '3column_of_numbers';
     flags.check_requiredRowLength = 1;     % Must check for required length
     flags.rowLengthRangeRequired = [2 3];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
 end
-if strcmp(variable_type_string,'paths')
-    variable_type_string = '2column_of_numbers';
+if strcmp(variableTypeString,'paths')
+    variableTypeString = '2column_of_numbers';
     flags.check_requiredRowLength = 1;     % Must check for required length
     flags.rowLengthRangeRequired = [3 4];  % Set to [x y]. Variable must be x or greater if y>x, =x if y=x, x or less if y<x
 end
-if strcmpi(variable_type_string,'likestructure')
+if strcmpi(variableTypeString,'likestructure')
     flags.check_likeStructure = 1; % Check that result is like a particular structure
     template_structure = flags.third_input; % This is where the 3rd input is stored
     if ~isstruct(template_structure)
@@ -305,7 +351,7 @@ if strcmpi(variable_type_string,'likestructure')
     flags.check_requiredRowLength = 0;     % Override the flag by 3-argument input, since it is a structure
     flag_pattern_was_matched = 1;
 end
-if strcmpi(variable_type_string,'traversal')
+if strcmpi(variableTypeString,'traversal')
     flags.check_likeStructure = 1; % Check that result is like a particular structure
     template_structure = ...
         struct(...
@@ -317,7 +363,7 @@ if strcmpi(variable_type_string,'traversal')
     flags.structureToBeLikeName = 'traversal';
     flag_pattern_was_matched = 1;
 end
-if strcmpi(variable_type_string,'traversals')
+if strcmpi(variableTypeString,'traversals')
     flags.check_likeStructure = 0; % Do NOT check that this is a structure
     template_structure = ...
         struct(...
@@ -336,15 +382,15 @@ end
 
 % Check the "Ncolumn_of" pattern, where N is a digit
 pattern = digitsPattern(1)+"column_of";
-if contains(variable_type_string,pattern)
-    match = extract(variable_type_string,pattern);
+if contains(variableTypeString,pattern)
+    match = extract(variableTypeString,pattern);
     string_result = match{1};
     ncols_max = str2double(string_result(1));
 
     % Check for NorMcolumn_of format
     pattern = digitsPattern(1)+"or"+digitsPattern(1)+"column_of";
-    if contains(variable_type_string,pattern)
-        match = extract(variable_type_string,pattern);
+    if contains(variableTypeString,pattern)
+        match = extract(variableTypeString,pattern);
         string_result = match{1};
         ncols_min = str2double(string_result(1));
     else
@@ -362,9 +408,9 @@ end
 
 % Check the "NorMorecolumn_of" pattern, where N is a digit
 pattern = digitsPattern(1)+"orMorecolumn_of";
-if contains(variable_type_string,pattern)
+if contains(variableTypeString,pattern)
     
-    match = extract(variable_type_string,pattern);
+    match = extract(variableTypeString,pattern);
     string_result = match{1};
     ncols_min = str2double(string_result(1));
     ncols_max = inf;
@@ -382,12 +428,12 @@ end
 
 % positive_XXX and strictlypositive_XXX
 pattern = 'positive_';
-if contains(variable_type_string,pattern)
+if contains(variableTypeString,pattern)
     flags.check_if_positive = 1;
     flag_pattern_was_matched = 1;
 
     pattern = 'strictlypositive_';
-    if contains(variable_type_string,pattern)
+    if contains(variableTypeString,pattern)
         flags.check_if_positive = 0; % No need to check this also
         flags.check_if_strictly_positive = 1; 
     end
@@ -396,55 +442,55 @@ end
 
 % XXX_of_numbers
 pattern = '_of_numbers';
-if contains(variable_type_string,pattern)
+if contains(variableTypeString,pattern)
     flags.check_if_numeric = 1; % Check that the variable is numeric
     flag_pattern_was_matched = 1;
 end
 
 % XXX_of_integers
 pattern = '_of_integers';
-if contains(variable_type_string,pattern)
+if contains(variableTypeString,pattern)
     flags.check_if_integer = 1; % Check that the variable is an integer
     flag_pattern_was_matched = 1;
 end
 
 % XXX_of_mixed
 pattern = '_of_mixed';
-if contains(variable_type_string,pattern)
+if contains(variableTypeString,pattern)
     flags.check_if_noNaN = 0; % Removes check that it be numeric
     flag_pattern_was_matched = 1;
 end
 
 % XXX_of_chars
 pattern = '_of_chars';
-if contains(variable_type_string,pattern)
+if contains(variableTypeString,pattern)
     flags.check_if_char = 1; % Check that the variable is a char
     flag_pattern_was_matched = 1;
 end
 
 % XXX_of_strings
 pattern = '_of_strings';
-if contains(variable_type_string,pattern)
+if contains(variableTypeString,pattern)
     flags.check_if_string = 1; % Check that the variable is a string
     flag_pattern_was_matched = 1;
 end
 
 % DoesFileExist
 pattern = 'DoesFileExist';
-if contains(variable_type_string,pattern)
+if contains(variableTypeString,pattern)
     flags.check_if_doesFileExist = 1; % Check that the variable is a string
     flag_pattern_was_matched = 1;
 end
 
 % DoesDirectoryExist
 pattern = 'DoesDirectoryExist';
-if contains(variable_type_string,pattern)
+if contains(variableTypeString,pattern)
     flags.check_if_doesDirectoryExist = 1; % Check that the variable is a string
     flag_pattern_was_matched = 1;
 end
 
 % polytopes
-if strcmpi(variable_type_string,'polytopes')
+if strcmpi(variableTypeString,'polytopes')
     flags.check_likeStructure = 1; % Check that result is like a particular structure
     template_structure = ...
         struct(...
@@ -461,7 +507,7 @@ if strcmpi(variable_type_string,'polytopes')
 end
 
 % mixedset
-if strcmpi(variable_type_string,'mixedset')
+if strcmpi(variableTypeString,'mixedset')
     flags.check_likeStructure = 1; % Check that result is like a particular structure
     template_structure = ...
         struct(...
@@ -474,7 +520,7 @@ if strcmpi(variable_type_string,'mixedset')
 end
 
 if 0==flag_pattern_was_matched
-    error('The variable type: %s is not defined in context of error checking.',variable_type_string);
+    error('The variable type: %s is not defined in context of error checking.',variableTypeString);
 end
 
 end % Ends INTERNAL_fcn_setFlagsByType

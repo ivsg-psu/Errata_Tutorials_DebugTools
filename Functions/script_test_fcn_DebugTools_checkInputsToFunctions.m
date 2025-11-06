@@ -28,6 +28,10 @@
 % 2025_07_18 by S. Brennan
 % -- added positive and strictly positive variable checking to
 %    checkInputsToFunctions
+% 2025_11_06 by S. Brennan
+% -- added 'column_of_mixed' example to demonstrate nan inputs on
+%    % 2_column_of_numbers
+
 
 
 %% Echo options
@@ -126,6 +130,26 @@ fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'positive_1column_
 
 column_of_numbers_test = [4; 3; 2];
 fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'positive_1column_of_numbers',3);
+
+
+
+%% 2column_of_mixed
+%  ___           _                               __           _              _
+% |__ \         | |                             / _|         (_)            | |
+%    ) |___ ___ | |_   _ _ __ ___  _ __    ___ | |_ _ __ ___  ___  _____  __| |
+%   / // __/ _ \| | | | | '_ ` _ \| '_ \  / _ \|  _| '_ ` _ \| \ \/ / _ \/ _` |
+%  / /| (_| (_) | | |_| | | | | | | | | || (_) | | | | | | | | |>  <  __/ (_| |
+% |____\___\___/|_|\__,_|_| |_| |_|_| |_| \___/|_| |_| |_| |_|_/_/\_\___|\__,_|
+%                                     ______   ______
+%                                    |______| |______|
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=2column_of_mixed&x=none&v=4&h=4&w=80&we=false
+
+%% Test the column_of_mixed type (success)
+Twocolumn_of_numbers_test = [4 2];
+fcn_DebugTools_checkInputsToFunctions(Twocolumn_of_numbers_test, '2column_of_mixed');
+
+Twocolumn_of_numbers_test = [4 1; 3 0; nan nan; 2 5];
+fcn_DebugTools_checkInputsToFunctions(Twocolumn_of_numbers_test, '2column_of_mixed');
 
 
 %% 2column_of_numbers
