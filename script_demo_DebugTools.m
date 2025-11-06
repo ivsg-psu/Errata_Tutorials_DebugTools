@@ -42,6 +42,18 @@
 %    % where old output specification was used
 % -- added function fcn_DebugTools_directoryStringQuery
 % -- updated script_test_all_functions
+% 2025_11_06 by S. Brennan
+% - In script_test_fcn_DebugTools_checkInputsToFunctions
+%   % * added 'column_of_mixed' example to demonstrate nan inputs on
+%   %   % 2_column_of_numbers
+% - In fcn_DebugTools_checkInputsToFunctions
+%   % * updated header and input checking to current format
+%   % * updated plotting flag name, for consistency
+%   %   % -- from flag_do_plot
+%   %   % -- to flag_do_plots
+%   % * changed input variable name for consistency
+%   %   % -- from variable_type_string
+%   %   % -- to variableTypeString
 
 %% To-Do list
 % 2025_XX_XX - Your name, email
