@@ -7,12 +7,19 @@
 % For example:
 % type('script_test_fcn_geometry_all_stdout.txt')
 
+% REVISION HISTORY:
+% 2025_11_06 by Sean Brennan
+% -- Started revision history 
+% -- Updated clc and clear all checking to avoid checking this file
+% -- Added subfunction (INTERNAL) to check for this issue
+
+
 % clearvars; 
 close all; 
 clc;
 
 
-% repoShortName = '_PlotRoad_';
+% repoShortName = '_MapGen_';
 repoShortName = '_DebugTools_';
 
 directoryQuery = fullfile(pwd,'Functions','*.*');
@@ -27,14 +34,16 @@ fileList = fileList(~[fileList.isdir]);
 
 %% Make sure there's no 'clc' or 'clear all' commands
 queryString = 'clc';
-flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (-1));
-if sum(flagsStringWasFoundInFiles)>1
+flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileList, queryString, (-1));
+flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileList,'script_test_all_functions');
+if sum(flagsStringWasFoundInFiles)>0
     fcn_DebugTools_directoryStringQuery(fileList, queryString, 1);
     error('A "clc" command was found in one of the functions other than script_test_all_functions - see listing above. This needs to be fixed before continuing because clc commands remove warnings and errors shown during function testing.');
 end
 
 queryString = 'clear all';
-flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (-1));
+flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileList, queryString, (-1));
+flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileList,'script_test_all_functions');
 if sum(flagsStringWasFoundInFiles)>1
     fcn_DebugTools_directoryStringQuery(fileList, queryString, 1);
     error('A "clear all" command was found in one of the functions other than script_test_all_functions - see listing above. This needs to be fixed before continuing because clc commands remove warnings and errors shown during function testing.');
@@ -48,12 +57,13 @@ testing_times = nan(N_files,1);
 outputFile = cat(2,'script_test_fcn',repoShortName,'all_stdout.txt');
 diary(fullfile(pwd,outputFile));
 
-flags_isFile  = zeros(N_files,1);
-flags_isMfile = zeros(N_files,1);
-flags_isMfileRepeated = zeros(N_files,1);
-flags_isMfileTestingScript = zeros(N_files,1);
-flags_isMfileTestedFunction = zeros(N_files,1);
-flags_isMfileTestingScriptWithMatchingFunction = zeros(N_files,1);
+flags_isFile  = zeros(N_files,1); % All files (excludes directories)
+flags_isMfile = zeros(N_files,1); % File has a .m extension
+flags_isMfileFunction = zeros(N_files,1); % File starts with fcn_
+flags_isMfileRepeated = zeros(N_files,1); % File is repeated between folders
+flags_isMfileTestingScript = zeros(N_files,1); % File starts with script_test_fcn_
+flags_isMfileTestedFunction = zeros(N_files,1); % File is a fcn_XXX and there's a script_test_XXX that tests it
+flags_isMfileTestingScriptWithMatchingFunction = zeros(N_files,1); % File is a script_test_XXX that matches a function
 
 % Check all the files to see which ones should be tested
 for i_script = 1:N_files
@@ -77,10 +87,14 @@ for i_script = 1:N_files
         end
     end
 
+    % Is this an m-file function?
+    if (1==flags_isMfile(i_script,1)) && length(file_name_extended)>7 && strcmp(file_name_extended(1:4),'fcn_')
+        flags_isMfileFunction(i_script,1) = 1;
+    end
 
     % Is this an m-file testing script?
     flag_mfile_was_found = 0;
-    if (1==flags_isMfile(i_script,1) ) && length(file_name_extended)>19 && strcmp(file_name_extended(1:16),'script_test_fcn_')
+    if (1==flags_isMfileFunction(i_script,1) ) && length(file_name_extended)>19 && strcmp(file_name_extended(1:16),'script_test_fcn_')
         flags_isMfileTestingScript(i_script,1) = 1;
 
         % Mark the corresponding m-file as tested
@@ -199,3 +213,26 @@ ylabel('Elapsed time to test (sec)');
 
 
 
+
+%% Functions follow
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   ______                _   _                 
+%  |  ____|              | | (_)                
+%  | |__ _   _ _ __   ___| |_ _  ___  _ __  ___ 
+%  |  __| | | | '_ \ / __| __| |/ _ \| '_ \/ __|
+%  | |  | |_| | | | | (__| |_| | (_) | | | \__ \
+%  |_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/
+%                                               
+% See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+
+%% fcn_INTERNAL_removeFromList
+function newFlags = fcn_INTERNAL_removeFromList(flagsToFix, fileList,fileToRemove)
+% Remove this function from list
+newFlags = flagsToFix;
+for ith_file = 1:length(fileList)
+    if contains(fileList(ith_file).name,fileToRemove)
+        newFlags(ith_file) = false;
+    end
+end
+end % Ends fcn_INTERNAL_removeFromList
