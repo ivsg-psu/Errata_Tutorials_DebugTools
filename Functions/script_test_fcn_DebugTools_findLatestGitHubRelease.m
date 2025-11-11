@@ -7,6 +7,8 @@
 % 2025_11_07 - S. Brennan
 % -- first write of script, using
 % script_test_fcn_VGraph_addObstacle as a starter
+% 2025_11_11 - S. Brennan
+% -- added fastmode testing
 
 % TO DO:
 % -- set up fast mode tests
@@ -40,7 +42,7 @@ figure(figNum); clf;
 
 owner = 'ivsg-psu';
 repo = 'FieldDataCollection_VisualizingFieldData_PlotRoad';
-latestRelease = findLatestGitHubRelease(owner, repo, figNum);
+latestRelease = fcn_DebugTools_findLatestGitHubRelease(owner, repo, (figNum));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -63,7 +65,7 @@ figure(figNum); clf;
 
 owner = 'ivsg-psu';
 repo = 'FieldDataCollection_VisualizingFieldData_PlotRoad';
-latestRelease = findLatestGitHubRelease(owner, repo, []);
+latestRelease = fcn_DebugTools_findLatestGitHubRelease(owner, repo, ([]));
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -121,256 +123,94 @@ fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
 close all;
 fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 
-% %% Basic example - NO FIGURE
-% figNum = 80001;
-% fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
-% figure(figNum); close(figNum);
-% 
-% dataFileName = 'DATA_fcn_VGraph_addObstacle_polytopeMapForTesting.mat';
-% fullDataFileWithPath = fullfile(pwd,'Data',dataFileName);
-% if exist(fullDataFileWithPath, 'file')
-%     load(fullDataFileWithPath,'polytopes');
-% else
-%     % Create polytope field
-%     raw_polytopes = fcn_MapGen_generatePolysFromSeedGeneratorNames('haltonset', [1 25],[], ([100 100]), (-1));
-% 
-%     % Trim polytopes on edge of boundary
-%     trim_polytopes = fcn_MapGen_polytopesDeleteByAABB( raw_polytopes, [0.1 0.1 99.9 99.9], (-1));
-% 
-%     % Shrink polytopes to form obstacle field
-%     polytopes = fcn_MapGen_polytopesShrinkEvenly(trim_polytopes, 2.5, (-1));
-% 
-%     % Set costs to uniform values
-%     for ith_poly = 1:length(polytopes)
-%         polytopes(ith_poly).cost = 0.4;
-%     end
-% 
-%     save(fullDataFileWithPath,'polytopes');
-% 
-% end
-% 
-% % Create pointsWithData matrix
-% startXY = [0, 50];
-% finishXY = [100, 50];
-% 
-% pointsWithData = fcn_VGraph_polytopesGenerateAllPtsTable(polytopes, startXY, finishXY, -1);
-% 
-% startPointData = pointsWithData(end-1,:);
-% finishPointData = pointsWithData(end,:);
-% 
-% % Create visibility graph
-% isConcave = [];
-% visibilityMatrix =fcn_VGraph_clearAndBlockedPointsGlobal(polytopes, pointsWithData, pointsWithData, (isConcave),(-1));
-% 
-% % add a polytope
-% polytopeToAdd = polytopes(1);
-% polytopeToAdd.xv = 0.5*polytopeToAdd.xv + 55;
-% polytopeToAdd.yv = 0.5*polytopeToAdd.yv - 10;
-% polytopeToAdd.vertices = [polytopeToAdd.xv' polytopeToAdd.yv'];
-% 
-% % Update visibilityMatrix with new polytope added
-% [newVisibilityMatrix, newPointsWithData, newStartPointData, newFinishPointData, newPolytopes] = ...
-%     fcn_VGraph_addObstacle(...
-%     visibilityMatrix, pointsWithData, startPointData, finishPointData, polytopes, polytopeToAdd, ([]));
-% 
-% % Check variable types
-% assert(isnumeric(newVisibilityMatrix));
-% assert(isnumeric(newPointsWithData));
-% assert(isnumeric(newStartPointData));
-% assert(isnumeric(newFinishPointData));
-% assert(isstruct(newPolytopes));
-% 
-% % Check variable sizes
-% NpointsOriginal= length(pointsWithData(:,1));
-% NpointsAdded = length(polytopeToAdd.vertices(:,1));
-% NpointsNew = NpointsOriginal + NpointsAdded;
-% assert(size(newVisibilityMatrix,1)==NpointsNew); 
-% assert(size(newVisibilityMatrix,2)==NpointsNew); 
-% assert(size(newPointsWithData,1)==NpointsNew); 
-% assert(size(newPointsWithData,2)==5); 
-% assert(size(newStartPointData,1)==1); 
-% assert(size(newStartPointData,2)==5); 
-% assert(size(newFinishPointData,1)==1); 
-% assert(size(newFinishPointData,2)==5); 
-% assert(size(newPolytopes,1)==1); 
-% assert(size(newPolytopes,2)==size(polytopes,2)+1); 
-% 
-% % Make sure plot did NOT open up
-% figHandles = get(groot, 'Children');
-% assert(~any(figHandles==figNum));
-% 
-% 
-% %% Basic fast mode - NO FIGURE, FAST MODE
-% figNum = 80002;
-% fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
-% figure(figNum); close(figNum);
-% 
-% 
-% dataFileName = 'DATA_fcn_VGraph_addObstacle_polytopeMapForTesting.mat';
-% fullDataFileWithPath = fullfile(pwd,'Data',dataFileName);
-% if exist(fullDataFileWithPath, 'file')
-%     load(fullDataFileWithPath,'polytopes');
-% else
-%     % Create polytope field
-%     raw_polytopes = fcn_MapGen_generatePolysFromSeedGeneratorNames('haltonset', [1 25],[], ([100 100]), (-1));
-% 
-%     % Trim polytopes on edge of boundary
-%     trim_polytopes = fcn_MapGen_polytopesDeleteByAABB( raw_polytopes, [0.1 0.1 99.9 99.9], (-1));
-% 
-%     % Shrink polytopes to form obstacle field
-%     polytopes = fcn_MapGen_polytopesShrinkEvenly(trim_polytopes, 2.5, (-1));
-% 
-%     % Set costs to uniform values
-%     for ith_poly = 1:length(polytopes)
-%         polytopes(ith_poly).cost = 0.4;
-%     end
-% 
-%     save(fullDataFileWithPath,'polytopes');
-% 
-% end
-% 
-% % Create pointsWithData matrix
-% startXY = [0, 50];
-% finishXY = [100, 50];
-% 
-% pointsWithData = fcn_VGraph_polytopesGenerateAllPtsTable(polytopes, startXY, finishXY, -1);
-% 
-% startPointData = pointsWithData(end-1,:);
-% finishPointData = pointsWithData(end,:);
-% 
-% % Create visibility graph
-% isConcave = [];
-% visibilityMatrix =fcn_VGraph_clearAndBlockedPointsGlobal(polytopes, pointsWithData, pointsWithData, (isConcave),(-1));
-% 
-% % add a polytope
-% polytopeToAdd = polytopes(1);
-% polytopeToAdd.xv = 0.5*polytopeToAdd.xv + 55;
-% polytopeToAdd.yv = 0.5*polytopeToAdd.yv - 10;
-% polytopeToAdd.vertices = [polytopeToAdd.xv' polytopeToAdd.yv'];
-% 
-% % Update visibilityMatrix with new polytope added
-% [newVisibilityMatrix, newPointsWithData, newStartPointData, newFinishPointData, newPolytopes] = ...
-%     fcn_VGraph_addObstacle(...
-%     visibilityMatrix, pointsWithData, startPointData, finishPointData, polytopes, polytopeToAdd, (-1));
-% 
-% % Check variable types
-% assert(isnumeric(newVisibilityMatrix));
-% assert(isnumeric(newPointsWithData));
-% assert(isnumeric(newStartPointData));
-% assert(isnumeric(newFinishPointData));
-% assert(isstruct(newPolytopes));
-% 
-% % Check variable sizes
-% NpointsOriginal= length(pointsWithData(:,1));
-% NpointsAdded = length(polytopeToAdd.vertices(:,1));
-% NpointsNew = NpointsOriginal + NpointsAdded;
-% assert(size(newVisibilityMatrix,1)==NpointsNew); 
-% assert(size(newVisibilityMatrix,2)==NpointsNew); 
-% assert(size(newPointsWithData,1)==NpointsNew); 
-% assert(size(newPointsWithData,2)==5); 
-% assert(size(newStartPointData,1)==1); 
-% assert(size(newStartPointData,2)==5); 
-% assert(size(newFinishPointData,1)==1); 
-% assert(size(newFinishPointData,2)==5); 
-% assert(size(newPolytopes,1)==1); 
-% assert(size(newPolytopes,2)==size(polytopes,2)+1); 
-% 
-% % Make sure plot did NOT open up
-% figHandles = get(groot, 'Children');
-% assert(~any(figHandles==figNum));
-% 
-% 
-% %% Compare speeds of pre-calculation versus post-calculation versus a fast variant
-% figNum = 80003;
-% fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
-% figure(figNum);
-% close(figNum);
-% 
-% 
-% dataFileName = 'DATA_fcn_VGraph_addObstacle_polytopeMapForTesting.mat';
-% fullDataFileWithPath = fullfile(pwd,'Data',dataFileName);
-% if exist(fullDataFileWithPath, 'file')
-%     load(fullDataFileWithPath,'polytopes');
-% else
-%     % Create polytope field
-%     raw_polytopes = fcn_MapGen_generatePolysFromSeedGeneratorNames('haltonset', [1 25],[], ([100 100]), (-1));
-% 
-%     % Trim polytopes on edge of boundary
-%     trim_polytopes = fcn_MapGen_polytopesDeleteByAABB( raw_polytopes, [0.1 0.1 99.9 99.9], (-1));
-% 
-%     % Shrink polytopes to form obstacle field
-%     polytopes = fcn_MapGen_polytopesShrinkEvenly(trim_polytopes, 2.5, (-1));
-% 
-%     % Set costs to uniform values
-%     for ith_poly = 1:length(polytopes)
-%         polytopes(ith_poly).cost = 0.4;
-%     end
-% 
-%     save(fullDataFileWithPath,'polytopes');
-% 
-% end
-% 
-% % Create pointsWithData matrix
-% startXY = [0, 50];
-% finishXY = [100, 50];
-% 
-% pointsWithData = fcn_VGraph_polytopesGenerateAllPtsTable(polytopes, startXY, finishXY, -1);
-% 
-% startPointData = pointsWithData(end-1,:);
-% finishPointData = pointsWithData(end,:);
-% 
-% % Create visibility graph
-% isConcave = [];
-% visibilityMatrix =fcn_VGraph_clearAndBlockedPointsGlobal(polytopes, pointsWithData, pointsWithData, (isConcave),(-1));
-% 
-% % add a polytope
-% polytopeToAdd = polytopes(1);
-% polytopeToAdd.xv = 0.5*polytopeToAdd.xv + 55;
-% polytopeToAdd.yv = 0.5*polytopeToAdd.yv - 10;
-% polytopeToAdd.vertices = [polytopeToAdd.xv' polytopeToAdd.yv'];
-% 
-% Niterations = 3;
-% 
-% % Do calculation without pre-calculation
-% tic;
-% for ith_test = 1:Niterations
-%     % Update visibilityMatrix with new polytope added
-%     [newVisibilityMatrix, newPointsWithData, newStartPointData, newFinishPointData, newPolytopes] = ...
-%         fcn_VGraph_addObstacle(...
-%         visibilityMatrix, pointsWithData, startPointData, finishPointData, polytopes, polytopeToAdd, ([]));
-% end
-% slow_method = toc;
-% 
-% % Do calculation with pre-calculation, FAST_MODE on
-% tic;
-% for ith_test = 1:Niterations
-%     % Update visibilityMatrix with new polytope added
-%     [newVisibilityMatrix, newPointsWithData, newStartPointData, newFinishPointData, newPolytopes] = ...
-%         fcn_VGraph_addObstacle(...
-%         visibilityMatrix, pointsWithData, startPointData, finishPointData, polytopes, polytopeToAdd, (-1));
-% end
-% fast_method = toc;
-% 
-% % Make sure plot did NOT open up
-% figHandles = get(groot, 'Children');
-% assert(~any(figHandles==figNum));
-% 
-% % Plot results as bar chart
-% figure(373737);
-% clf;
-% hold on;
-% 
-% X = categorical({'Normal mode','Fast mode'});
-% X = reordercats(X,{'Normal mode','Fast mode'}); % Forces bars to appear in this exact order, not alphabetized
-% Y = [slow_method fast_method ]*1000/Niterations;
-% bar(X,Y)
-% ylabel('Execution time (Milliseconds)')
-% 
-% 
-% % Make sure plot did NOT open up
-% figHandles = get(groot, 'Children');
-% assert(~any(figHandles==figNum));
-% 
+%% Basic example - NO FIGURE
+figNum = 80001;
+fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
+figure(figNum); close(figNum);
+
+owner = 'ivsg-psu';
+repo = 'FieldDataCollection_VisualizingFieldData_PlotRoad';
+latestRelease = fcn_DebugTools_findLatestGitHubRelease(owner, repo, ([]));
+
+% Check variable types
+assert(isstruct(latestRelease));
+
+% Check variable sizes
+assert(size(latestRelease,1)==1); 
+assert(size(latestRelease,2)==1); 
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
+
+
+%% Basic fast mode - NO FIGURE, FAST MODE
+figNum = 80002;
+fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
+figure(figNum); close(figNum);
+
+
+owner = 'ivsg-psu';
+repo = 'FieldDataCollection_VisualizingFieldData_PlotRoad';
+latestRelease = fcn_DebugTools_findLatestGitHubRelease(owner, repo, (-1));
+
+% Check variable types
+assert(isstruct(latestRelease));
+
+% Check variable sizes
+assert(size(latestRelease,1)==1); 
+assert(size(latestRelease,2)==1); 
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
+
+
+%% Compare speeds of pre-calculation versus post-calculation versus a fast variant
+figNum = 80003;
+fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
+figure(figNum);
+close(figNum);
+
+owner = 'ivsg-psu';
+repo = 'FieldDataCollection_VisualizingFieldData_PlotRoad';
+
+Niterations = 10;
+
+% Do calculation without pre-calculation
+tic;
+for ith_test = 1:Niterations
+    latestRelease = fcn_DebugTools_findLatestGitHubRelease(owner, repo, ([]));
+end
+slow_method = toc;
+
+% Do calculation with pre-calculation, FAST_MODE on
+tic;
+for ith_test = 1:Niterations
+    latestRelease = fcn_DebugTools_findLatestGitHubRelease(owner, repo, (-1));
+end
+fast_method = toc;
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
+
+% Plot results as bar chart
+figure(373737);
+clf;
+hold on;
+
+X = categorical({'Normal mode','Fast mode'});
+X = reordercats(X,{'Normal mode','Fast mode'}); % Forces bars to appear in this exact order, not alphabetized
+Y = [slow_method fast_method ]*1000/Niterations;
+bar(X,Y)
+ylabel('Execution time (Milliseconds)')
+
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
+
 
 
 %% BUG cases

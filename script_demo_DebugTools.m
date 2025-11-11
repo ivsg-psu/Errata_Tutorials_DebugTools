@@ -54,6 +54,13 @@
 %   % * changed input variable name for consistency
 %   %   % -- from variable_type_string
 %   %   % -- to variableTypeString
+% - Added script_test_fcn_DebugTools_findLatestGitHubRelease
+%   % * checks for latest releases
+% 2025_11_11 by S. Brennan
+% - In script_test_fcn_DebugTools_findLatestGitHubRelease
+%   % * Updated incorrect function calls, added fastmode testing
+% - Added fcn_DebugTools_autoInstallRepos
+%   % * Automatically checks if repo installs are latest
 
 %% To-Do list
 % 2025_XX_XX - Your name, email
