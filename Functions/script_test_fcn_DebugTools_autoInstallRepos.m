@@ -10,54 +10,11 @@
 % TO DO
 % -- Add input argument checking
 
-% Clear prior global variable flags
-clear global FLAG_*
-close all
-
-% Set to 1 to see the warnings go by. Should keep off for people who are
-% not familiar with code.
-flag_show_warnings = 0; 
-
 
 %% Basic test case
 % NOTE: this installs under the current directory!
 % Define the name of subfolder to be created in "Utilities" subfolder
-dependency_name = 'DebugTools_v2023_01_25';
 
-% Define sub-subfolders that are in the code package that also need to be
-% added to the MATLAB path after install. Leave empty ({}) to only add
-% the subfolder path without any sub-subfolder path additions.
-dependencySubfolders = {'Functions','Data'};
-
-% Define a universal resource locator (URL) pointing to the zip file to
-% install. For example, here is the zip file location to the Debugtools
-% package on GitHub:
-dependencyURLs = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
-
-% Call the function to do the install
-fcn_DebugTools_autoInstallRepos(dependency_name, dependencySubfolders, dependencyURLs)
-
-disp('Library installed! Verify this now, as it will be deleted to complete the demo');
-disp('Paused. Hit any key to continue...');
-pause;
-
-% Remove the folders from path, to avoid deletion warnings
-temp_path = fullfile(pwd,'Utilities','DebugTools_v2023_01_25','Functions');
-rmpath(temp_path);
-temp_path = fullfile(pwd,'Utilities','DebugTools_v2023_01_25','Data');
-rmpath(temp_path);
-
-% Remove the example Utilities folder and all subfolders
-[success_flag,error_message,message_ID] = rmdir('Utilities','s');
-
-% Did it work?
-if ~success_flag
-    error('Unable to remove the example Utilities directory. Reason: %s with message ID: %s\n',error_message,message_ID);
-elseif ~isempty(error_message)
-    if flag_show_warnings
-        warning('The Utilities directory was removed, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID); %#ok<UNRCH>
-    end
-end
 
 %% Call the function again, to show that global flag blocks directory creation
 
@@ -131,7 +88,7 @@ if ~success_flag
     error('Unable to remove the example Utilities directory. Reason: %s with message ID: %s\n',error_message,message_ID);
 elseif ~isempty(error_message)
     if flag_show_warnings
-        warning('The Utilities directory was removed, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID); %#ok<UNRCH>
+        warning('The Utilities directory was removed, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID); 
     end
 end
 
@@ -140,50 +97,6 @@ end
 % future
 clear global FLAG_*
 
-%% Fail cases
-if 1==0
-    % Incorrect arguments
-    fcn_DebugTools_autoInstallRepos(dependency_name);
-end
-
-% script_test_fcn_VGraph_clearAndBlockedPointsGlobal
-% Tests: fcn_VGraph_clearAndBlockedPointsGlobal
-
-% REVISION HISTORY:
-% As: ????
-% 2022_10_28 by S. Harnett
-% -- first write of script
-% 2025_07_08 - K. Hayes, kaeleahayes@psu.edu
-% -- Replaced fcn_general_calculation_euclidean_point_to_point_distance
-%    with vector sum method
-% 2025_08_01 - K. Hayes
-% -- cleaned script formatting
-% -- updated functions for compatibility with MapGen library
-% 2025_10_03 - K. Hayes
-% -- fixed bug causing Npoly assertion failures in DEMO cases
-% -- fixed bug with missing variables in DEMO case 3
-% -- fixed bug with missing variables in TEST case 1
-% 2025_10_07 - S. Brennan
-% -- replaced fcn_MapGen_haltonVoronoiTiling call
-%    % with fcn_MapGen_generatePolysFromSeedGeneratorNames
-% -- added example plotting of visibility for 2025 MECC paper
-% 2025_11_01 - S. Brennan
-% -- staged script to move out of BoundedAStar and into Visibility Graph
-% -- matched script's variable names to those inside the function, for
-%    % clarity
-%
-% As: script_test_fcn_Visibility_clearAndBlockedPointsGlobal
-% 2025_11_02 - S. Brennan
-% -- changed fcn_BoundedAStar_polytopesGenerateAllPtsTable 
-%    % to fcn_Visibility_polytopesGenerateAllPtsTable
-%
-% As: script_test_fcn_VGraph_clearAndBlockedPointsGlobal
-% 2025_11_07 - S. Brennan
-% -- Renamed script_test_fcn_Visibility_clearAndBlockedPointsGlobal to script_test_fcn_VGraph_clearAndBlockedPointsGlobal
-
-% TO DO:
-% -- set up fast mode tests
-% -- bug in assertion checking against hardcoded expected results
 
 %% Set up the workspace
 close all
@@ -206,42 +119,60 @@ close all
 close all;
 fprintf(1,'Figure: 1XXXXXX: DEMO cases\n');
 
-%% DEMO case: clear and blocked edges of single convex polytope
+%% DEMO case: basic test case installing DebugTools only
 figNum = 10001;
-titleString = sprintf('DEMO case: clear and blocked edges of single convex polytope');
+titleString = sprintf('DEMO case: basic test case installing DebugTools only');
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-figure(figNum); clf;
+% figure(figNum); clf;
 
-% convex polytope
-convex_polytope(1).vertices = [0 0; 1 1; -1 2; -2 1; -1 0; 0 0];
-polytopes = fcn_MapGen_polytopesFillFieldsFromVertices(convex_polytope);
+% currentFolder = pwd;
+% 
+% mkdir('TempTestFolder');
+% cd('TempTestFolder');
 
-% generate pointsWithData table
-startXY = [-2.5, 1];
-finishXY = startXY + [4 0];
+% Remove the folders from path, to avoid deletion warnings
+fcn_INTERNAL_clearUtilitiesFromPathAndFolders;
 
-pointsWithData = fcn_VGraph_polytopesGenerateAllPtsTable(polytopes, startXY, finishXY,-1);
+% Define a universal resource locator (URL) pointing to the zip file to
+% install. For example, here is the zip file location to the Debugtools
+% package on GitHub:
+dependencyURLs = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools';
 
-% Calculate visibility graph
-isConcave = [];
-[visibilityMatrix, visibilityDetailsEachFromPoint] = fcn_VGraph_clearAndBlockedPointsGlobal(polytopes,pointsWithData,pointsWithData,(isConcave),(figNum));
+% Define sub-subfolders that are in the code package that also need to be
+% added to the MATLAB path after install. Leave empty ({}) to only add
+% the subfolder path without any sub-subfolder path additions.
+dependencySubfolders = {'Functions','Data'};
+
+% Do we want to force the installs?
+flagForceInstalls = 0;
+
+% Call the function to do the install
+fcn_DebugTools_autoInstallRepos(dependencyURLs, dependencySubfolders, (flagForceInstalls), (figNum));
+
+disp('Library installed! Verify this now, as it will be deleted to complete the demo');
+disp('Paused. Hit any key to continue...');
+pause;
+
+% Remove the folders from path, to avoid deletion warnings
+fcn_INTERNAL_clearUtilitiesFromPathAndFolders;
+
 sgtitle(titleString, 'Interpreter','none');
 
-% Check variable types
-assert(isnumeric(visibilityMatrix));
-assert(isstruct(visibilityDetailsEachFromPoint));
-
-% Check variable sizes
-NpolyVertices = length([polytopes.xv]);
-assert(size(visibilityMatrix,1)==NpolyVertices+2);
-assert(size(visibilityMatrix,2)==NpolyVertices+2);
-assert(size(visibilityDetailsEachFromPoint,2)==NpolyVertices+2);
-
-% Check variable values
-% Check manually
-
-% Make sure plot opened up
-assert(isequal(get(gcf,'Number'),figNum));
+% % Check variable types
+% assert(isnumeric(visibilityMatrix));
+% assert(isstruct(visibilityDetailsEachFromPoint));
+% 
+% % Check variable sizes
+% NpolyVertices = length([polytopes.xv]);
+% assert(size(visibilityMatrix,1)==NpolyVertices+2);
+% assert(size(visibilityMatrix,2)==NpolyVertices+2);
+% assert(size(visibilityDetailsEachFromPoint,2)==NpolyVertices+2);
+% 
+% % Check variable values
+% % Check manually
+% 
+% % Make sure plot opened up
+% assert(isequal(get(gcf,'Number'),figNum));
 
 %% DEMO case: clear and blocked edges of two convex polytopes
 figNum = 10002;
@@ -828,3 +759,41 @@ end
 %
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+
+%% function fcn_INTERNAL_clearUtilitiesFromPathAndFolders
+function fcn_INTERNAL_clearUtilitiesFromPathAndFolders
+% Clear out the variables
+clear global flag* FLAG*
+clear flag*
+clear path
+
+% Clear out any path directories under Utilities
+path_dirs = regexp(path,'[;]','split');
+utilities_dir = fullfile(pwd,filesep,'Utilities');
+for ith_dir = 1:length(path_dirs)
+    utility_flag = strfind(path_dirs{ith_dir},utilities_dir);
+    if ~isempty(utility_flag)
+        rmpath(path_dirs{ith_dir});
+    end
+end
+
+if 1==0
+    % Clear out any path directories containing the word 'Users"
+    path_dirs = regexp(path,'[;]','split');
+    for ith_dir = 1:length(path_dirs)
+        utility_flag = strfind(path_dirs{ith_dir},'Users');
+        if ~isempty(utility_flag)
+            rmpath(path_dirs{ith_dir});
+        end
+    end
+end
+
+% Delete the Utilities folder, to be extra clean!
+if  exist(utilities_dir,'dir')
+    [status,message,message_ID] = rmdir(utilities_dir,'s');
+    if 0==status
+        error('Unable remove directory: %s \nReason message: %s \nand message_ID: %s\n',utilities_dir, message,message_ID);
+    end
+end
+
+end % Ends fcn_INTERNAL_clearUtilitiesFromPathAndFolders

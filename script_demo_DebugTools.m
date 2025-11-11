@@ -61,14 +61,16 @@
 %   % * Updated incorrect function calls, added fastmode testing
 % - Added fcn_DebugTools_autoInstallRepos
 %   % * Automatically checks if repo installs are latest
+%   % * Still debugging this. Need stable release to test.
 
 %% To-Do list
 % 2025_XX_XX - Your name, email
 % -- add to-do item here
 
 %% Set up workspace
-if ~exist('flag_DebugTools_Was_Initialized','var')
-    
+if 1==1 % && ~exist('flag_DebugTools_Was_Initialized','var')
+    addpath(pwd)
+
     % add necessary directories for functions recursively
     if(exist([pwd, filesep,  'Functions'],'dir'))
         addpath(genpath([pwd, filesep, 'Functions']))

@@ -208,6 +208,17 @@ end
 %% Set the global variables - need this for input checking
 % Create a variable name for our flag. Stylistically, global variables are
 % usually all caps.
+leftovers = pwd;
+keepGoing = 1;
+while keepGoing
+    shorterPath = leftovers;
+    leftovers = extractAfter(shorterPath,filesep);
+    if isempty(leftovers)
+        keepGoing = 0;
+    end
+end
+dependency_name = shorterPath;
+
 flag_varname = upper(cat(2,'flag_',dependency_name,'_Folders_Initialized'));
 
 % Make the variable global
@@ -246,7 +257,8 @@ end
 
 % Make a list of all repos that are requested to be installed. Make sure
 % DebugTools is the first one.
-orderedListOfRequestedInstalls = fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList(dependencyURLs);
+[orderedListOfRequestedInstalls, orderedListOfFunctions] = ...
+    fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList(dependencyURLs, dependencySubfolders);
 
 % Save the root directory, so we can get back to it after some of the
 % operations below. We use the Print Working Directory command (pwd) to
@@ -267,12 +279,30 @@ if isempty(temp)
 end
 
 % Loop over installs
-% Extract owner and repo
+for ith_repo = 1:length(orderedListOfRequestedInstalls)
+
+    thisURL = orderedListOfRequestedInstalls{ith_repo};
+
+    % Pull out owner and repoName
+    [owner, repoName] = fcn_INTERNAL_extractOwnerAndRepoFromURL(thisURL);
 
     % Check latest release
-    owner = 'ivsg-psu';
-    repo = 'Errata_Tutorials_DebugTools';
-    latestRelease = fcn_DebugTools_findLatestGitHubRelease(owner, repo, figNum);
+    latestReleaseStruct = fcn_DebugTools_findLatestGitHubRelease(owner, repoName, (-1));
+    
+    dependency_name      = latestReleaseStruct.tag_name;
+    dependency_subfolders = {'Functions','Data'};
+    dependency_url        = cat(2,'https://github.com/',...
+        owner,'/',...
+        repoName,'/archive/refs/tags/',...
+        dependency_name,'.zip');
+    
+    dependency_subfolders = cell(1,1);
+    for ith_subfolder = 1:size(orderedListOfFunctions,2)
+        dependency_subfolders{ith_subfolder} = orderedListOfFunctions{ith_repo,ith_subfolder};
+    end
+
+    fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url);
+end
 
 
 %% Plot the results (for debugging)?
@@ -288,26 +318,26 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if flag_do_plots
-    % Extract and display release information
-    disp(['Repository: ', owner, '/', repo]);
-    if isfield(latestReleaseStruct, 'tag_name')
-        disp(['Latest release version: ', latestReleaseStruct.tag_name]);
-    else
-        disp('Could not find tag_name in the release information.');
-    end
-
-    if isfield(latestReleaseStruct, 'name')
-        disp(['Release Name: ', latestReleaseStruct.name]);
-    end
-
-    if isfield(latestReleaseStruct, 'published_at')
-        disp(['Published At: ', latestReleaseStruct.published_at]);
-    end
-
-    if isfield(latestReleaseStruct, 'body')
-        disp('Release Notes:');
-        disp(latestReleaseStruct.body);
-    end
+    % % Extract and display release information
+    % disp(['Repository: ', owner, '/', repo]);
+    % if isfield(latestReleaseStruct, 'tag_name')
+    %     disp(['Latest release version: ', latestReleaseStruct.tag_name]);
+    % else
+    %     disp('Could not find tag_name in the release information.');
+    % end
+    % 
+    % if isfield(latestReleaseStruct, 'name')
+    %     disp(['Release Name: ', latestReleaseStruct.name]);
+    % end
+    % 
+    % if isfield(latestReleaseStruct, 'published_at')
+    %     disp(['Published At: ', latestReleaseStruct.published_at]);
+    % end
+    % 
+    % if isfield(latestReleaseStruct, 'body')
+    %     disp('Release Notes:');
+    %     disp(latestReleaseStruct.body);
+    % end
 end % Ends the flag_do_plot if statement
 
 if flag_do_debug
@@ -699,7 +729,8 @@ end % Ends function fcn_DebugTools_installDependencies
 
 
 %% fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList
-function confirmedList = fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList(dependencyURLs)
+function [confirmedList, confirmedDependencyFolders] = ...
+    fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList(dependencyURLs, dependencySubfolders)
 % Make a list of all repos that are requested to be installed. Make sure
 % DebugTools is the first one.
 
@@ -707,12 +738,18 @@ flagsRepoStringsIncludeDebug = contains(dependencyURLs,'DebugTools');
 NreposNotDebug = sum(~flagsRepoStringsIncludeDebug);
 % Debug repo is requested, but is not first on list. Rearrange list
 confirmedList = cell(NreposNotDebug+1,1);
+confirmedDependencyFolders = cell(NreposNotDebug+1,2);
 confirmedList{1} = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools';
+confirmedDependencyFolders{1,1} = 'Functions';
+confirmedDependencyFolders{1,2} = 'Data';
 NreposThusFar = 1;
 for ith_URL = 1:length(dependencyURLs)
     if flagsRepoStringsIncludeDebug(ith_URL)==0
         NreposThusFar = NreposThusFar+1;
         confirmedList{NreposThusFar,1} = dependencyURLs{ith_URL};
+        for ith_folder = 1:length(dependencySubfolders{ith_URL})
+            confirmedDependencyFolders{NreposThusFar,ith_folder} = dependencySubfolders{ith_URL,ith_folder};
+        end
     end
 end
 end % Ends fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList
@@ -774,3 +811,16 @@ fcn_DebugTools_addSubdirectoriesToPath(pwd,this_project_folders);
 
 disp('Done setting up libraries, adding each to MATLAB path, and adding current repo folders to path.');
 end % Ends fcn_INTERNAL_initializeUtilities
+
+%% fcn_INTERNAL_extractOwnerAndRepoFromURL
+function [owner, repoName] = fcn_INTERNAL_extractOwnerAndRepoFromURL(thisURL)
+% Pull out owner and repoName from URL name
+remainderAfterGitHub = extractAfter(thisURL,'github.com/');
+owner = extractBefore(remainderAfterGitHub,'/');
+remainderAfterOwner = extractAfter(remainderAfterGitHub,'/');
+if contains(remainderAfterOwner,'/')
+    repoName = extractBefore(remainderAfterOwner,'/');
+else
+    repoName = remainderAfterOwner;
+end
+end % Ends fcn_INTERNAL_extractOwnerAndRepoFromURL
