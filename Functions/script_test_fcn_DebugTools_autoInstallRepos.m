@@ -116,9 +116,9 @@ fcn_INTERNAL_clearUtilitiesFromPathAndFolders;
 tempPath = dir(fullfile(pwd,'Utilities','DebugTools*'));
 assert(isempty(tempPath));
 
-% Define a universal resource locator (URL) pointing to the zip file to
-% install. For example, here is the zip file location to the Debugtools
-% package on GitHub:
+% Define a universal resource locator (URL) pointing to the repos of
+% dependencies to install. Note that DebugTools is always installed
+% automatically, first, even if not listed:
 clear dependencyURLs dependencySubfolders
 ith_repo = 0;
 

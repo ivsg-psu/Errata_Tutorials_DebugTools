@@ -21,15 +21,8 @@ function fcn_DebugTools_autoInstallRepos(...
 % All installs are pulled from the latest version (as a zip file) into a
 % default local subfolder, "Utilities", under the root folder. The install
 % process also adds either the package subfoder or any specified
-% sub-subfolders to the MATLAB path. During the install, the packages
-% needed for each dependency are also checked and added to the dependency
-% list. Thus, if a dependency that is listed contains unlisted
-% dependencies, then the unlisted dependencies are also added. The only
-% exception to this is if a dependency is listed that is the same as the
-% target code set: for example, if install of the PathTools library depends
-% on MapTools, and MapTools depends on PathTools, then PathTools is NOT
-% installed as a Utility under PathTools alongside MapTools.
-%
+% sub-subfolders to the MATLAB path. 
+% 
 % If the Utilities folder does not exist, it is created.
 % 
 % If the specified code package folder and all subfolders already exist,
@@ -117,7 +110,17 @@ function fcn_DebugTools_autoInstallRepos(...
 % -- wrote the code originally
 
 % TO DO
-% -- Add input argument checking
+% -- 2025_11_12 - S. Brennan
+%    % * Add input checking
+% -- Would like to have the following functionality:
+% During the install, the packages needed for each dependency are also
+% checked and added to the dependency list. Thus, if a dependency that is
+% listed contains unlisted dependencies, then the unlisted dependencies are
+% also added. The only exception to this is if a dependency is listed that
+% is the same as the target code set: for example, if install of the
+% PathTools library depends on MapTools, and MapTools depends on PathTools,
+% then PathTools is NOT installed as a Utility under PathTools alongside
+% MapTools.
 
 %% Debugging and Input checks
 
@@ -208,6 +211,17 @@ end
 %% Set the global variables - need this for input checking
 % Create a variable name for our flag. Stylistically, global variables are
 % usually all caps.
+leftovers = pwd;
+keepGoing = 1;
+while keepGoing
+    shorterPath = leftovers;
+    leftovers = extractAfter(shorterPath,filesep);
+    if isempty(leftovers)
+        keepGoing = 0;
+    end
+end
+dependency_name = shorterPath;
+
 flag_varname = upper(cat(2,'flag_',dependency_name,'_Folders_Initialized'));
 
 % Make the variable global
@@ -246,7 +260,8 @@ end
 
 % Make a list of all repos that are requested to be installed. Make sure
 % DebugTools is the first one.
-orderedListOfRequestedInstalls = fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList(dependencyURLs);
+[orderedListOfRequestedInstalls, orderedListOfSubfolders] = ...
+    fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList(dependencyURLs, dependencySubfolders);
 
 % Save the root directory, so we can get back to it after some of the
 % operations below. We use the Print Working Directory command (pwd) to
@@ -267,12 +282,110 @@ if isempty(temp)
 end
 
 % Loop over installs
-% Extract owner and repo
+for ith_repo = 1:length(orderedListOfRequestedInstalls)
+
+    thisURL = orderedListOfRequestedInstalls{ith_repo};
+
+    % Pull out owner and repoName
+    [owner, repoName] = fcn_INTERNAL_extractOwnerAndRepoFromURL(thisURL);
 
     % Check latest release
-    owner = 'ivsg-psu';
-    repo = 'Errata_Tutorials_DebugTools';
-    latestRelease = fcn_DebugTools_findLatestGitHubRelease(owner, repo, figNum);
+    latestReleaseStruct = fcn_DebugTools_findLatestGitHubRelease(owner, repoName, (-1));
+    
+    dependency_name      = latestReleaseStruct.tag_name;
+    dependency_subfolders = orderedListOfSubfolders{ith_repo,1};
+    dependency_url        = cat(2,'https://github.com/',...
+        owner,'/',...
+        repoName,'/archive/refs/tags/',...
+        dependency_name,'.zip');
+
+    % Check if prior releases exist in Utilities
+    shortDependencyName = extractBefore(dependency_name,'_');
+    searchString = fullfile(pwd,'Utilities',cat(2,shortDependencyName,'*'));
+    tempPath = dir(searchString);
+    flagsReposToRemove = ~strcmp({tempPath.name},dependency_name);
+    thisFolder = fullfile(pwd,'Utilities');
+    for ith_flag = 1:length(flagsReposToRemove)
+        if flagsReposToRemove(ith_flag)
+            thisDirectory = tempPath(ith_flag).name;
+            fprintf(1,'\tRemoving deprecated library: %s ...',thisDirectory);
+            directoryPath = fullfile(thisFolder, thisDirectory);
+
+            % Remove the folder from the path
+            % Clear out any path directories under Utilities
+            path_dirs = regexp(path,'[;]','split');
+            for ith_dir = 1:length(path_dirs)
+                utility_flag = strfind(path_dirs{ith_dir},directoryPath);
+                if ~isempty(utility_flag)
+                    rmpath(path_dirs{ith_dir});
+                end
+            end
+
+            % Erase the folder
+            [status,message,message_ID] = rmdir(directoryPath,'s');
+            if 0==status
+                error('Unable remove directory: %s \nReason message: %s \nand message_ID: %s\n',utilities_dir, message,message_ID);
+            else
+                fprintf(1,'Done.\n');
+            end
+        end
+    end
+
+    % Perform install of latest version
+    expectedDirectory = fullfile(pwd,'Utilities',dependency_name);
+    if ~exist(expectedDirectory,'dir')
+        fprintf(1,'\tAdding library: %s ...',dependency_name);
+        fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url);
+
+        % Make sure it worked
+        if ~exist(expectedDirectory,'dir')
+            error('Unable add directory: %s Must quit!\n',expectedDirectory);
+        else
+            fprintf(1,'Done.\n');
+        end
+    else
+        fprintf(1,'\tSkipping already installed library: %s\n',dependency_name);
+    end
+     
+    % If Debug install, copy this file into Installer folder UNLESS debugging within
+    % DebugTools (as this overwrites the changes!!)
+    if ith_repo==1 % && ~contains(pwd,'DebugTools')
+
+        % Does the directory "Installer" exist?
+        installler_folder_name = fullfile(root_directory_name,'Installer');
+        if ~exist(installler_folder_name,'dir')
+            % If we are in here, the directory does not exist. So create it
+            % using mkdir
+            [success_flag,error_message,message_ID] = mkdir(root_directory_name,'Installer');
+
+            % Did it work?
+            if ~success_flag
+                error('Unable to make the Installer directory. Reason: %s with message ID: %s\n',error_message,message_ID);
+            elseif ~isempty(error_message)
+                warning('The Installer directory was created, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
+            end
+
+        end
+
+        st = dbstack;
+        sourceFileName = st(1).name;
+        fullSourcePath = which(sourceFileName);
+        destionationToCopy = fullfile(pwd,'Installer');
+
+        fprintf(1,'\tCopying function %s to Installer folder...', st(1).file)
+
+        [success_flag,error_message,message_ID] = copyfile(fullSourcePath,destionationToCopy,'f');
+
+        % Did it work?
+        if ~success_flag
+            error('Unable to copy %s to the Installer directory. Reason: %s with message ID: %s\n',error_message,message_ID);
+        elseif ~isempty(error_message)
+            warning('The copy succeeded but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
+        else
+            fprintf(1,'Done.\n');
+        end
+    end
+end
 
 
 %% Plot the results (for debugging)?
@@ -288,26 +401,26 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if flag_do_plots
-    % Extract and display release information
-    disp(['Repository: ', owner, '/', repo]);
-    if isfield(latestReleaseStruct, 'tag_name')
-        disp(['Latest release version: ', latestReleaseStruct.tag_name]);
-    else
-        disp('Could not find tag_name in the release information.');
-    end
-
-    if isfield(latestReleaseStruct, 'name')
-        disp(['Release Name: ', latestReleaseStruct.name]);
-    end
-
-    if isfield(latestReleaseStruct, 'published_at')
-        disp(['Published At: ', latestReleaseStruct.published_at]);
-    end
-
-    if isfield(latestReleaseStruct, 'body')
-        disp('Release Notes:');
-        disp(latestReleaseStruct.body);
-    end
+    % % Extract and display release information
+    % disp(['Repository: ', owner, '/', repo]);
+    % if isfield(latestReleaseStruct, 'tag_name')
+    %     disp(['Latest release version: ', latestReleaseStruct.tag_name]);
+    % else
+    %     disp('Could not find tag_name in the release information.');
+    % end
+    % 
+    % if isfield(latestReleaseStruct, 'name')
+    %     disp(['Release Name: ', latestReleaseStruct.name]);
+    % end
+    % 
+    % if isfield(latestReleaseStruct, 'published_at')
+    %     disp(['Published At: ', latestReleaseStruct.published_at]);
+    % end
+    % 
+    % if isfield(latestReleaseStruct, 'body')
+    %     disp('Release Notes:');
+    %     disp(latestReleaseStruct.body);
+    % end
 end % Ends the flag_do_plot if statement
 
 if flag_do_debug
@@ -699,7 +812,8 @@ end % Ends function fcn_DebugTools_installDependencies
 
 
 %% fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList
-function confirmedList = fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList(dependencyURLs)
+function [confirmedList, confirmedDependencyFolders] = ...
+    fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList(dependencyURLs, dependencySubfolders)
 % Make a list of all repos that are requested to be installed. Make sure
 % DebugTools is the first one.
 
@@ -707,12 +821,15 @@ flagsRepoStringsIncludeDebug = contains(dependencyURLs,'DebugTools');
 NreposNotDebug = sum(~flagsRepoStringsIncludeDebug);
 % Debug repo is requested, but is not first on list. Rearrange list
 confirmedList = cell(NreposNotDebug+1,1);
+confirmedDependencyFolders = cell(NreposNotDebug+1,1);
 confirmedList{1} = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools';
+confirmedDependencyFolders{1,:} = {'Functions', 'Data'};
 NreposThusFar = 1;
 for ith_URL = 1:length(dependencyURLs)
     if flagsRepoStringsIncludeDebug(ith_URL)==0
         NreposThusFar = NreposThusFar+1;
         confirmedList{NreposThusFar,1} = dependencyURLs{ith_URL};
+        confirmedDependencyFolders{NreposThusFar,1} = dependencySubfolders{ith_URL};
     end
 end
 end % Ends fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList
@@ -774,3 +891,16 @@ fcn_DebugTools_addSubdirectoriesToPath(pwd,this_project_folders);
 
 disp('Done setting up libraries, adding each to MATLAB path, and adding current repo folders to path.');
 end % Ends fcn_INTERNAL_initializeUtilities
+
+%% fcn_INTERNAL_extractOwnerAndRepoFromURL
+function [owner, repoName] = fcn_INTERNAL_extractOwnerAndRepoFromURL(thisURL)
+% Pull out owner and repoName from URL name
+remainderAfterGitHub = extractAfter(thisURL,'github.com/');
+owner = extractBefore(remainderAfterGitHub,'/');
+remainderAfterOwner = extractAfter(remainderAfterGitHub,'/');
+if contains(remainderAfterOwner,'/')
+    repoName = extractBefore(remainderAfterOwner,'/');
+else
+    repoName = remainderAfterOwner;
+end
+end % Ends fcn_INTERNAL_extractOwnerAndRepoFromURL
