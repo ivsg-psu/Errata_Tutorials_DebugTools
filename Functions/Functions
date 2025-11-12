@@ -250,6 +250,8 @@ end
 if exist(flag_varname,'var') && ~isempty(eval(flag_varname))
     fprintf(1,'All dependency repos appear to have been previously installed.\n');
     return
+else
+    fprintf(1,'Starting automatic install of dependency repos.\n')
 end
 
 % If user gives a string URL input, convert into cell array for consistency
@@ -346,41 +348,23 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
     else
         fprintf(1,'\tSkipping already installed library: %s\n',dependency_name);
     end
-     
-    % If Debug install, copy this file into Installer folder UNLESS debugging within
-    % DebugTools (as this overwrites the changes!!)
-    if ith_repo==1 % && ~contains(pwd,'DebugTools')
 
-        % Does the directory "Installer" exist?
-        installler_folder_name = fullfile(root_directory_name,'Installer');
-        if ~exist(installler_folder_name,'dir')
-            % If we are in here, the directory does not exist. So create it
-            % using mkdir
-            [success_flag,error_message,message_ID] = mkdir(root_directory_name,'Installer');
-
-            % Did it work?
-            if ~success_flag
-                error('Unable to make the Installer directory. Reason: %s with message ID: %s\n',error_message,message_ID);
-            elseif ~isempty(error_message)
-                warning('The Installer directory was created, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
-            end
-
-        end
-
+    % If Debug install, copy this file into main
+    if ith_repo==1
         st = dbstack;
         sourceFileName = st(1).name;
         fullSourcePath = which(sourceFileName);
-        destionationToCopy = fullfile(pwd,'Installer');
+        destionationToCopy = fullfile(pwd,'Functions');
 
-        fprintf(1,'\tCopying function %s to Installer folder...', st(1).file)
-
+        fprintf(1,'\tCopying function %s to Functions folder...', sourceFileName)
+        
         [success_flag,error_message,message_ID] = copyfile(fullSourcePath,destionationToCopy,'f');
 
         % Did it work?
         if ~success_flag
-            error('Unable to copy %s to the Installer directory. Reason: %s with message ID: %s\n',error_message,message_ID);
+            error('Unable to copy %s to the Functions directory. Reason: %s with message ID: %s\n',sourceFileName, error_message,message_ID);
         elseif ~isempty(error_message)
-            warning('The copy succeeded but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
+            warning('The copy was successfulnbut with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
         else
             fprintf(1,'Done.\n');
         end
@@ -829,7 +813,9 @@ for ith_URL = 1:length(dependencyURLs)
     if flagsRepoStringsIncludeDebug(ith_URL)==0
         NreposThusFar = NreposThusFar+1;
         confirmedList{NreposThusFar,1} = dependencyURLs{ith_URL};
-        confirmedDependencyFolders{NreposThusFar,1} = dependencySubfolders{ith_URL};
+        for ith_folder = 1:length(dependencySubfolders{ith_URL})
+            confirmedDependencyFolders{NreposThusFar,ith_folder} = dependencySubfolders{ith_URL,ith_folder};
+        end
     end
 end
 end % Ends fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList

@@ -61,7 +61,6 @@
 %   % * Updated incorrect function calls, added fastmode testing
 % - Added fcn_DebugTools_autoInstallRepos
 %   % * Automatically checks if repo installs are latest
-%   % * Still debugging this. Need stable release to test.
 
 %% To-Do list
 % 2025_XX_XX - Your name, email

@@ -381,8 +381,6 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
             error('Unable to copy %s to the Installer directory. Reason: %s with message ID: %s\n',error_message,message_ID);
         elseif ~isempty(error_message)
             warning('The copy succeeded but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
-        else
-            fprintf(1,'Done.\n');
         end
     end
 end
