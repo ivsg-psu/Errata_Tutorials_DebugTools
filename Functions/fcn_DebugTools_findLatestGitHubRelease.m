@@ -68,8 +68,7 @@ function latestReleaseStruct = fcn_DebugTools_findLatestGitHubRelease(owner, rep
 % REVISION HISTORY:
 % 2025_11_07 by S. Brennan
 % -- first write of function
-
-% 
+ 
 % TO DO:
 % -- Need to integrate this into the auto-loader
 

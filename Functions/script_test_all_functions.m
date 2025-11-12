@@ -132,6 +132,7 @@ fprintf(1,'\nSUMMARY OF FOUND FILES: \n');
 indicies_filesToTest = find(1==flags_isMfileTestingScriptWithMatchingFunction);
 if ~isempty(indicies_filesToTest)
     fcn_DebugTools_cprintf('*blue','The following scripts were found that will be tested:\n');
+    fcn_DebugTools_cprintf('*blue','\tThere are %.0f total testable functions in this repo:\n',length(indicies_filesToTest));
     for ith_file = 1:length(indicies_filesToTest)
         currentFileIndex = indicies_filesToTest(ith_file);
         fprintf(1,'\t%s\n',fileList(currentFileIndex).name)

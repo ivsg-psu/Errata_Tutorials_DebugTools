@@ -61,6 +61,13 @@
 %   % * Updated incorrect function calls, added fastmode testing
 % - Added fcn_DebugTools_autoInstallRepos
 %   % * Automatically checks if repo installs are latest
+% (new release)
+% 
+% 2025_11_12 by S. Brennan
+% - Updated global flag checking and header docstrings in:
+%   % * fcn_DebugTools_findLatestGitHubRelease
+%   % * fcn_DebugTools_installDependencies
+% - Fixed minor 
 
 %% To-Do list
 % 2025_XX_XX - Your name, email
