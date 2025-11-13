@@ -13,26 +13,26 @@ close all;
 
 
 %% Basic case - numeric (adds a space)
-input_string = 'test';
-value_to_add = 2;
-output_string = fcn_DebugTools_addStringToEnd(input_string,value_to_add);
-assert(isequal(output_string,'test 2'));
+inputString = 'test';
+valueToAdd = 2;
+outputString = fcn_DebugTools_addStringToEnd(inputString,valueToAdd);
+assert(isequal(outputString,'test 2'));
 
 %% Basic case - cell (adds a space)
-input_string = 'test';
-value_to_add = {'2'};
-output_string = fcn_DebugTools_addStringToEnd(input_string,value_to_add);
-assert(isequal(output_string,'test 2'));
+inputString = 'test';
+valueToAdd = {'2'};
+outputString = fcn_DebugTools_addStringToEnd(inputString,valueToAdd);
+assert(isequal(outputString,'test 2'));
 
 %% Basic case - string (adds a space)
-input_string = 'test';
-value_to_add = '2';
-output_string = fcn_DebugTools_addStringToEnd(input_string,value_to_add);
-assert(isequal(output_string,'test 2'));
+inputString = 'test';
+valueToAdd = '2';
+outputString = fcn_DebugTools_addStringToEnd(inputString,valueToAdd);
+assert(isequal(outputString,'test 2'));
 
 %% Fail conditions
 if 1==0
     %% Bad input
-    output_string = fcn_DebugTools_addStringToEnd(input_string,value_to_add);
+    outputString = fcn_DebugTools_addStringToEnd(inputString,valueToAdd);
 end
     

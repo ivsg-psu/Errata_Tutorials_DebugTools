@@ -67,14 +67,27 @@
 % - Updated global flag checking and header docstrings in:
 %   % * fcn_DebugTools_findLatestGitHubRelease
 %   % * fcn_DebugTools_installDependencies
-% - Fixed minor 
+% - Fixed minor clc and related issues
+% (new release)
+%
+% 2025_11_12 by S. Brennan 
+% - Added top-of-script command to make sure script starts in root dir
+%   % * Found that if calling main scripts repeatedly, sometimes this does
+%   %   % not update correctly. This change should fix this.
+% - Updated script_test_all_functions to perform nearly all repo tests.
 
-%% To-Do list
+%% TO-DO list
 % 2025_XX_XX - Your name, email
 % -- add to-do item here
 
+%% Make sure we are running out of root directory
+st = dbstack; 
+thisFile = which(st(1).file);
+[filepath,name,ext] = fileparts(thisFile);
+cd(filepath);
+
 %% Set up workspace
-if 1==1 % && ~exist('flag_DebugTools_Was_Initialized','var')
+if 1==1 && ~exist('flag_DebugTools_Was_Initialized','var')
     addpath(pwd)
 
     % add necessary directories for functions recursively

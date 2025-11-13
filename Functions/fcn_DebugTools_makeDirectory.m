@@ -39,26 +39,34 @@ function fcn_DebugTools_makeDirectory(directoryPath, varargin)
 % Revision history
 % 2024_09_13 - Sean Brennan, sbrennan@psu.edu
 % -- wrote the code originally, copying out of DataClean library
+% 2025_11_12 by Sean Brennan, sbrennan@psu.edu
+% - Updated debug flags
+% - Added figNum input
+% - Fixed variable naming for clarity:
+%   % * fig_num to figNum
+% TO DO
+% -- (none)
 
 %% Debugging and Input checks
 
-% Check if flag_max_speed set. This occurs if the fig_num variable input
+% Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
+MAX_NARGIN = 2; % The largest Number of argument inputs to the function
 flag_max_speed = 0;
-if (nargin==2 && isequal(varargin{end},-1))
-    flag_do_debug = 0; % % % % Flag to plot the results for debugging
+if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
     flag_check_inputs = 0; % Flag to perform input checking
     flag_max_speed = 1;
 else
     % Check to see if we are externally setting debug mode to be "on"
-    flag_do_debug = 0; % % % % Flag to plot the results for debugging
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
     flag_check_inputs = 1; % Flag to perform input checking
-    MATLABFLAG_DATACLEAN_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DATACLEAN_FLAG_CHECK_INPUTS");
-    MATLABFLAG_DATACLEAN_FLAG_DO_DEBUG = getenv("MATLABFLAG_DATACLEAN_FLAG_DO_DEBUG");
-    if ~isempty(MATLABFLAG_DATACLEAN_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DATACLEAN_FLAG_DO_DEBUG)
-        flag_do_debug = str2double(MATLABFLAG_DATACLEAN_FLAG_DO_DEBUG);
-        flag_check_inputs  = str2double(MATLABFLAG_DATACLEAN_FLAG_CHECK_INPUTS);
+    MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
+    MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
+    if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
+        flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG); 
+        flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
     end
 end
 
@@ -67,11 +75,10 @@ end
 if flag_do_debug
     st = dbstack; %#ok<*UNRCH>
     fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-    debug_fig_num = 999978; %#ok<NASGU>
+    debug_figNum = 999978; %#ok<NASGU>
 else
-    debug_fig_num = []; %#ok<NASGU>
+    debug_figNum = []; %#ok<NASGU>
 end
-
 
 %% check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,26 +93,15 @@ end
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if (0 == flag_max_speed)
+if 0 == flag_max_speed
     if flag_check_inputs == 1
         % Are there the right number of inputs?
-        narginchk(1,2);
+        narginchk(1,MAX_NARGIN);
 
-        % % Check if rootdirs is a string. If so, convert it to a cell array
-        % if ~iscell(rootdirs) && (isstring(rootdirs) || ischar(rootdirs))
-        %     rootdirs{1} = rootdirs;
-        % end
-        % 
-        % % Loop through all the directories and make sure they are there
-        % for ith_directory = 1:length(rootdirs)
-        %     folderName = rootdirs{ith_directory};
-        %     try
-        %         fcn_DebugTools_checkInputsToFunctions(folderName, 'DoesDirectoryExist');
-        %     catch ME
-        %         warning('on','backtrace');
-        %         warning('A directory was specified for query that does not seem to exist!?');
-        %         warning('The missing folder is: %s',folderName);
-        %         rethrow(ME)
+        % if nargin>=2
+        %     % Check the variableTypeString input, make sure it is characters
+        %     if ~ischar(variableTypeString)
+        %         error('The variableTypeString input must be a character type, for example: ''Path'' ');
         %     end
         % end
 

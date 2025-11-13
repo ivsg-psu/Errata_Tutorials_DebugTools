@@ -39,7 +39,8 @@ titleString = sprintf('DEMO case: basic test case installing DebugTools only, no
 fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 % figure(figNum); clf;
 
-if exist('Installer','dir')
+fullPathToInstaller = fullfile(pwd,'Installer');
+if exist(fullPathToInstaller,'dir')
     rmdir('Installer','s');
 end
 
@@ -77,7 +78,7 @@ tempPath = dir(fullfile(pwd,'Utilities','DebugTools*'));
 assert(isempty(tempPath));
 
 % Show that the Installer directory was created
-assert(exist('Installer','dir'))
+assert(exist(fullPathToInstaller,'dir'))
 
 
 % sgtitle(titleString, 'Interpreter','none');

@@ -4,7 +4,7 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 %
 % FORMAT:
 %
-%      fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newString,(fig_num));
+%      fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newString,(figNum));
 %
 % INPUTS:
 %
@@ -16,7 +16,9 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 %
 %      (OPTIONAL INPUTS)
 %
-%      fig_num: a figure number to plot results.
+%      figNum: a figure number to plot results. If set to -1, skips any
+%      input checking or debugging, no figures will be generated, and sets
+%      up code to maximize speed. 
 %
 % OUTPUTS:
 %
@@ -38,13 +40,19 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 % Revision history:
 % 2025_09_26 - sbrennan@psu.edu
 % -- wrote the code originally, using breakDataIntoLaps as starter
+% 2025_11_12 by Sean Brennan, sbrennan@psu.edu
+% - Updated debug flags
+% - Added figNum input
+% - Fixed variable naming for clarity:
+%   % * fig_num to figNum
+% - Changed _LAPS_ global vars to _DEBUGTOOLS_
 
 % TO-DO
 % (none)
 
 %% Debugging and Input checks
 
-% Check if flag_max_speed set. This occurs if the fig_num variable input
+% Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
 MAX_NARGIN = 4; % The largest Number of argument inputs to the function
@@ -57,11 +65,11 @@ else
     % Check to see if we are externally setting debug mode to be "on"
     flag_do_debug = 0; % Flag to plot the results for debugging
     flag_check_inputs = 1; % Flag to perform input checking
-    MATLABFLAG_LAPS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_LAPS_FLAG_CHECK_INPUTS");
-    MATLABFLAG_LAPS_FLAG_DO_DEBUG = getenv("MATLABFLAG_LAPS_FLAG_DO_DEBUG");
-    if ~isempty(MATLABFLAG_LAPS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_LAPS_FLAG_DO_DEBUG)
-        flag_do_debug = str2double(MATLABFLAG_LAPS_FLAG_DO_DEBUG);
-        flag_check_inputs  = str2double(MATLABFLAG_LAPS_FLAG_CHECK_INPUTS);
+    MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
+    MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
+    if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
+        flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG);
+        flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
     end
 end
 
@@ -70,9 +78,9 @@ end
 if flag_do_debug % If debugging is on, print on entry/exit to the function
     st = dbstack; %#ok<*UNRCH>
     fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-    debug_fig_num = 999978; %#ok<NASGU>
+    debug_figNum = 999978; %#ok<NASGU>
 else
-    debug_fig_num = []; %#ok<NASGU>
+    debug_figNum = []; %#ok<NASGU>
 end
 
 %% check input arguments?
@@ -104,8 +112,7 @@ flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp) % Did the user NOT give an empty figure number?
-        fig_num = temp;
-        figure(fig_num);
+        figNum = temp; %#ok<NASGU>
         flag_do_plots = 1;
     end
 end
