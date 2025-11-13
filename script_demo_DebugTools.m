@@ -70,11 +70,12 @@
 % - Fixed minor clc and related issues
 % (new release)
 %
-% 2025_11_12 by S. Brennan 
+% 2025_11_13 by S. Brennan 
 % - Added top-of-script command to make sure script starts in root dir
 %   % * Found that if calling main scripts repeatedly, sometimes this does
 %   %   % not update correctly. This change should fix this.
 % - Updated script_test_all_functions to perform nearly all repo tests.
+% - Fixed global variables not being correctly used in many scripts
 
 %% TO-DO list
 % 2025_XX_XX - Your name, email
