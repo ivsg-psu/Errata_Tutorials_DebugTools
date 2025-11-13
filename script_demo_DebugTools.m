@@ -76,6 +76,12 @@
 %   %   % not update correctly. This change should fix this.
 % - Updated script_test_all_functions to perform nearly all repo tests.
 % - Fixed global variables not being correctly used in many scripts
+% (new release)
+%
+% 2025_11_13 by S. Brennan 
+% - modified fcn_DebugTools_replaceStringInDirectory to allow separate file
+%   % search parameters and replacement strings
+% (new release)
 
 %% TO-DO list
 % 2025_XX_XX - Your name, email

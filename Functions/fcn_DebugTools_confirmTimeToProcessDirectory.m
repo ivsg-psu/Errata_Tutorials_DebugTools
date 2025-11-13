@@ -98,7 +98,7 @@ if (0 == flag_max_speed)
     end
 end
 
-% Does user want to specify indicies?
+% Does user want to specify indexRange?
 indexRange = (1:length(directory_listing))';
 if 3 <= nargin
     temp = varargin{1};

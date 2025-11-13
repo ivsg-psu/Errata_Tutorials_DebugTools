@@ -4,7 +4,7 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 %
 % FORMAT:
 %
-%      fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newString,(figNum));
+%      fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newString, (filenameNewString), (figNum));
 %
 % INPUTS:
 %
@@ -12,9 +12,13 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 %
 %      oldString: the string to replace
 %
-%      newString: the string that will be substituted into oldString
+%      newString: the string that will be substituted into oldString within
+%      the text of the file
 %
 %      (OPTIONAL INPUTS)
+%
+%      filenameNewString: the string that will be searched for in the file
+%      name to ID files to change. Default is newString.
 %
 %      figNum: a figure number to plot results. If set to -1, skips any
 %      input checking or debugging, no figures will be generated, and sets
@@ -46,6 +50,8 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 % - Fixed variable naming for clarity:
 %   % * fig_num to figNum
 % - Changed _LAPS_ global vars to _DEBUGTOOLS_
+% 2025_11_13 by Sean Brennan, sbrennan@psu.edu
+% - added filenameNewString input
 
 % TO-DO
 % (none)
@@ -55,7 +61,7 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 4; % The largest Number of argument inputs to the function
+MAX_NARGIN = 5; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -107,6 +113,15 @@ if 0==flag_max_speed
 end
 
 
+% Does user want to specify filenameNewString?
+filenameNewString = newString;
+if 4 <= nargin
+    temp = varargin{1};
+    if ~isempty(temp)
+        filenameNewString = temp;
+    end
+end
+
 % Does user want to show the plots?
 flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
@@ -137,7 +152,7 @@ fileList = fileList(~[fileList.isdir]);
 
 for i = 1:length(fileList)
     fileName = fileList(i).name;
-    if contains(fileName,newString)
+    if contains(fileName,filenameNewString)
 
         filePath = fullfile(directoryPath, fileName);
         numChanged = 0;
