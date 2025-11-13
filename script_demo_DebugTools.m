@@ -82,6 +82,11 @@
 % - modified fcn_DebugTools_replaceStringInDirectory to allow separate file
 %   % search parameters and replacement strings
 % (new release)
+% 
+% 2025_11_13 by S. Brennan 
+% - In script_test_all_functions
+%   % * Minor bug fix where filepath was not defined before first usage
+
 
 %% TO-DO list
 % 2025_XX_XX - Your name, email

@@ -17,6 +17,8 @@
 % 2025_11_12 by Sean Brennan
 % -- Cleaned up variable naming for clarity
 % -- Functionalized fcn_INTERNAL_flagFiles
+% 2025_11_13 by Sean Brennan
+% -- Minor bug fix where filepath was not defined before first usage
 
 
 % clearvars; 
