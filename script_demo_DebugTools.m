@@ -88,6 +88,9 @@
 %   % * Minor bug fix where filepath was not defined before first usage
 % (new release)
 % 
+% 2013_11_13 by S. Brennan
+% - In fcn_DebugTools_replaceStringInDirectory 
+%   % * Added a usage example
 
 
 %% TO-DO list
