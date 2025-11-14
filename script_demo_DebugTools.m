@@ -86,6 +86,8 @@
 % 2025_11_13 by S. Brennan 
 % - In script_test_all_functions
 %   % * Minor bug fix where filepath was not defined before first usage
+% (new release)
+% 
 
 
 %% TO-DO list

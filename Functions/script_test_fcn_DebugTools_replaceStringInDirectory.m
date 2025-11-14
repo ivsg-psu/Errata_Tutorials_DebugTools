@@ -27,4 +27,7 @@ assert(strcmp(changingString(1:2),'ba'));
 % Call the function to perform the replacement back
 fcn_DebugTools_replaceStringInDirectory(directoryPath, newString, oldString, (filenameNewString), (figNum));
 
-%%
+%% Here's how it is typically used in a folder
+if 1==0
+    fcn_DebugTools_replaceStringInDirectory(pwd, '_BOUNDASTAR_', '_BOUNDEDASTAR_', (''), (-1));
+end
