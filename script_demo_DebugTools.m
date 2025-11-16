@@ -88,16 +88,23 @@
 %   % * Minor bug fix where filepath was not defined before first usage
 % (new release)
 % 
-% 2013_11_13 by S. Brennan
+% 2025_11_13 by S. Brennan
 % - In fcn_DebugTools_replaceStringInDirectory 
 %   % * Added a usage example
-% 2013_11_14 by S. Brennan
+%
+% 2025_11_14 by S. Brennan
 % - In fcn_DebugTools_autoInstallRepos 
 %   % * Added more output and formatting for error catching (for debugging)
 %   % * minor bug fix where the "which" command doesn't always work
 %   % * Fixed bug where dependencies that were previously installed not
 %   %   % added to the path
 % (new release)
+%
+% 2025_11_16 by S. Brennan
+% - In fcn_DebugTools_autoInstallRepos 
+%   % * Added even more output and formatting for error catching (for debugging)
+% (new release)
+
 
 %% TO-DO list
 % 2025_XX_XX - Your name, email
