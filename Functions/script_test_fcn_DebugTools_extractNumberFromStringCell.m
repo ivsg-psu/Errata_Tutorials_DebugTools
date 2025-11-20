@@ -3,6 +3,19 @@
 % Written in 2022_11_15 by S.Brennan
 
 
+% REVISION HISTORY:
+% 
+% 2022_11_15
+% - first write of the code
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - need to put into standard format
+
+
 % Test cases
 %% Single character in cell array
 result = fcn_DebugTools_extractNumberFromStringCell({'1 turtle'});

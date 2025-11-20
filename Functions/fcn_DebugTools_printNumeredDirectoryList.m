@@ -47,13 +47,24 @@ function fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayH
 % This function was written on 2024_10_24 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history
-% 2024_10_24 - Sean Brennan, sbrennan@psu.edu
-% -- wrote the code originally, copying out of DataClean library
+% REVISION HISTORY:
+% 
+% 2024_10_24 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally, copying out of DataClean library
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
+
+% TO-DO:
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Debugging and Input checks
 
-% Check if flag_max_speed set. This occurs if the fig_num variable input
+% Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
 flag_max_speed = 0;
@@ -78,9 +89,9 @@ end
 if flag_do_debug
     st = dbstack; %#ok<*UNRCH>
     fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-    debug_fig_num = 999978; %#ok<NASGU>
+    debug_figNum = 999978; %#ok<NASGU>
 else
-    debug_fig_num = []; %#ok<NASGU>
+    debug_figNum = []; %#ok<NASGU>
 end
 
 

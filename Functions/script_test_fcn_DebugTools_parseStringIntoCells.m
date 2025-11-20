@@ -1,7 +1,17 @@
 % script_test_fcn_DebugTools_parseStringIntoCells.m
 % Tests fcn_DebugTools_parseStringIntoCells
-% Written in 2022_11_15 by S.Brennan
 
+
+% REVISION HISTORY:
+% 2022_11_15 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally, 
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 % Test cases
 %% Single character in cell array

@@ -3,6 +3,20 @@
 % Written in 2023_01_18 by S.Brennan
 
 
+% REVISION HISTORY:
+% 
+% 2023_01_18 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally, 
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Need to put into standard form
+
+
+
 % Test cases
 %% Single character in cell array
 result = fcn_DebugTools_convertVariableToCellString({'D'});

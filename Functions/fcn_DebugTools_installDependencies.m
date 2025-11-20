@@ -86,22 +86,31 @@ function fcn_DebugTools_installDependencies(...
 % This function was written on 2023_01_23 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
-% 2023_01_23:
-% -- wrote the code originally
-% 2023_04_20:
-% -- improved error handling
-% -- fixes nested installs automatically
+% REVISION HISTORY:
+% 
+% 2023_01_23 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally
+% 
+% 2023_04_20 by Sean Brennan, sbrennan@psu.edu
+% - improved error handling
+% - fixes nested installs automatically
+% 
 % 2025_11_12 by S. Brennan, sbrennan@psu.edu
-% -- updated docstrings in header due to minor issues
-% -- updated header global flags
+% - updated docstrings in header due to minor issues
+% - updated header global flags
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
 
-% TO DO:
-% -- Add input argument checking
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Add input argument checking
 
 %% Debugging and Input checks
 
-% Check if flag_max_speed set. This occurs if the fig_num variable input
+% Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
 MAX_NARGIN = 4; % The largest Number of argument inputs to the function
@@ -127,9 +136,9 @@ end
 if flag_do_debug
     st = dbstack; %#ok<*UNRCH>
     fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-    debug_fig_num = 999978;
+    debug_figNum = 999978;
 else
-    debug_fig_num = [];
+    debug_figNum = [];
 end
 %% check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,12 +168,12 @@ if 0 == flag_max_speed
     end
 end
 
-% Check to see if user specifies fig_num?
+% Check to see if user specifies figNum?
 flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp)
-        fig_num = temp;
+        figNum = temp;
         flag_do_plots = 1;
     end
 end

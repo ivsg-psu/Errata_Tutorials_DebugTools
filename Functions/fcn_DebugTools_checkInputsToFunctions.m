@@ -31,7 +31,7 @@ varargin...
 %    variable, ...
 %    variableTypeString, ...
 %    (required_length), ...
-%    (fig_num) ...
+%    (figNum) ...
 %    )
 % 
 % INPUTS:
@@ -52,7 +52,7 @@ varargin...
 %     shorter or greater - note: if B==A then [A B] gives the same result
 %     as [A].
 % 
-%     fig_num: any number that acts somewhat like a figure number output. 
+%     figNum: any number that acts somewhat like a figure number output. 
 %     If given, this forces the variable types to be displayed as output 
 %     and as well makes the input check process verbose.
 % 
@@ -83,42 +83,54 @@ varargin...
 
 % 
 % REVISION HISTORY:
-% 2021_12_12 by S. Brennan
-% -- first write of function
-% 2022_04_03 by S. Brennan
-% -- added Path variable types
-% 2023_01_16 by S. Brennan
-% -- added narginchk
-% -- fixed dbstack error to match error to source function
-% -- added char type
-% -- added string type
-% -- improved documentation
-% 2025_07_10 by S. Brennan
-% -- added NorMorecolumn_of_numbers type and tests
-% -- added structure comparison to see if bug with structure testing
-% -- commented out traversal and traversals type to deprecate Path library
+% 
+% 2021_12_12 by Sean Brennan, sbrennan@psu.edu
+% - first write of function
+% 
+% 2022_04_03 by Sean Brennan, sbrennan@psu.edu
+% - added Path variable types
+% 
+% 2023_01_16 by Sean Brennan, sbrennan@psu.edu
+% - added narginchk
+% - fixed dbstack error to match error to source function
+% - added char type
+% - added string type
+% - improved documentation
+% 
+% 2025_07_10 by Sean Brennan, sbrennan@psu.edu
+% - added NorMorecolumn_of_numbers type and tests
+% - added structure comparison to see if bug with structure testing
+% - commented out traversal and traversals type to deprecate Path library
 %    usage of these
-% -- added numeric testing
-% -- updated output options listing
-% 2025_07_18 by S. Brennan
-% -- added positive and strictly positive variable checking to
+% - added numeric testing
+% - updated output options listing
+% 
+% 2025_07_18 by Sean Brennan, sbrennan@psu.edu
+% - added positive and strictly positive variable checking to
 %    checkInputsToFunctions
-% 2025_11_06 by S. Brennan
-% -- updated header and input checking to current format
-% -- updated plotting flag name, for consistency
+% 
+% 2025_11_06 by Sean Brennan, sbrennan@psu.edu
+% - updated header and input checking to current format
+% - updated plotting flag name, for consistency
 %    % * from flag_do_plot
 %    % * to flag_do_plots
-% -- changed input variable name for consistency
+% - changed input variable name for consistency
 %    % * from variable_type_string
 %    % * to variableTypeString
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
 
-% 
-% TO DO:
-% -- fill in to-do items here.
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Debugging and Input checks
 
-% Check if flag_max_speed set. This occurs if the fig_num variable input
+% Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
 MAX_NARGIN = 4; % The largest Number of argument inputs to the function
@@ -144,9 +156,9 @@ end
 if flag_do_debug
     st = dbstack; %#ok<*UNRCH>
     fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-    debug_fig_num = 999978;
+    debug_figNum = 999978;
 else
-    debug_fig_num = [];
+    debug_figNum = [];
 end
 %% check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -176,12 +188,12 @@ if 0 == flag_max_speed
     end
 end
 
-% Check to see if user specifies fig_num?
+% Check to see if user specifies figNum?
 flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp)
-        fig_num = temp;
+        figNum = temp;
         flag_do_plots = 1;
     end
 end

@@ -1,9 +1,20 @@
 % script_test_fcn_DebugTools_listDirectoryContents.m
 % tests fcn_DebugTools_listDirectoryContents.m
 
-% Revision history
-% 2024_10_02 - sbrennan@psu.edu
-% -- wrote the code originally, using fcn_DataClean_loadRawDataFromDirectories as starter
+% REVISION HISTORY:
+% 
+% 2024_10_02 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally, 
+%   % * using fcn_DataClean_loadRawDataFromDirectories as starter
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - cleaned up variable naming:
+%   % * fig_+num to figNum
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Set up the workspace
 close all
@@ -22,8 +33,8 @@ assert(length(directory_filelist)>1);
 
 
 %% Test 1: File query
-% fig_num = 1;
-% figure(fig_num);
+% figNum = 1;
+% figure(figNum);
 % clf;
 
 clear rootdirs
@@ -47,8 +58,8 @@ assert(length(directory_filelist)>1);
 
 
 %% Test 2: File query, specific string
-% fig_num = 1;
-% figure(fig_num);
+% figNum = 1;
+% figure(figNum);
 % clf;
 
 clear rootdirs
@@ -72,8 +83,8 @@ assert(length(directory_filelist)>1);
 
 
 %% Test 3: Directory query, specific string
-% fig_num = 1;
-% figure(fig_num);
+% figNum = 1;
+% figure(figNum);
 % clf;
 
 clear rootdirs
@@ -96,8 +107,8 @@ assert(isstruct(directory_filelist));
 assert(length(directory_filelist)>=1);
 
 %% Test 3: Directory query, specific string
-% fig_num = 1;
-% figure(fig_num);
+% figNum = 1;
+% figure(figNum);
 % clf;
 
 % List which directory/directories need to be loaded
@@ -124,8 +135,8 @@ assert(isstruct(directory_filelist));
 assert(length(directory_filelist)>1);
 
 %% Test 4: File listing, all script files in Functions directory
-% fig_num = 1;
-% figure(fig_num);
+% figNum = 1;
+% figure(figNum);
 % clf;
 
 % List which directory/directories need to be loaded

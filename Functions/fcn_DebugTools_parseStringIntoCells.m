@@ -36,22 +36,32 @@ function [outputCells,outputCellsString] = fcn_DebugTools_parseStringIntoCells(i
 % This function was written on 2022_11_14 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
-% 2022_11_14:
-% -- wrote the code originally by copying out of old Exam2 code
-% 2023_01_18:
-% -- migrated code out of AutoExam and into DebugTools
-% -- Added improved comments
-% -- Add test scripts
-% -- Add input argument checking
+% REVISION HISTORY:
+% 
+% 2022_11_14 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally by copying out of old Exam2 code
+% 
+% 2023_01_18 by Sean Brennan, sbrennan@psu.edu
+% - migrated code out of AutoExam and into DebugTools
+% - Added improved comments
+% - Add test scripts
+% - Add input argument checking
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
 % - Fixed variable naming for clarity:
 %   % * input_variable to inputVariable
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
 
-% TO DO
-% -- (none)
+% TO-DO:
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Debugging and Input checks
 

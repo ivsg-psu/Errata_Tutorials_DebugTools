@@ -4,14 +4,23 @@
 % This function was written on 2021_12_12 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-
-% Revision history:
+% REVISION HISTORY:
+% 
 % 2022_11_14:
-% -- wrote the code originally by copying out of old Exam2 code
+% - wrote the code originally by copying out of old Exam2 code
+% 
 % 2021_12_12:
-% -- first write of the script
+% - first write of the script
+% 
 % 2023_02_17
-% -- copied code out of AutoExam and into DebugTools
+% - copied code out of AutoExam and into DebugTools
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 close all;
 

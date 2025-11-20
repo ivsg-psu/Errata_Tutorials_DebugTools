@@ -1,20 +1,30 @@
 %% script_test_fcn_DebugTools_breakArrayByNans
 % Tests fcn_DebugTools_breakArrayByNans
 
-% Revision history:
+% REVISION HISTORY:
+% 
 % As: script_test_fcn_PlotRoad_breakArrayByNans
+% 
 % 2023_07_14 - S. Brennan
-% -- first write of the code
+% - first write of the code
+% 
 % 2025_11_01 - Aneesh Batchu
-% -- Updated the script to the latest format
+% - Updated the script to the latest format
 %
 % As: script_test_fcn_DebugTools_breakArrayByNans
+% 
 % 2025_11_04 - S. Brennan, sbrennan@psu.edu
-% -- added function to DebugTools library
-% -- added better assertion tests
+% - added function to DebugTools library
+% - added better assertion tests
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - cleaned up variable naming:
+%   % * fig_+num to figNum
 
-% NOTE: Entering figure number does not show any plots. 
-% Figure number is only used for debugging 
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Set up the workspace
 
@@ -41,13 +51,13 @@ fprintf(1,'Figure: 1XXXX: DEMO cases\n');
 
 %% DEMO case: Input array with no Nans
 
-fig_num = 10001; 
+figNum = 10001; 
 titleString = sprintf('DEMO case: Basic test case - no Nans');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 test_data = rand(10,2);
-indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (figNum));
 
 % Check variable types
 assert(iscell(indicies_cell_array))
@@ -62,13 +72,13 @@ assert(isequal(indicies_cell_array{1},(1:10)'));
 
 %% DEMO case: Input array with all Nans
 
-fig_num = 10002; 
+figNum = 10002; 
 titleString = sprintf('DEMO case: Input array with all Nans');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 test_data = nan(10,2);
-indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (figNum));
 
 % Check variable types
 assert(iscell(indicies_cell_array))
@@ -82,13 +92,13 @@ assert(isequal(indicies_cell_array{1},[]));
 
 %% DEMO case: Input array with all but 1 value is Nan
 
-fig_num = 10003; 
+figNum = 10003; 
 titleString = sprintf('DEMO case: Input array with all but 1 value is Nan');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 test_data = [nan(10,1); 2; nan(4,1)];
-indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (figNum));
 
 % Check variable types
 assert(iscell(indicies_cell_array))
@@ -102,13 +112,13 @@ assert(isequal(indicies_cell_array{1},11));
 
 %% DEMO case: Input array with one nan inside
 
-fig_num = 10004; 
+figNum = 10004; 
 titleString = sprintf('DEMO case: Input array with one nan inside');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 test_data = [2; 3; 4; nan; 6; 7];
-indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (figNum));
 
 % Check variable types
 assert(iscell(indicies_cell_array))
@@ -142,13 +152,13 @@ fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
 
 %% Test case: Input array with one nan sequence inside
 
-fig_num = 20001;
+figNum = 20001;
 titleString = sprintf('Test case: Input array with one nan sequence inside');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 test_data = [2; 3; 4; nan; nan; nan; 6; 7];
-indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (figNum));
 
 % Check variable types
 assert(iscell(indicies_cell_array))
@@ -163,13 +173,13 @@ assert(isequal(indicies_cell_array{2},[7; 8]));
 
 %% Test case: one nan sequence inside, with one nan at end
 
-fig_num = 20002;
+figNum = 20002;
 titleString = sprintf('Test case: one nan sequence inside, with one nan at end');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 test_data = [2; 3; 4; nan; nan; nan; 6; 7; nan];
-indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (figNum));
 
 % Check variable types
 assert(iscell(indicies_cell_array))
@@ -184,13 +194,13 @@ assert(isequal(indicies_cell_array{2},[7; 8]));
 
 %% Test case: one nan sequence inside, with many nan at end
 
-fig_num = 20003;
+figNum = 20003;
 titleString = sprintf('Test case: one nan sequence inside, with many nan at end');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 test_data = [2; 3; 4; nan; nan; nan; 6; 7; nan(3,1)];
-indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (figNum));
 
 % Check variable types
 assert(iscell(indicies_cell_array))
@@ -205,13 +215,13 @@ assert(isequal(indicies_cell_array{2},[7; 8]));
 
 %% Test case - many nan sequences inside, with many nan at end
 
-fig_num = 20004;
+figNum = 20004;
 titleString = sprintf('Test case: Input array with one nan sequence inside');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 test_data = [1; 2; 3; 4; nan; 6; nan; 8; 9; nan(3,1)];
-indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (fig_num));
+indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (figNum));
 
 % Check variable types
 assert(iscell(indicies_cell_array))
@@ -245,9 +255,9 @@ fprintf(1,'Figure: 8XXXXXX: TEST mode cases\n');
 
 %% Basic example - NO FIGURE
 
-fig_num = 80001;
-fprintf(1,'Figure: %.0f: FAST mode, empty fig_num\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80001;
+fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
+figure(figNum); close(figNum);
 
 test_data = rand(10,2);
 indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, ([]));
@@ -264,14 +274,14 @@ assert(isequal(indicies_cell_array{1},(1:10)'));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 
 %% Basic example - NO FIGURE
 
-fig_num = 80002;
-fprintf(1,'Figure: %.0f: FAST mode, fig_num=-1\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80002;
+fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
+figure(figNum); close(figNum);
 
 test_data = rand(10,2);
 indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, (-1));
@@ -288,13 +298,13 @@ assert(isequal(indicies_cell_array{1},(1:10)'));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% Compare speeds of pre-calculation versus post-calculation versus a fast variant
 
-fig_num = 80003;
-fprintf(1,'Figure: %.0f: FAST mode comparisons\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80003;
+fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
+figure(figNum); close(figNum);
 
 test_data = rand(10,2);
 
@@ -335,7 +345,7 @@ ylabel('Execution time (Milliseconds)')
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% BUG cases
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -361,16 +371,16 @@ if 1==0
 
     %% Should throw error because plotData does not have 3 column of numbers
 
-    fig_num = 90001;
-    fprintf(1,'Figure: %.0f:Bug case\n',fig_num);
-    figure(fig_num); close(fig_num);
+    figNum = 90001;
+    fprintf(1,'Figure: %.0f:Bug case\n',figNum);
+    figure(figNum); close(figNum);
 
     test_data = 2;
-    indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, fig_num);
+    indicies_cell_array = fcn_DebugTools_breakArrayByNans(test_data, figNum);
 
     % Make sure plot did NOT open up
     figHandles = get(groot, 'Children');
-    assert(~any(figHandles==fig_num));
+    assert(~any(figHandles==figNum));
 
 end
 

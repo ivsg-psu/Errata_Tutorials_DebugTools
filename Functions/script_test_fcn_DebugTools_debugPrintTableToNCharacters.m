@@ -4,9 +4,20 @@
 % Questions or comments? sbrennan@psu.edu
 
 
-% Revision history:
-%      2023_01_17:
-%      -- first write of the code
+% REVISION HISTORY:
+% 
+% 2021_12_12 - S. Brennan
+% - first write of the function
+% 
+% 2023_01_17 - S. Brennan
+% - first write of the test script
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 close all;
 

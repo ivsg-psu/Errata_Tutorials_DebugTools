@@ -36,16 +36,25 @@ function plotFormat = fcn_DebugTools_extractPlotFormatFromString(formatString, v
 % This function was written on 2024_08_12 by Sean Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history
-% 2024_08_12 - Sean Brennan
-% -- Created function
+% REVISION HISTORY:
+% 
+% 2024_08_12 by Sean Brennan, sbrennan@psu.edu
+% - Created function
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
 % - Fixed variable naming for clarity:
-%   % * fig_num to figNum
-% TO DO
-% -- (none)
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
+
 
 %% Debugging and Input checks
 

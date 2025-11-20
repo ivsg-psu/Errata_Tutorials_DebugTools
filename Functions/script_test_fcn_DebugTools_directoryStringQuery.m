@@ -1,11 +1,22 @@
 %% script_test_fcn_DebugTools_directoryStringQuery
 % Tests fcn_DebugTools_directoryStringQuery
 
-% Revision history:
-% 2025_11_04 - S. Brennan
-% -- first write of the code
-%    % * Using script_test_fcn_DebugTools_breakArrayByNans as starter
+% REVISION HISTORY:
 % 
+% 2025_11_04 - S. Brennan
+% - first write of the code
+%    % * Using script_test_fcn_DebugTools_breakArrayByNans as starter
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - cleaned up variable naming:
+%   % * fig_+num to figNum
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
+
+
 % NOTE: Entering figure number does not show any plots. 
 % Figure number is only used for debugging 
 
@@ -34,10 +45,10 @@ fprintf(1,'Figure: 1XXXX: DEMO cases\n');
 
 %% DEMO case: Basic test case looking for ''fcn_DebugTools'''
 
-fig_num = 10001; 
+figNum = 10001; 
 titleString = sprintf('DEMO case: Basic test case looking for ''fcn_DebugTools''');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 % Get a list of all files in the directory
 fileList = dir(fullfile(pwd,'Functions', '*.*')); % Adjust file extension as needed
@@ -46,7 +57,7 @@ fileList = dir(fullfile(pwd,'Functions', '*.*')); % Adjust file extension as nee
 fileList = fileList(~[fileList.isdir]);
 
 queryString = 'fcn_DebugTools';
-flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (fig_num));
+flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (figNum));
 
 % Check variable types
 assert(islogical(flagsStringWasFoundInFiles))
@@ -60,10 +71,10 @@ assert(size(flagsStringWasFoundInFiles,2)==1);
 
 %% DEMO case: Basic test case looking for ''ghglglgh (only in this file)'''
 
-fig_num = 10001; 
+figNum = 10001; 
 titleString = sprintf('DEMO case: Basic test case looking for ''ghglglgh (only in this file)''');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 % Get a list of all files in the directory
 fileList = dir(fullfile(pwd,'Functions', '*.*')); % Adjust file extension as needed
@@ -73,7 +84,7 @@ fileList = fileList(~[fileList.isdir]);
 
 queryString = 'ghglglgh (only in this file)';
 
-flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (fig_num));
+flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileList, queryString, (figNum));
 
 % Check variable types
 assert(islogical(flagsStringWasFoundInFiles))
@@ -107,10 +118,10 @@ fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
 
 %% Test case: Input array with one nan sequence inside
 
-fig_num = 20001;
+figNum = 20001;
 titleString = sprintf('Test case: Input array with one nan sequence inside');
-fprintf(1,'Figure %.0f: %s\n',fig_num, titleString);
-figure(fig_num); close(fig_num);
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
 
 
 
@@ -134,9 +145,9 @@ fprintf(1,'Figure: 8XXXXXX: TEST mode cases\n');
 
 %% Basic example - NO FIGURE
 
-fig_num = 80001;
-fprintf(1,'Figure: %.0f: FAST mode, empty fig_num\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80001;
+fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
+figure(figNum); close(figNum);
 
 % Get a list of all files in the directory
 fileList = dir(fullfile(pwd,'Functions', '*.*')); % Adjust file extension as needed
@@ -161,13 +172,13 @@ assert(sum(flagsStringWasFoundInFiles)>=1 || (flagsStringWasFoundInFiles)<=2);
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
-%% Basic example - FAST mode, fig_num=-1
+%% Basic example - FAST mode, figNum=-1
 
-fig_num = 80002;
-fprintf(1,'Figure: %.0f: FAST mode, fig_num=-1\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80002;
+fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
+figure(figNum); close(figNum);
 
 % Get a list of all files in the directory
 fileList = dir(fullfile(pwd,'Functions', '*.*')); % Adjust file extension as needed
@@ -192,13 +203,13 @@ assert(sum(flagsStringWasFoundInFiles)>=1 || (flagsStringWasFoundInFiles)<=2);
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% Compare speeds of pre-calculation versus post-calculation versus a fast variant
 
-fig_num = 80003;
-fprintf(1,'Figure: %.0f: FAST mode comparisons\n',fig_num);
-figure(fig_num); close(fig_num);
+figNum = 80003;
+fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
+figure(figNum); close(figNum);
 
 % Get a list of all files in the directory
 fileList = dir(fullfile(pwd,'Functions', '*.*')); % Adjust file extension as needed
@@ -242,7 +253,7 @@ ylabel('Execution time (Milliseconds)')
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
-assert(~any(figHandles==fig_num));
+assert(~any(figHandles==figNum));
 
 %% BUG cases
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -268,16 +279,16 @@ if 1==0
 
     %% Should throw error because plotData does not have 3 column of numbers
 
-    fig_num = 90001;
-    fprintf(1,'Figure: %.0f:Bug case\n',fig_num);
-    figure(fig_num); close(fig_num);
+    figNum = 90001;
+    fprintf(1,'Figure: %.0f:Bug case\n',figNum);
+    figure(figNum); close(figNum);
 
     test_data = 2;
-    flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(test_data, fig_num);
+    flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(test_data, figNum);
 
     % Make sure plot did NOT open up
     figHandles = get(groot, 'Children');
-    assert(~any(figHandles==fig_num));
+    assert(~any(figHandles==figNum));
 
 end
 

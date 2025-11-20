@@ -2,13 +2,24 @@
 % This is a script to exercise the function: fcn_DebugTools_extractPlotFormatFromString
 % This function was written on 2023_08_12 by S. Brennan, sbrennan@psu.edu
 
-
-% Revision history:
+% REVISION HISTORY:
+% 
 % 2023_08_12
-% -- first write of the code
+% - first write of the code
+% 
 % 2025_07_15 by Sean Brennan
-% -- pulled code out of PlotRoad and into DebugTools, due to extensive use
-% in other libraries
+% - pulled code out of PlotRoad and into DebugTools, due to extensive use
+%   % in other libraries 
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - cleaned up variable naming:
+%   % * fig_+num to figNum
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
+
 
 %% Basic Example
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -26,13 +37,13 @@
 % function only plots, has no outputs
 
 %% BASIC example 1 - simple example
-fig_num = 1;
-figure(fig_num);
+figNum = 1;
+figure(figNum);
 clf;
 
 % Test the function
 formatString = 'r.-';
-plotFormat = fcn_DebugTools_extractPlotFormatFromString(formatString, (fig_num));
+plotFormat = fcn_DebugTools_extractPlotFormatFromString(formatString, (figNum));
 
 % Check results
 assert(isstruct(plotFormat));
@@ -41,13 +52,13 @@ assert(isequal(plotFormat.Color,[1 0 0]));
 assert(strcmp(plotFormat.Marker,'.'));
 
 %% BASIC example 2 - simple example
-fig_num = 1;
-figure(fig_num);
+figNum = 1;
+figure(figNum);
 clf;
 
 % Test the function
 formatString = 'g';
-plotFormat = fcn_DebugTools_extractPlotFormatFromString(formatString, (fig_num));
+plotFormat = fcn_DebugTools_extractPlotFormatFromString(formatString, (figNum));
 
 % Check results
 assert(isstruct(plotFormat));
@@ -60,14 +71,14 @@ formatString = 'r.-';
 
 
 % Speed Test Calculation
-fig_num=[];
+figNum=[];
 REPS=5; minTimeSlow=Inf;
 tic;
 
 % Slow mode calculation
 for i=1:REPS
     tstart=tic;
-    plotFormat = fcn_DebugTools_extractPlotFormatFromString(formatString, (fig_num));
+    plotFormat = fcn_DebugTools_extractPlotFormatFromString(formatString, (figNum));
     telapsed=toc(tstart);
     minTimeSlow=min(telapsed,minTimeSlow);
 end
@@ -75,12 +86,12 @@ averageTimeSlow=toc/REPS;
 %slow mode END
 
 % Fast Mode Calculation
-fig_num = -1;
+figNum = -1;
 minTimeFast = Inf;
 tic;
 for i=1:REPS
     tstart = tic;
-    plotFormat = fcn_DebugTools_extractPlotFormatFromString(formatString, (fig_num));
+    plotFormat = fcn_DebugTools_extractPlotFormatFromString(formatString, (figNum));
     telapsed = toc(tstart);
     minTimeFast = min(telapsed,minTimeFast);
 end

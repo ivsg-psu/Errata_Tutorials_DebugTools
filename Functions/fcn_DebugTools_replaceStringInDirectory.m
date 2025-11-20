@@ -22,7 +22,8 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 %
 %      figNum: a figure number to plot results. If set to -1, skips any
 %      input checking or debugging, no figures will be generated, and sets
-%      up code to maximize speed. 
+%      up code to maximize speed. If set to 1, will query user to confirm
+%      that any file changes are acceptable.
 %
 % OUTPUTS:
 %
@@ -41,20 +42,31 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 % This function was written on 2025_09_26 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
+% REVISION HISTORY:
+% 
 % 2025_09_26 - sbrennan@psu.edu
-% -- wrote the code originally, using breakDataIntoLaps as starter
+% - wrote the code originally, using breakDataIntoLaps as starter
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
 % - Fixed variable naming for clarity:
-%   % * fig_num to figNum
 % - Changed _LAPS_ global vars to _DEBUGTOOLS_
+% 
 % 2025_11_13 by Sean Brennan, sbrennan@psu.edu
 % - added filenameNewString input
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
+% - In fcn_DebugTools_replaceStringInDirectory
+%   % * Added verification for changing input
 
-% TO-DO
-% (none)
+% TO-DO:
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Debugging and Input checks
 
@@ -149,9 +161,12 @@ fileList = dir(fullfile(directoryPath, '*.*')); % Adjust file extension as neede
 % Filter out directories from the list
 fileList = fileList(~[fileList.isdir]);
 
+if flag_do_plots
+    fprintf('Changing %s to %s: \n', oldString, newString);
+end
 
-for i = 1:length(fileList)
-    fileName = fileList(i).name;
+for ith_file = 1:length(fileList)
+    fileName = fileList(ith_file).name;
     if contains(fileName,filenameNewString)
 
         filePath = fullfile(directoryPath, fileName);
@@ -176,8 +191,33 @@ for i = 1:length(fileList)
                 end
             end
 
-            % Write the modified content back to the file
-            writelines(modifiedContent, filePath);
+            % If user has set flag_do_plots, confirm change for each file
+            flag_keepGoing = 1;
+            if flag_do_plots && numChanged>0
+                fprintf('Found %.0f instances, skipped %.0f comments in %s\n', numChanged, numSkipped, fileName);
+                flag_goodReply = 0;
+                flag_keepGoing = 0;
+                while 0==flag_goodReply
+                    acceptTimeString = input('Is this change acceptable (you MUST type "Y" or "y" to continue)? Y/N [N]:','s');
+                    if isempty(acceptTimeString)
+                        flag_goodReply = 1;
+                    else
+                        acceptTimeString = lower(acceptTimeString);
+                        if isscalar(acceptTimeString) && (strcmp(acceptTimeString,'n')||strcmp(acceptTimeString,'y'))
+                            flag_goodReply = 1;
+                        end
+                        if strcmpi(acceptTimeString,'y')
+                            flag_keepGoing = 1;
+                        end
+
+                    end
+                end
+            end
+
+            if flag_keepGoing==1
+                % Write the modified content back to the file
+                writelines(modifiedContent, filePath);
+            end
 
             % For debugging - use the line below to put a breakpoint
             if numChanged~=0

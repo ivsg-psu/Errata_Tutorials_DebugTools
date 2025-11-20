@@ -1,5 +1,18 @@
 % Renames all files with one repo name to the name of another
 
+
+% REVISION HISTORY:
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Updated revision hist to markdown format
+
+
+% TO-DO:
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Need better testing, standard form, etc.
+
+
 thisPath = fullfile(cd,'Functions');
 directoryList = dir(thisPath);
 

@@ -37,17 +37,26 @@ function fcn_DebugTools_addSubdirectoriesToPath(root_path, subdirectories, varar
 % This function was written on 2022_03_27 by S. Brennan 
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
-% 2022_03_27:
+% REVISION HISTORY:
+% 
+% 2022_03_27 by Sean Brennan, sbrennan@psu.edu
 % - first write of the code
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
 % - Fixed variable naming for clarity:
 %   % * input_variable to inputVariable
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
 
-% TO DO
-% -- (none)
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - (none)
 
 %% Debugging and Input checks
 

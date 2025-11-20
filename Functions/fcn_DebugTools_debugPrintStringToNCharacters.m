@@ -38,19 +38,28 @@ function fixed_length_string = fcn_DebugTools_debugPrintStringToNCharacters(inpu
 % in PathTools repo.
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
+% REVISION HISTORY:
+% 
 % 2021_12_12:
 % - first write of the code
+% 
 % 2023_01_16:
 % - added input checking
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
 % - Fixed variable naming for clarity:
-%   % * fig_num to figNum
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
 
-% TO DO
-% -- (none)
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Debugging and Input checks
 

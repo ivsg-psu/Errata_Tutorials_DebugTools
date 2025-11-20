@@ -2,15 +2,22 @@
 % Tests fcn_DebugTools_autoInstallRepos
 % Written in 2025_11_10 by S.Brennan
 
-% Revision history:
-% 2025_11_10 - S. Brennan, sbrennan@psu.edu
-% -- wrote the code originally using
-% script_test_fcn_DebugTools_installDependencies as a starter
+% REVISION HISTORY:
+% 
+% 2025_11_10 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally using
+%   % script_test_fcn_DebugTools_installDependencies as a starter
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
 
-% TO DO
-% 2025_11_12 - S. Brennan, sbrennan@psu.edu
-% -- Add input argument checking
-% -- Add fastmode tests
+% TO-DO:
+% 
+% 2025_11_12 by Sean Brennan, sbrennan@psu.edu
+% - Add input argument checking
+% - Add fastmode tests
+
+
 
 %% Set up the workspace
 close all

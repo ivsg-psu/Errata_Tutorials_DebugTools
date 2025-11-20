@@ -3,10 +3,17 @@
 % This function was written on 2023_01_29 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-
-% Revision history:
+% REVISION HISTORY:
+% 
 % 2023_01_29:
-% -- first write of the code (this is just a wrapper for cprint)
+% - first write of the code (this is just a wrapper for cprint)
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Need to put into standard form
 
 close all;
 

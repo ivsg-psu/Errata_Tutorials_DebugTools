@@ -56,6 +56,7 @@ This repo provides common tools used for debugging MATLAB codes within IVSG, and
     <li><a href="#functions-for-workspace-management">Functions for Workspace Management</a>
          <ul>
              <li><a href="#clearing-package-installs">Clearing package installs and path linkages to packages</li>
+             <li><a href="#fcn_debugtools_autoinstallrepos">fcn_DebugTools_autoInstallRepos performs automatic installation of GitHub repos into a Utilities folder and updates the MATLAB path to point to selected folders within the install.</li>
              <li><a href="#package-installs-from-github-urls">Package installs from GitHub URLs</li>
              <li><a href="#adding-subdirectories-to-the-path">Adding subdirectories to the path</li>
              <li><a href="#querying-directory-and-subdirectory-content">Listing directory and subdirectory content</li>
@@ -251,6 +252,161 @@ end
 <a href="#debugtools">Back to top</a>
 
 ***
+
+### fcn_DebugTools_autoInstallRepos
+
+The function,
+fcn_DebugTools_autoInstallRepos
+performs automatic installation of GitHub repos into a Utilities folder and
+updates the MATLAB path to point to selected folders within the install.
+
+```Matlab
+
+
+FCN_DEBUGTOOLS_AUTOINSTALLREPOS automatically installs GitHub repos. Each
+repo is specified by a URL pointing to the GitHub site. 
+
+For each repo, GitHub is queried to determine the latest version of that
+repo. The Utilities folder, if it exists, is queried to determine if the
+latest version is installed. If the folder name matches the latest
+release, the installation is skipped. An optional input flag can be used
+to force clearing and installation of previously installed repos, even if
+these are the same version.
+
+For all installations, by default, the DebugTools latest release is
+always checked and installed if it is not the latest version. After
+install, this function, fcn_DebugTools_autoInstallRepos, is copied into
+the Functions folder so that this function can be called in code releases
+even without DebugTools installed yet.
+
+All installs are pulled from the latest version (as a zip file) into a
+default local subfolder, "Utilities", under the root folder. The install
+process also adds either the package subfoder or any specified
+sub-subfolders to the MATLAB path. 
+
+If the Utilities folder does not exist, it is created.
+
+If the specified code package folder and all subfolders already exist,
+the package is not installed. Otherwise, the folders are created as
+needed, and the package is installed.
+
+If one does not wish to put these codes in different directories, the
+function can be easily modified with strings specifying the
+desired install location.
+
+For path creation, if the "DebugTools" package is being installed, the
+code installs the package, then shifts temporarily into the package to
+complete the path definitions for MATLAB. If the DebugTools is not
+already and/or successfully installed, an error is thrown as these tools
+are needed for the path creation.
+
+Finally, the code sets a global flag to indicate that the folders are
+initialized so that, in this session, if the code is called again, then
+the folders will not be installed. This global flag can be overwritten by
+an optional flag input.
+
+FORMAT:
+
+     fcn_DebugTools_autoInstallRepos(...
+          dependency_name, ...
+          dependencySubfolders, ...
+          dependencyURLs)
+
+INPUTS:
+
+     dependencyURLs: a cell array of the URLs pointing to the repo
+     location(s).
+
+     dependencySubfolders: in addition to the package subfoder, a list
+     of any specified sub-subfolders to the MATLAB path. Leave blank to
+     add only the package subfolder to the path. See the example below.
+
+     (OPTIONAL INPUTS)
+
+     flagForceInstalls: if any value other than zero, forces the
+     install to occur even if the global flag is set.
+
+     figNum: a figure number to plot results. If set to -1, skips any
+     input checking or debugging, no figures will be generated, and sets
+     up code to maximize speed. As well, if given, this forces the
+     variable types to be displayed as output and as well makes the input
+     check process verbose
+
+OUTPUTS:
+
+     (none into workspace - installs files into Utilities subfolder)
+
+```
+
+Here is an example implementation:
+
+```Matlab
+%% DEMO case: auto-installing several repos (Debug is automatic)
+figNum = 10002;
+titleString = sprintf('DEMO case: auto-installing several repos (Debug is automatic)');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+% figure(figNum); clf;
+
+% currentFolder = pwd;
+% 
+% mkdir('TempTestFolder');
+% cd('TempTestFolder');
+
+% Remove the folders from path, to avoid deletion warnings
+fcn_INTERNAL_clearUtilitiesFromPathAndFolders;
+
+% Confirm that the Utilities are NOT installed
+tempPath = dir(fullfile(pwd,'Utilities','DebugTools*'));
+assert(isempty(tempPath));
+
+% Define a universal resource locator (URL) pointing to the repos of
+% dependencies to install. Note that DebugTools is always installed
+% automatically, first, even if not listed:
+clear dependencyURLs dependencySubfolders
+ith_repo = 0;
+
+ith_repo = ith_repo+1;
+dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/PathPlanning_MapTools_MapGenClassLibrary';
+dependencySubfolders{ith_repo} = {'Functions','testFixtures','GridMapGen'};
+
+ith_repo = ith_repo+1;
+dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/PathPlanning_PathTools_PathClassLibrary';
+dependencySubfolders{ith_repo} = {'Functions','Data'};
+
+ith_repo = ith_repo+1;
+dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/FieldDataCollection_VisualizingFieldData_PlotRoad';
+dependencySubfolders{ith_repo} = {'Functions','Data'};
+
+ith_repo = ith_repo+1;
+dependencyURLs{ith_repo} = 'https://github.com/ivsg-psu/PathPlanning_GeomTools_GeomClassLibrary';
+dependencySubfolders{ith_repo} = {'Functions','Data'};
+
+
+
+% Define sub-subfolders that are in the code package that also need to be
+% added to the MATLAB path after install. Leave empty ({}) to only add
+% the subfolder path without any sub-subfolder path additions.
+
+% Do we want to force the installs?
+flagForceInstalls = 0;
+
+% Call the function to do the install
+fcn_DebugTools_autoInstallRepos(dependencyURLs, dependencySubfolders, (flagForceInstalls), (figNum));
+
+% Confirm that the Utilities were installed
+tempPath = dir(fullfile(pwd,'Utilities','DebugTools*'));
+assert(~isempty(tempPath));
+
+% Remove the folders from path, to avoid deletion warnings
+fcn_INTERNAL_clearUtilitiesFromPathAndFolders;
+tempPath = dir(fullfile(pwd,'Utilities','DebugTools*'));
+assert(isempty(tempPath));
+```
+
+<a href="#debugtools">Back to top</a>
+
+***
+
 
 ### Package installs from GitHub URLs
 

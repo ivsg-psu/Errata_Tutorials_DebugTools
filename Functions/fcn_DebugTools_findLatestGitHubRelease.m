@@ -17,7 +17,7 @@ function latestReleaseStruct = fcn_DebugTools_findLatestGitHubRelease(owner, rep
 % 
 %     (optional inputs)
 %
-%     fig_num: any number that acts somewhat like a figure number output. 
+%     figNum: any number that acts somewhat like a figure number output. 
 %     If given, this forces the variable types to be displayed as output 
 %     and as well makes the input check process verbose.
 % 
@@ -66,15 +66,22 @@ function latestReleaseStruct = fcn_DebugTools_findLatestGitHubRelease(owner, rep
 % Questions or comments? contact sbrennan@psu.edu
 
 % REVISION HISTORY:
-% 2025_11_07 by S. Brennan
-% -- first write of function
- 
-% TO DO:
-% -- Need to integrate this into the auto-loader
+%
+% 2025_11_07 by Sean Brennan, sbrennan@psu.edu
+% - first write of function
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Debugging and Input checks
 
-% Check if flag_max_speed set. This occurs if the fig_num variable input
+% Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
 MAX_NARGIN = 3; % The largest Number of argument inputs to the function
@@ -100,9 +107,9 @@ end
 if flag_do_debug
     st = dbstack; %#ok<*UNRCH>
     fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-    debug_fig_num = 999978;
+    debug_figNum = 999978;
 else
-    debug_fig_num = [];
+    debug_figNum = [];
 end
 %% check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -132,12 +139,12 @@ if 0 == flag_max_speed
     end
 end
 
-% Check to see if user specifies fig_num?
+% Check to see if user specifies figNum?
 flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp)
-        fig_num = temp;
+        figNum = temp;
         flag_do_plots = 1;
     end
 end

@@ -3,10 +3,18 @@
 % This function was written on 2021_12_12 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
+% REVISION HISTORY:
+% 
+% 2021_12_12 - S. Brennan
+% - first write of the function
+% - first write of the test script
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
 
-% Revision history:
-%      2021_12_12:
-%      -- first write of the code
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Need to put into standard form
 
 close all;
 

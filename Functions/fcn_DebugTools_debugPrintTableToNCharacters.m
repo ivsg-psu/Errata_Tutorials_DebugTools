@@ -46,17 +46,25 @@ function fcn_DebugTools_debugPrintTableToNCharacters(...
 % This function was written on 2023_01_17 by S. Brennan.
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
-% 2023_01_17:
+% REVISION HISTORY: 
+% 
+% 2023_01_17 by Sean Brennan, sbrennan@psu.edu
 % - first write of the code
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
 % - Fixed variable naming for clarity:
-%   % * fig_num to figNum
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
 
-% TO DO
-% -- (none)
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Debugging and Input checks
 

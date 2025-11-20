@@ -1,11 +1,19 @@
 % script_test_fcn_DebugTools_addSubdirectoriesToPath
 % Tests: fcn_DebugTools_addSubdirectoriesToPath.m
 
-% 
 % REVISION HISTORY:
-%      2022_03_27:
-%      -- first write of the code
+%
+% 2022_03_27 by Sean Brennan, sbrennan@psu.edu
+% - first write of the code
+% 
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
 
+% TO-DO:
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 
 % Show how to add user-defined folders to the path

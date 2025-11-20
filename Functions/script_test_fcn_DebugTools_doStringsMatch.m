@@ -2,12 +2,20 @@
 % Tests fcn_DebugTools_doStringsMatch
 % Written in 2022_12_09 by S.Brennan
 
-% Revision history:
-% 2022_12_09:
-% -- wrote the code originally
+% REVISION HISTORY:
+% 
+% 2022_12_09
+% - first write of the code
+%
 % 2023_01_17:
-% -- moved out of the AutoExam codeset, into DebugTools
+% - moved out of the AutoExam codeset, into DebugTools
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
 
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 % Test cases
 %% simple string comparisons, identical characters that are same

@@ -35,21 +35,28 @@ function cellString = fcn_DebugTools_convertVariableToCellString(inputVariable, 
 % This function was written on 2022_11_14 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
-% 2022_11_14:
-% -- wrote the code originally by copying out of old Exam2 code
-% 2023_01_18
-% -- Add test scripts
-% -- Add input argument checking
-% -- Better comments
+% REVISION HISTORY:
+% 
+% 2022_11_14 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally by copying out of old Exam2 code
+% 
+% 2023_01_18 by Sean Brennan, sbrennan@psu.edu
+% - Add test scripts
+% - Add input argument checking
+% - Better comments
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
 % - Fixed variable naming for clarity:
-%   % * fig_num to figNum
+%   % * fig_+num to figNum
 
-% TO DO
-% -- (none)
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Debugging and Input checks
 

@@ -1,17 +1,21 @@
 % script_test_fcn_DebugTools_findLatestGitHubRelease
 % Tests: fcn_DebugTools_findLatestGitHubRelease
 
+% REVISION HISTORY:
+% 
+% 2025_11_07 by Sean Brennan, sbrennan@psu.edu
+% - first write of script, using
+%   % * script_test_fcn_VGraph_addObstacle as a starter
+% 
+% 2025_11_11 by Sean Brennan, sbrennan@psu.edu
+% - added fastmode testing 
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
 
-% Revision history
-% As: script_test_fcn_DebugTools_findLatestGitHubRelease
-% 2025_11_07 - S. Brennan
-% -- first write of script, using
-% script_test_fcn_VGraph_addObstacle as a starter
-% 2025_11_11 - S. Brennan
-% -- added fastmode testing
-
-% TO DO:
-% -- set up fast mode tests
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Set up the workspace
 close all

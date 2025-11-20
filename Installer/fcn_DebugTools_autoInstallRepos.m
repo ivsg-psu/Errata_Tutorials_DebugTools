@@ -108,6 +108,8 @@ function fcn_DebugTools_autoInstallRepos(...
 % Revision history:
 % 2025_11_10 - S. Brennan, sbrennan@psu.edu
 % -- wrote the code originally
+% 2025_11_16 - S. Brennan, sbrennan@psu.edu
+% -- Improved error handling. Made warnings verbose for EVERY error call.
 
 % TO DO
 % -- 2025_11_12 - S. Brennan
@@ -199,13 +201,6 @@ if (0==flag_max_speed) && (MAX_NARGIN == nargin)
         figNum = temp;
         flag_do_plots = 1;
     end
-end
-
-% Setup figures if there is debugging
-if flag_do_debug
-    fig_debug = 159; 
-else
-    fig_debug = []; %#ok<*NASGU>
 end
 
 %% Set the global variables - need this for input checking
@@ -324,6 +319,8 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
             % Erase the folder
             [status,message,message_ID] = rmdir(directoryPath,'s');
             if 0==status
+                warning('backtrace','on');
+                warning('Attempted to remove a directory but encountered error.');
                 error('Unable remove directory: %s \nReason message: %s \nand message_ID: %s\n',utilities_dir, message,message_ID);
             else
                 fprintf(1,'Done.\n');
@@ -333,18 +330,24 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
 
     % Perform install of latest version
     expectedDirectory = fullfile(pwd,'Utilities',dependency_name);
-    if ~exist(expectedDirectory,'dir')
+
+    % If the directory does not exist, or if this is DebugTools, need to
+    % install or link.
+    if ~exist(expectedDirectory,'dir') || contains(dependency_name,'DebugTools')
         fprintf(1,'\tAdding library: %s ...',dependency_name);
         fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url);
 
         % Make sure it worked
         if ~exist(expectedDirectory,'dir')
-            error('Unable add directory: %s Must quit!\n',expectedDirectory);
+            warning('backtrace','on');
+            warning('Attempted install but expected directory was not created.');
+            error('Unable to add directory: %s Must quit!\n',expectedDirectory);
         else
             fprintf(1,'Done.\n');
         end
     else
         fprintf(1,'\tSkipping already installed library: %s\n',dependency_name);
+        fcn_DebugTools_addSubdirectoriesToPath(expectedDirectory,dependency_subfolders);
     end
      
     % If Debug install, copy this file into Installer folder UNLESS debugging within
@@ -360,16 +363,25 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
 
             % Did it work?
             if ~success_flag
+                warning('backtrace','on');
+                warning('Difficulty creating installer directory');
                 error('Unable to make the Installer directory. Reason: %s with message ID: %s\n',error_message,message_ID);
             elseif ~isempty(error_message)
+                warning('backtrace','on');                
                 warning('The Installer directory was created, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
             end
 
         end
 
         st = dbstack;
-        sourceFileName = st(1).name;
-        fullSourcePath = which(sourceFileName);
+        sourceFileName = st(1).file;
+        fullSourcePath = fullfile(expectedDirectory,'Functions',sourceFileName);
+        if exist(fullSourcePath,'file')~=2
+            warning('backtrace','on');
+            warning('Difficulty finding installer file.');
+            error('Unable to find Installer file: \n\t%s\nfor copy into the Install folder. Exiting.',fullSourcePath);
+        end
+
         destionationToCopy = fullfile(pwd,'Installer');
 
         fprintf(1,'\tCopying function %s to Installer folder...', st(1).file)
@@ -378,8 +390,11 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
 
         % Did it work?
         if ~success_flag
-            error('Unable to copy %s to the Installer directory. Reason: %s with message ID: %s\n',error_message,message_ID);
+            warning('backtrace','on');
+            warning('Error encountered in copying into Installer directory.');
+            error('Unable to copy source: \n\t%s\nTo the Installer directory: \n\t%s\n. Reason: \n\t%s\nWith message ID:\n\t %s\n',fullSourcePath, destionationToCopy, error_message, message_ID);
         elseif ~isempty(error_message)
+            warning('backtrace','on');
             warning('The copy succeeded but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
         else
             fprintf(1,'Done.\n');
@@ -477,7 +492,7 @@ function fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency
 %      fcn_DebugTools_installDependencies(...
 %           dependency_name, ...
 %           dependency_subfolders, ...
-%           dependency_url)
+%           dependency_url, (flag_force_creation))
 %
 % INPUTS:
 %
@@ -525,29 +540,54 @@ function fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency
 % % Call the function to do the install
 % fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url)
 %
+% 
+% See also: script_test_fcn_DebugTools_autoInstallRepos
+%
 % This function was written on 2023_01_23 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
 % Revision history:
-% 2023_01_23:
+% 2025_11_11 by S. Brennan, sbrennan@psu.edu
 % -- wrote the code originally
-% 2023_04_20:
-% -- improved error handling
-% -- fixes nested installs automatically
+% 2025_11_12 by S. Brennan, sbrennan@psu.edu
+% -- updated docstrings in header due to minor issues
+% -- updated header global flags
 
 % TO DO
 % -- Add input argument checking
 
-flag_do_debug = 0; % Flag to show the results for debugging
-flag_do_plots = 0; % % Flag to plot the final results
-flag_check_inputs = 1; % Flag to perform input checking
+%% Debugging and Input checks
+
+% Check if flag_max_speed set. This occurs if the fig_num variable input
+% argument (varargin) is given a number of -1, which is not a valid figure
+% number.
+MAX_NARGIN = 4; % The largest Number of argument inputs to the function
+flag_max_speed = 0;
+if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
+    flag_check_inputs = 0; % Flag to perform input checking
+    flag_max_speed = 1;
+else
+    % Check to see if we are externally setting debug mode to be "on"
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
+    flag_check_inputs = 1; % Flag to perform input checking
+    MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
+    MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
+    if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
+        flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG); 
+        flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
+    end
+end
+
+% flag_do_debug = 1;
 
 if flag_do_debug
     st = dbstack; %#ok<*UNRCH>
     fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
+    debug_fig_num = 3443534;
+else
+    debug_fig_num = [];
 end
-
-
 %% check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %   _____                   _
@@ -561,9 +601,36 @@ end
 % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-if flag_check_inputs
-    % Are there the right number of inputs?
-    narginchk(3,4);
+if 0 == flag_max_speed
+    if flag_check_inputs == 1
+        % Are there the right number of inputs?
+        narginchk(3,MAX_NARGIN);
+
+        % if nargin>=2
+        %     % Check the variableTypeString input, make sure it is characters
+        %     if ~ischar(variableTypeString)
+        %         error('The variableTypeString input must be a character type, for example: ''Path'' ');
+        %     end
+        % end
+
+    end
+end
+
+% Check to see if user specifies fig_num?
+flag_do_plots = 0; % Default is to NOT show plots
+if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
+    temp = varargin{end};
+    if ~isempty(temp)
+        fig_num = temp;
+        flag_do_plots = 1;
+    end
+end
+
+% Setup figures if there is debugging
+if flag_do_debug
+    fig_debug = 2343432; 
+else
+    fig_debug = []; %#ok<*NASGU>
 end
 
 %% Set the global variable - need this for input checking
@@ -579,6 +646,7 @@ if nargin==4
         eval(sprintf('clear global %s',flag_varname));
     end
 end
+
 
 %% Main code starts here
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -609,8 +677,11 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
         % Did it work?
         if ~success_flag
+            warning('backtrace','on');
+            warning('Error encountered in creating Utilities directory.');
             error('Unable to make the Utilities directory. Reason: %s with message ID: %s\n',error_message,message_ID);
         elseif ~isempty(error_message)
+            warning('backtrace','on');
             warning('The Utilities directory was created, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
         end
 
@@ -625,8 +696,11 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
         % Did it work?
         if ~success_flag
+            warning('backtrace','on');
+            warning('Error encountered in creating dependency folder in Utilities directory.');
             error('Unable to make the dependency directory: %s. Reason: %s with message ID: %s\n',dependency_name, error_message,message_ID);
         elseif ~isempty(error_message)
+            warning('backtrace','on');
             warning('The %s directory was created, but with a warning: %s\n and message ID: %s\n(continuing)\n',dependency_name, error_message, message_ID);
         end
 
@@ -660,6 +734,8 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
         % Is the file there?
         if ~exist(zip_file_name,'file')
+            warning('backtrace','on');
+            warning('Error encountered in downloading zip install.');
             error(['The zip file: %s for dependency: %s did not download correctly.\n' ...
                 'This is usually because permissions are restricted on ' ...
                 'the current directory. Check the code install ' ...
@@ -672,6 +748,8 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
         % Did this work? If so, directory should not be empty
         directory_contents = dir(dependency_folder_name);
         if isempty(directory_contents)
+            warning('backtrace','on');
+            warning('Error encountered during unzip operation.');
             error(['The necessary dependency: %s has an error in install ' ...
                 'where the zip file downloaded correctly, ' ...
                 'but the unzip operation did not put any content ' ...
@@ -698,6 +776,8 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
         if flag_is_nested_install
             [status,message,message_ID] = movefile(install_files_from,install_location_to);
             if 0==status
+                warning('backtrace','on');
+                warning('Error encountered in moving files during install.');
                 error(['Unable to move files from directory: %s\n ' ...
                     'To: %s \n' ...
                     'Reason message: %s\n' ...
@@ -705,6 +785,8 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
             end
             [status,message,message_ID] = rmdir(install_directory_from);
             if 0==status
+                warning('backtrace','on');
+                warning('Error encountered in removing directory during install.');
                 error(['Unable remove directory: %s \n' ...
                     'Reason message: %s \n' ...
                     'And message_ID: %s\n'],install_directory_from,message,message_ID);
@@ -729,6 +811,8 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
         end
         % If any are not there, then throw an error
         if flag_allFoldersThere==0
+            warning('backtrace','on');
+            warning('Error encountered in confirming dependency install.');
             error(['The necessary dependency: %s has an error in install, ' ...
                 'or error performing an unzip operation. The subfolders ' ...
                 'requested by the code were not found after the unzip ' ...
@@ -763,6 +847,8 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
         try
             fcn_DebugTools_addSubdirectoriesToPath(dependency_folder_name,dependency_subfolders);
         catch
+            warning('backtrace','on');
+            warning('Error encountered where DebugTools requested but not yet installed.');
             error(['Package installer requires DebugTools package to be ' ...
                 'installed first. Please install that before ' ...
                 'installing this package']);
@@ -855,6 +941,8 @@ end
 if  exist(utilities_dir,'dir')
     [status,message,message_ID] = rmdir(utilities_dir,'s');
     if 0==status
+        warning('backtrace','on');
+        warning('Error encountered where Utilities folder could not be deleted.');
         error('Unable remove directory: %s \nReason message: %s \nand message_ID: %s\n',utilities_dir, message,message_ID);
     end
 end

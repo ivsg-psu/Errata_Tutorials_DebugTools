@@ -1,9 +1,16 @@
 % script_test_fcn_DebugTools_queryNumberRange.m
 % tests fcn_DebugTools_queryNumberRange.m
 
-% Revision history
-% 2024_10_24 - sbrennan@psu.edu
-% -- wrote the code originally, using fcn_DataClean_loadRawDataFromDirectories as starter
+% REVISION HISTORY:
+% 2024_10_24 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally, using fcn_DataClean_loadRawDataFromDirectories as starter
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Set up the workspace
 close all

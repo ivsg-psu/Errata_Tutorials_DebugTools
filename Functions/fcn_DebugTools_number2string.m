@@ -36,24 +36,34 @@ function stringNumber = fcn_DebugTools_number2string(number, varargin)
 % This function was written on 2022_11_14 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
+% REVISION HISTORY:
 %
 % 2022_11_14:
-% -- wrote the code originally by copying out of old Exam2 code
+% - wrote the code originally by copying out of old Exam2 code
+% 
 % 2021_12_12:
-% -- first write of the script
+% - first write of the script
+% 
 % 2023_02_17
-% -- copied code out of AutoExam and into DebugTools
-% -- Add test scripts
-% -- Add input argument checking
+% - copied code out of AutoExam and into DebugTools
+% - Add test scripts
+% - Add input argument checking
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
 % - Fixed variable naming for clarity:
 %   % * input_variable to inputVariable
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
 
-% TO DO
-% -- vectorize code, allowing matrices of numbers?
+% TO-DO:
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - vectorize code, allowing matrices of numbers?
 
 
 %% Debugging and Input checks

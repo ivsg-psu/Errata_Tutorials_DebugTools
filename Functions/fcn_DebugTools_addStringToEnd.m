@@ -46,12 +46,15 @@ function outputString = fcn_DebugTools_addStringToEnd(inputString, valueToAdd, v
 % This function was written on 2022_11_14 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
-% 2022_11_14:
-% -- wrote the code originally by copying out of old Exam2 code
-% 2023_01_17:
-% -- added code to the DebugTools repo
-% -- Add test scripts
+% REVISION HISTORY:
+% 
+% 2022_11_14 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally by copying out of old Exam2 code
+% 
+% 2023_01_17 by Sean Brennan, sbrennan@psu.edu
+% - added code to the DebugTools repo
+% - Add test scripts
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
@@ -59,9 +62,16 @@ function outputString = fcn_DebugTools_addStringToEnd(inputString, valueToAdd, v
 %   % * input_string to inputString
 %   % * outputString to outputString
 %   % * value_to_add to valueToAdd
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
 
-% TO DO
-% -- Add input argument checking
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Add input argument checking
 
 %% Debugging and Input checks
 

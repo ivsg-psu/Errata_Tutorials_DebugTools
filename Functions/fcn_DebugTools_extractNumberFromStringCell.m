@@ -36,18 +36,26 @@ function outputNumberCell = fcn_DebugTools_extractNumberFromStringCell(inputStri
 % This function was written on 2022_11_14 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history:
-% 2022_11_14:
-% -- wrote the code originally by copying out of old Exam2 code
+% REVISION HISTORY:
+% 
+% 2022_11_14 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally by copying out of old Exam2 code
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
 % - Fixed variable naming for clarity:
 %   % * input_variable to inputVariable
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
 
-% TO DO
-% -- Add test scripts
-% -- Add input argument checking
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Add test scripts
+% - Add input argument checking
 
 %% Debugging and Input checks
 

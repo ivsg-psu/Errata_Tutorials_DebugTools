@@ -1,37 +1,49 @@
 % script_test_fcn_DebugTools_checkInputsToFunctions
 % Tests: fcn_DebugTools_checkInputsToFunctions
 
-% 
+
 % REVISION HISTORY:
 % 
 % 2021_06_20 by S. Brennan
-% -- first write of script
+% - first write of script
+% 
 % 2021_07_07 by S. Brennan
-% -- modified to allow variable input types
+% - modified to allow variable input types
+% 
 % 2022_04_03 by S. Brennan
-% -- added Path variable types
+% - added Path variable types
+% 
 % 2023_01_16 by S. Brennan
-% -- added narginchk
-% -- fixed dbstack error to match error to source function
-% -- added char type
-% -- added string type
-% -- added DoesFileExist type
-% -- added DoesDirectoryExist type
-% -- improved documentation
+% - added narginchk
+% - fixed dbstack error to match error to source function
+% - added char type
+% - added string type
+% - added DoesFileExist type
+% - added DoesDirectoryExist type
+% - improved documentation
+% 
 % 2025_07_10 by S. Brennan
-% -- added NorMorecolumn_of_numbers type and tests
-% -- added structure comparison to see if bug with structure testing
-% -- commented out traversal and traversals type to deprecate Path library
+% - added NorMorecolumn_of_numbers type and tests
+% - added structure comparison to see if bug with structure testing
+% - commented out traversal and traversals type to deprecate Path library
 %    usage of these
-% -- added numeric testing
-% -- updated output options listing
+% - added numeric testing
+% - updated output options listing
+% 
 % 2025_07_18 by S. Brennan
-% -- added positive and strictly positive variable checking to
+% - added positive and strictly positive variable checking to
 %    checkInputsToFunctions
+% 
 % 2025_11_06 by S. Brennan
-% -- added 'column_of_mixed' example to demonstrate nan inputs on
+% - added 'column_of_mixed' example to demonstrate nan inputs on
 %    % 2_column_of_numbers
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
 
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Need to put into standard form
 
 
 %% Echo options

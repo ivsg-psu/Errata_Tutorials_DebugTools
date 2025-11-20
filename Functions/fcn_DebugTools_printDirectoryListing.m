@@ -44,18 +44,27 @@ function fcn_DebugTools_printDirectoryListing(directory_filelist, varargin)
 % This function was written on 2024_10_13 by S. Brennan
 % Questions or comments? sbrennan@psu.edu
 
-% Revision history
-% 2024_09_13 - Sean Brennan, sbrennan@psu.edu
-% -- wrote the code originally, copying out of DataClean library
-% 2025_09_19 - Sean Brennan, sbrennan@psu.edu
-% -- minor bug fixes for when printing to markdown format
+% REVISION HISTORY:
+%
+% 2024_09_13 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally, copying out of DataClean library
+% 
+% 2025_09_19 by Sean Brennan, sbrennan@psu.edu
+% - minor bug fixes for when printing to markdown format
+% 
 % 2025_11_12 by Sean Brennan, sbrennan@psu.edu
 % - Updated debug flags
 % - Added figNum input
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
 % - Fixed variable naming for clarity:
-%   % * fig_num to figNum
-% TO DO
-% -- (none)
+%   % * fig_+num to figNum
+
+% TO-DO:
+% 
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - fill in to-do items here.
 
 %% Debugging and Input checks
 
