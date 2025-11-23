@@ -30,6 +30,12 @@
 %   % * Checks for warning, forbidden, and required strings
 %   % * Added commented out section to allow rapid serch for strings
 %   %   % and replacement.
+% 
+% 2025_11_23 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_all_functions
+%   % * Updated example call to fcn_DebugTools_replaceStringInDirectory
+%   %   % to have correct directory and filename inputs
+%   % * added checks for required strings to functions
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
@@ -117,22 +123,23 @@ end
 fcn_DebugTools_cprintf('*blue','Checking main demo file:\n\t%s:\n', repoDemoNameString);
 
 %% Does main file contain required strings?
+fcn_DebugTools_cprintf('*blue','\tChecking that main demo contains required strings: ');
 
 temp = struct;
 temp(1).name = repoDemoNameString;
 temp(1).folder = rootFilePath;
 
-requiredStrings = {...
+requiredStringsInMainDemo = {...
     'REVISION HISTORY',...
     'TO-DO', ...
     cat(2,'MATLABFLAG',upper(repoShortName),'FLAG_CHECK_INPUTS'),...
     cat(2,'MATLABFLAG',upper(repoShortName),'FLAG_DO_DEBUG')...
     };
 if ~contains(rootFilePath,'Debug')
-    requiredStrings = [requiredStrings,'fcn_DebugTools_autoInstallRepos'];
+    requiredStringsInMainDemo = [requiredStringsInMainDemo,'fcn_DebugTools_autoInstallRepos'];
 end
-for ith_string = 1:length(requiredStrings)
-    thisString = requiredStrings{ith_string};
+for ith_string = 1:length(requiredStringsInMainDemo)
+    thisString = requiredStringsInMainDemo{ith_string};
     fcn_DebugTools_cprintf('*blue','\tChecking that it contains "%s": ', thisString);
     flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(temp, thisString, (-1));
 
@@ -144,47 +151,132 @@ for ith_string = 1:length(requiredStrings)
 end
 
 
-%% Now check the Functions folder
+%% Functions folder checks start here
+fucntionsFolder = fullfile(pwd,'Functions');
 
-functionsDirectoryQuery = fullfile(pwd,'Functions','*.*');
+fcn_DebugTools_cprintf('*blue','Checking functions folder:\n\t%s:\n', fucntionsFolder);
+
+functionsDirectoryQueryAllFiles = fullfile(pwd,'Functions','*.*');
 % Use the following instead, if wish to do subdirectories
 % directoryQuery = fullfile(pwd,'Functions','**','*.*');
 
-fileListFunctionsFolder = dir(functionsDirectoryQuery); %cat(2,'.',filesep,filesep,'script_test_fcn_*.m'));
+fileListFunctionsFolderAllFiles = dir(functionsDirectoryQueryAllFiles); %cat(2,'.',filesep,filesep,'script_test_fcn_*.m'));
 
 % Filter out directories from the list
-fileListFunctionsFolderNoDirectories = fileListFunctionsFolder(~[fileListFunctionsFolder.isdir]);
+fileListFunctionsFolderNoDirectoriesAllFiles = fileListFunctionsFolderAllFiles(~[fileListFunctionsFolderAllFiles.isdir]);
+
+functionsDirectoryQueryFunctionsOnly = fullfile(pwd,'Functions','fcn_*.*');
+% Use the following instead, if wish to do subdirectories
+% directoryQuery = fullfile(pwd,'Functions','**','*.*');
+
+fileListFunctionsFolderFunctionsOnly = dir(functionsDirectoryQueryFunctionsOnly); %cat(2,'.',filesep,filesep,'script_test_fcn_*.m'));
+
+% Filter out directories from the list
+fileListFunctionsFolderNoDirectoriesFunctionsOnly = fileListFunctionsFolderFunctionsOnly(~[fileListFunctionsFolderFunctionsOnly.isdir]);
+
 
 %% Make sure there's no forbidden strings
+fcn_DebugTools_cprintf('*blue','\tChecking that functions folder contains no forbidden strings: ');
+
 forbiddenStrings = {
     cat(2,'cl','c');
     cat(2,'clear',' all');
     };
 
+flagAllGood = 1;
+
 for ith_forbidden = 1:length(forbiddenStrings)
     queryString = forbiddenStrings{ith_forbidden};
-    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, (-1));
-    flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, (-1));
+    flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectoriesAllFiles,'script_test_all_functions');
     if sum(flagsStringWasFoundInFiles)>0
-        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, 1);
+        flagAllGood = 0; %#ok<NASGU>
+        fcn_DebugTools_cprintf('*Red','FAILED.\n', sumOfmFiles);
+        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, 1);
         error('A "%s" forbidden string was found in one of the functions or scripts - see listing above. This needs to be fixed before continuing the testing.',queryString);
     end
 end
 
+if 1==flagAllGood
+    fcn_DebugTools_cprintf('*Green','PASSED.\n');
+end
+
 %% Make sure there's no warning strings
+fcn_DebugTools_cprintf('*blue','\tChecking that functions folder contains no warning strings: ');
 warningStrings = {
     cat(2,'fig_','num');
     cat(2,'% -','-');
     };
 
+flagAllGood = 1;
+
 for ith_forbidden = 1:length(warningStrings)
     queryString = warningStrings{ith_forbidden};
-    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, (-1));
-    flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, (-1));
+    flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectoriesAllFiles,'script_test_all_functions');
     if sum(flagsStringWasFoundInFiles)>0
-        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, 1);
+        flagAllGood = 0;
+        fcn_DebugTools_cprintf('*Red','FAILED.\n', sumOfmFiles);
+        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, 1);
         warning('A "%s" string was found in one of the functions or scripts - see listing above. This should be fixed to maintain compatibilty.',queryString);
     end
+end
+
+if 1==flagAllGood
+    fcn_DebugTools_cprintf('*Green','PASSED.\n');
+end
+
+%% Make sure there's the required strings in all files
+fcn_DebugTools_cprintf('*blue','\tChecking that all files in functions folder contains required strings: ');
+
+requiredStringsAllFiles = {...
+    'REVISION HISTORY',...
+    'TO-DO', ...
+    };
+
+flagAllGood = 1;
+
+for ith_forbidden = 1:length(requiredStringsAllFiles)
+    queryString = requiredStringsAllFiles{ith_forbidden};
+    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, (-1));
+    flagsStringWasFoundInFiles = flagsStringWasFoundInFilesRaw; % fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+    if ~all(flagsStringWasFoundInFiles>0)
+        flagAllGood = 0; %#ok<NASGU>
+        fcn_DebugTools_cprintf('*Red','FAILED.\n', sumOfmFiles);
+        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, 1);
+        error('A "%s" required string was NOT found in one of the functions or scripts - see listing above. This should be fixed to maintain compatibilty.',queryString);
+    end
+
+end
+
+if 1==flagAllGood
+    fcn_DebugTools_cprintf('*Green','PASSED.\n');
+end
+
+%% Make sure there's the required strings in functions
+fcn_DebugTools_cprintf('*blue','\tChecking that functions within functions folder contains function-required strings: ');
+requiredStringsAllFunctions = {...
+    cat(2,'MATLABFLAG',upper(repoShortName),'FLAG_CHECK_INPUTS'),...
+    cat(2,'MATLABFLAG',upper(repoShortName),'FLAG_DO_DEBUG')...
+    };
+
+flagAllGood = 1;
+
+for ith_forbidden = 1:length(requiredStringsAllFunctions)
+    queryString = requiredStringsAllFunctions{ith_forbidden};
+    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesFunctionsOnly, queryString, (-1));
+    flagsStringWasFoundInFiles = flagsStringWasFoundInFilesRaw; % fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+    if ~all(flagsStringWasFoundInFiles>0)
+        flagAllGood = 0; %#ok<NASGU>
+        fcn_DebugTools_cprintf('*Red','FAILED.\n', sumOfmFiles);
+        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesFunctionsOnly, queryString, 1);
+        error('A "%s" required string was NOT found in one of the functions or scripts - see listing above. This should be fixed to maintain compatibilty.',queryString);
+    end
+
+end
+
+if 1==flagAllGood
+    fcn_DebugTools_cprintf('*Green','PASSED.\n');
 end
 
 %% Match functions to scripts
@@ -197,7 +289,7 @@ end
     flags_isMfileTestingScript,...
     flags_isMfileTestingScriptWithMatchingFunction,...
     flags_isEitherTestScriptOrTestedFunction...
-    ] = fcn_INTERNAL_flagFiles(fileListFunctionsFolderNoDirectories);
+    ] = fcn_INTERNAL_flagFiles(fileListFunctionsFolderNoDirectoriesAllFiles);
 
 %% Summarize results
 fprintf(1,'\nSUMMARY OF FOUND FILES: \n');
@@ -207,32 +299,32 @@ if ~isempty(indicies_filesToTest)
     fcn_DebugTools_cprintf('*blue','\tThere are %.0f total testable functions in this repo:\n',length(indicies_filesToTest));
     for ith_file = 1:length(indicies_filesToTest)
         currentFileIndex = indicies_filesToTest(ith_file);
-        fprintf(1,'\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name)
+        fprintf(1,'\t%s\n',fileListFunctionsFolderNoDirectoriesAllFiles(currentFileIndex).name)
     end    
 end
 
 % List missed files
 indicies_missedFiles_flags_RAW = flags_isFile.*(0==flags_isMfile);
-indicies_missedFiles_flags = fcn_INTERNAL_removeFromList(indicies_missedFiles_flags_RAW, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+indicies_missedFiles_flags = fcn_INTERNAL_removeFromList(indicies_missedFiles_flags_RAW, fileListFunctionsFolderNoDirectoriesAllFiles,'script_test_all_functions');
 indicies_missedFiles = find(indicies_missedFiles_flags);
 if ~isempty(indicies_missedFiles)
     fcn_DebugTools_cprintf('*red','The following files were found, but do not seem to be repo functions or scripts:\n');
     for ith_file = 1:length(indicies_missedFiles)
         currentFileIndex = indicies_missedFiles(ith_file);
-        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name)
+        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectoriesAllFiles(currentFileIndex).name)
     end    
 end
 
 % List mfiles that are not testing scripts or functions
 indicies_missedMfiles_flags_RAW = flags_isMfile.*(0==flags_isMfileFunction).*(0==flags_isMfileTestingScript);
-indicies_missedMfiles_flags = fcn_INTERNAL_removeFromList(indicies_missedMfiles_flags_RAW, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+indicies_missedMfiles_flags = fcn_INTERNAL_removeFromList(indicies_missedMfiles_flags_RAW, fileListFunctionsFolderNoDirectoriesAllFiles,'script_test_all_functions');
 indicies_missedMfiles = find(indicies_missedMfiles_flags);
 
 if ~isempty(indicies_missedMfiles)
     fcn_DebugTools_cprintf('*red','The following m-files were found, but do not seem to be test scripts or functions:\n');
     for ith_file = 1:length(indicies_missedMfiles)
         currentFileIndex = indicies_missedMfiles(ith_file);
-        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name)
+        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectoriesAllFiles(currentFileIndex).name)
     end    
 end
 
@@ -242,7 +334,7 @@ if ~isempty(indicies_missedFunctions)
     fcn_DebugTools_cprintf('*red','The following functions were found, but do not have a matching test scripts:\n');
     for ith_file = 1:length(indicies_missedFunctions)
         currentFileIndex = indicies_missedFunctions(ith_file);
-        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name)
+        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectoriesAllFiles(currentFileIndex).name)
     end    
 end
 
@@ -252,7 +344,7 @@ if ~isempty(indicies_missedScripts)
     fcn_DebugTools_cprintf('*red','The following test scripts were found, but do not have a matching function:\n');
     for ith_file = 1:length(indicies_missedScripts)
         currentFileIndex = indicies_missedScripts(ith_file);
-        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name)
+        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectoriesAllFiles(currentFileIndex).name)
     end    
 end
 
@@ -262,12 +354,12 @@ if ~isempty(indicies_repeatedFiles)
     fcn_DebugTools_cprintf('*red','The following files seem to be repeated:\n');
     for ith_file = 1:length(indicies_repeatedFiles)
         currentFileIndex = indicies_repeatedFiles(ith_file);
-        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name)
+        fcn_DebugTools_cprintf('*red','\t%s\n',fileListFunctionsFolderNoDirectoriesAllFiles(currentFileIndex).name)
     end    
 end
 
 %% Make sure all functions have correct global variables
-temp = fileListFunctionsFolderNoDirectories(indicies_filesToTest);
+temp = fileListFunctionsFolderNoDirectoriesAllFiles(indicies_filesToTest);
 for ith_file = 1:length(temp)
     temp(ith_file).name = extractAfter(temp(ith_file).name,'script_test_');
 end
@@ -287,7 +379,7 @@ allResults = cell(NtestScripts,1);
 testing_times = nan(NtestScripts,1);
 for ith_testScript = 1:NtestScripts
     currentFileIndex = indicies_filesToTest(ith_testScript);
-    file_name_extended = fileListFunctionsFolderNoDirectories(currentFileIndex).name;
+    file_name_extended = fileListFunctionsFolderNoDirectoriesAllFiles(currentFileIndex).name;
     file_name = erase(file_name_extended,'.m');
     file_name_trunc = erase(file_name,'script_');
     fcn_DebugTools_cprintf('*blue','%s\n','   ');
@@ -313,22 +405,22 @@ ylabel('Elapsed time to test (sec)');
 %% Check which files contain key strings?
 if 1==0
     clc
-    functionsDirectoryQuery = fullfile(pwd,'Functions','*.*');
+    functionsDirectoryQueryAllFiles = fullfile(pwd,'Functions','*.*');
     % Use the following instead, if wish to do subdirectories
     % directoryQuery = fullfile(pwd,'Functions','**','*.*');
 
-    fileListFunctionsFolder = dir(functionsDirectoryQuery); %cat(2,'.',filesep,filesep,'script_test_fcn_*.m'));
+    fileListFunctionsFolderAllFiles = dir(functionsDirectoryQueryAllFiles); %cat(2,'.',filesep,filesep,'script_test_fcn_*.m'));
 
     % Filter out directories from the list
-    fileListFunctionsFolderNoDirectories = fileListFunctionsFolder(~[fileListFunctionsFolder.isdir]);
+    fileListFunctionsFolderNoDirectoriesAllFiles = fileListFunctionsFolderAllFiles(~[fileListFunctionsFolderAllFiles.isdir]);
 
     % Set a query string to search for. Separate it into parts so that this
     % file does not show up on search list! :-)
     queryString = cat(2,'TO',' DO');
-    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, (-1));
+    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, (-1));
     % flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
     if sum(flagsStringWasFoundInFilesRaw)>0
-        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, 1);
+        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, 1);
         error('A "%s" was found in one of the functions - see listing above.', queryString);
     end
 
@@ -336,7 +428,8 @@ if 1==0
     if 1==0
         %%%% WARNING - USE THIS WITH CAUTION! %%%%%%%%%%%%
         if 1==0
-            fcn_DebugTools_replaceStringInDirectory(pwd, cat(2,'TO',' DO'), cat(2,'TO','-DO'), (''), (-1));
+            functionsDirectory = fullfile(pwd,'Functions');
+            fcn_DebugTools_replaceStringInDirectory(functionsDirectory, cat(2,'TO',' DO'), cat(2,'TO','-DO'), ('fcn_'), (-1));
         end
     end
 end

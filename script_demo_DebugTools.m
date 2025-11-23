@@ -8,58 +8,58 @@
 % REVISION HISTORY:
 % 
 % 2021_12_12 by Sean Brennan, sbrennan@psu.edu
-% - first write of the code by Steve Harnett
+% - First write of the code by Steve Harnett
 % 
 % 2022_03_27 by Sean Brennan, sbrennan@psu.edu
-% - created a demo script of core debug utilities
+% - Created a demo script of core debug utilities
 % 
 % 2023_01_16 by Sean Brennan, sbrennan@psu.edu
-% - vastly improved README file
+% - Vastly improved README file
 % 
 % 2023_01_25 by Sean Brennan, sbrennan@psu.edu
-% - added install from URL
+% - Added install from URL
 % 
 % 2024_10_14 by Sean Brennan, sbrennan@psu.edu
-% - added directory utilities
+% - Added directory utilities
 % 
 % 2024_10_25 by Sean Brennan, sbrennan@psu.edu
 % - Added directory comparison and query tools, cleaned up README.md
 % 
 % 2025_07_10 by Sean Brennan, sbrennan@psu.edu
 % Inside: checkInputsToFunctions
-% - added NorMorecolumn_of_numbers type and tests
-% - added structure comparison to see if bug with structure testing
+% - Added NorMorecolumn_of_numbers type and tests
+% - Added structure comparison to see if bug with structure testing
 % - commented out traversal and traversals type to deprecate Path library
-%    usage of these
-% - added numeric testing
-% - updated output options listing
+%   % usage of these
+% - Added numeric testing
+% - Updated output options listing
 % 
 % 2025_07_18 by Sean Brennan, sbrennan@psu.edu
-% - added positive and strictly positive variable checking to
-%    checkInputsToFunctions
+% - Added positive and strictly positive variable checking to
+%   % checkInputsToFunctions
 % 
 % 2025_09_18 by Sean Brennan, sbrennan@psu.edu
 % * In fcn_DebugTools_listDirectoryContents
-% - fixed bug where string hash being checked but queries may not be long
-%    enough to do hash check during a debug test
+% - Fixed bug where string hash being checked but queries may not be long
+%   % enough to do hash check during a debug test
 % 
 % 2025_11_04 by Sean Brennan, sbrennan@psu.edu
 % * In fcn_DebugTools_breakArrayByNans
-% - added this function from the PlotRoad library
-% - added global variables for DEBUGTOOLS libary
-% - updated README.md
-% - fixed bug in this main script in fcn_DebugTools_queryNumberRange,
-%    % where old output specification was used
-% - added function fcn_DebugTools_directoryStringQuery
-% - updated script_test_all_functions
+% - Added this function from the PlotRoad library
+% - Added global variables for DEBUGTOOLS libary
+% - Updated README.md
+% - Fixed bug in this main script in fcn_DebugTools_queryNumberRange,
+%   % where old output specification was used
+% - Added function fcn_DebugTools_directoryStringQuery
+% - Updated script_test_all_functions
 % 
 % 2025_11_06 by Sean Brennan, sbrennan@psu.edu
 % - In script_test_fcn_DebugTools_checkInputsToFunctions
 %   % * added 'column_of_mixed' example to demonstrate nan inputs on
 %   %   % 2_column_of_numbers
 % - In fcn_DebugTools_checkInputsToFunctions
-%   % * updated header and input checking to current format
-%   % * updated plotting flag name, for consistency
+%   % * Updated header and input checking to current format
+%   % * Updated plotting flag name, for consistency
 %   %   % - from flag_do_plot
 %   %   % - to flag_do_plots
 %   % * changed input variable name for consistency
@@ -107,7 +107,7 @@
 % 2025_11_14 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_autoInstallRepos 
 %   % * Added more output and formatting for error catching (for debugging)
-%   % * minor bug fix where the "which" command doesn't always work
+%   % * Minor bug fix where the "which" command doesn't always work
 %   % * Fixed bug where dependencies that were previously installed not
 %   %   % added to the path
 % (new release)
@@ -131,13 +131,31 @@
 % - Retested all scripts, updated confirmation checklist for this repo
 % - Updated README.md
 % (new release)
-
+%
+% 2025_11_22 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_findLatestGitHubRelease
+%   % * Made error handling more verbose
+%   % * Added warn+ings with 'backtrace' option on
+%
+% 2025_11_23 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_replaceStringInDirectory
+%   % * Added flag option to specify skip or no-skip on lines for
+%   %   % replacements
+% - In script_test_all_functions
+%   % * Updated example call to fcn_DebugTools_replaceStringInDirectory
+%   %   % to have correct directory and filename inputs
+%   % * added checks for required strings to functions
+% (new release)
 
 % TO-DO:
 % 
 % 2025_11_17 by Sean Brennan, sbrennan@psu.edu
 % - need tool to check for square matrices
 % - need to functionalize script_test_all_functions 
+% 
+% 2025_11_23 by Sean Brennan, sbrennan@psu.edu
+% - need to fix folder path and default search string in script_test_all
+
 
 %% Make sure we are running out of root directory
 st = dbstack; 

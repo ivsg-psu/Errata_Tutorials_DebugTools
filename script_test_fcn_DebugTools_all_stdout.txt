@@ -25749,3 +25749,806 @@ Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Data
 Done script_test_fcn_DebugTools_sortDirectoryListingByTime
 __________
 
+<strong>Checking root folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+</strong><strong></strong><strong>	Checking that there is 1 m-file in root folder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a demo file, script_demo_DebugTools.m: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a README.md file: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Functions subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Data subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Documents subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Installer subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Images subfolder: </strong><strong>PASSED.
+</strong><strong>Checking main demo file:
+	script_demo_DebugTools.m:
+</strong><strong>	Checking that it contains "REVISION HISTORY": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "TO-DO": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG": </strong><strong>PASSED.
+</strong>
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	fcn_DebugTools_addStringToEnd.m                                    	1            	
+	2	fcn_DebugTools_addSubdirectoriesToPath.m                           	1            	
+	3	fcn_DebugTools_autoInstallRepos.m                                  	1            	
+	4	fcn_DebugTools_breakArrayByNans.m                                  	1            	
+	5	fcn_DebugTools_checkInputsToFunctions.m                            	1            	
+	6	fcn_DebugTools_compareDirectoryListings.m                          	1            	
+	7	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	1            	
+	8	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	1            	
+	9	fcn_DebugTools_convertVariableToCellString.m                       	1            	
+	10	fcn_DebugTools_countBytesInDirectoryListing.m                      	1            	
+	11	fcn_DebugTools_cprintf.m                                           	0            	
+	12	fcn_DebugTools_debugPrintStringToNCharacters.m                     	1            	
+	13	fcn_DebugTools_debugPrintTableToNCharacters.m                      	1            	
+	14	fcn_DebugTools_directoryStringQuery.m                              	1            	
+	15	fcn_DebugTools_doStringsMatch.m                                    	1            	
+	16	fcn_DebugTools_extractNumberFromStringCell.m                       	1            	
+	17	fcn_DebugTools_extractPlotFormatFromString.m                       	1            	
+	18	fcn_DebugTools_findLatestGitHubRelease.asv                         	1            	
+	19	fcn_DebugTools_findLatestGitHubRelease.m                           	1            	
+	20	fcn_DebugTools_installDependencies.m                               	1            	
+	21	fcn_DebugTools_listDirectoryContents.m                             	1            	
+	22	fcn_DebugTools_makeDirectory.m                                     	1            	
+	23	fcn_DebugTools_number2string.m                                     	1            	
+	24	fcn_DebugTools_parseStringIntoCells.m                              	1            	
+	25	fcn_DebugTools_printDirectoryListing.m                             	1            	
+	26	fcn_DebugTools_printNumeredDirectoryList.m                         	1            	
+	27	fcn_DebugTools_queryNumberRange.m                                  	1            	
+	28	fcn_DebugTools_replaceStringInDirectory.m                          	1            	
+	29	fcn_DebugTools_sortDirectoryListingByTime.m                        	1            	
+	30	script_DebugTools_changeNames.m                                    	1            	
+	31	script_test_all_functions.asv                                      	1            	
+	32	script_test_all_functions.m                                        	1            	
+	33	script_test_fcn_DebugTools_addStringToEnd.m                        	1            	
+	34	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	1            	
+	35	script_test_fcn_DebugTools_autoInstallRepos.m                      	1            	
+	36	script_test_fcn_DebugTools_breakArrayByNans.m                      	1            	
+	37	script_test_fcn_DebugTools_checkInputsToFunctions.m                	1            	
+	38	script_test_fcn_DebugTools_compareDirectoryListings.m              	1            	
+	39	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	1            	
+	40	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	1            	
+	41	script_test_fcn_DebugTools_convertVariableToCellString.m           	1            	
+	42	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	1            	
+	43	script_test_fcn_DebugTools_cprintf.m                               	1            	
+	44	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	1            	
+	45	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	1            	
+	46	script_test_fcn_DebugTools_directoryStringQuery.m                  	1            	
+	47	script_test_fcn_DebugTools_doStringsMatch.m                        	1            	
+	48	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	1            	
+	49	script_test_fcn_DebugTools_extractPlotFormatFromString.m           	1            	
+	50	script_test_fcn_DebugTools_findLatestGitHubRelease.m               	1            	
+	51	script_test_fcn_DebugTools_installDependencies.m                   	1            	
+	52	script_test_fcn_DebugTools_listDirectoryContents.m                 	1            	
+	53	script_test_fcn_DebugTools_makeDirectory.m                         	1            	
+	54	script_test_fcn_DebugTools_number2string.m                         	1            	
+	55	script_test_fcn_DebugTools_parseStringIntoCells.m                  	1            	
+	56	script_test_fcn_DebugTools_printDirectoryListing.m                 	1            	
+	57	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	1            	
+	58	script_test_fcn_DebugTools_queryNumberRange.m                      	1            	
+	59	script_test_fcn_DebugTools_replaceStringInDirectory.m              	1            	
+	60	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	1            	
+[Warning: A "REVISION HISTORY" required string was NOT found in one of the functions or
+scripts - see listing above. This should be fixed to maintain compatibilty.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m', 204)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',204,0)">line 204</a>)] 
+
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	fcn_DebugTools_addStringToEnd.m                                    	1            	
+	2	fcn_DebugTools_addSubdirectoriesToPath.m                           	1            	
+	3	fcn_DebugTools_autoInstallRepos.m                                  	1            	
+	4	fcn_DebugTools_breakArrayByNans.m                                  	1            	
+	5	fcn_DebugTools_checkInputsToFunctions.m                            	1            	
+	6	fcn_DebugTools_compareDirectoryListings.m                          	1            	
+	7	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	1            	
+	8	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	1            	
+	9	fcn_DebugTools_convertVariableToCellString.m                       	1            	
+	10	fcn_DebugTools_countBytesInDirectoryListing.m                      	1            	
+	11	fcn_DebugTools_cprintf.m                                           	1            	
+	12	fcn_DebugTools_debugPrintStringToNCharacters.m                     	1            	
+	13	fcn_DebugTools_debugPrintTableToNCharacters.m                      	1            	
+	14	fcn_DebugTools_directoryStringQuery.m                              	1            	
+	15	fcn_DebugTools_doStringsMatch.m                                    	1            	
+	16	fcn_DebugTools_extractNumberFromStringCell.m                       	1            	
+	17	fcn_DebugTools_extractPlotFormatFromString.m                       	1            	
+	18	fcn_DebugTools_findLatestGitHubRelease.asv                         	1            	
+	19	fcn_DebugTools_findLatestGitHubRelease.m                           	1            	
+	20	fcn_DebugTools_installDependencies.m                               	1            	
+	21	fcn_DebugTools_listDirectoryContents.m                             	1            	
+	22	fcn_DebugTools_makeDirectory.m                                     	1            	
+	23	fcn_DebugTools_number2string.m                                     	1            	
+	24	fcn_DebugTools_parseStringIntoCells.m                              	1            	
+	25	fcn_DebugTools_printDirectoryListing.m                             	1            	
+	26	fcn_DebugTools_printNumeredDirectoryList.m                         	1            	
+	27	fcn_DebugTools_queryNumberRange.m                                  	1            	
+	28	fcn_DebugTools_replaceStringInDirectory.m                          	1            	
+	29	fcn_DebugTools_sortDirectoryListingByTime.m                        	1            	
+	30	script_DebugTools_changeNames.m                                    	1            	
+	31	script_test_all_functions.asv                                      	1            	
+	32	script_test_all_functions.m                                        	1            	
+	33	script_test_fcn_DebugTools_addStringToEnd.m                        	1            	
+	34	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	1            	
+	35	script_test_fcn_DebugTools_autoInstallRepos.m                      	1            	
+	36	script_test_fcn_DebugTools_breakArrayByNans.m                      	1            	
+	37	script_test_fcn_DebugTools_checkInputsToFunctions.m                	1            	
+	38	script_test_fcn_DebugTools_compareDirectoryListings.m              	1            	
+	39	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	1            	
+	40	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	1            	
+	41	script_test_fcn_DebugTools_convertVariableToCellString.m           	1            	
+	42	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	1            	
+	43	script_test_fcn_DebugTools_cprintf.m                               	1            	
+	44	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	1            	
+	45	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	1            	
+	46	script_test_fcn_DebugTools_directoryStringQuery.m                  	1            	
+	47	script_test_fcn_DebugTools_doStringsMatch.m                        	1            	
+	48	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	1            	
+	49	script_test_fcn_DebugTools_extractPlotFormatFromString.m           	1            	
+	50	script_test_fcn_DebugTools_findLatestGitHubRelease.m               	1            	
+	51	script_test_fcn_DebugTools_installDependencies.m                   	1            	
+	52	script_test_fcn_DebugTools_listDirectoryContents.m                 	1            	
+	53	script_test_fcn_DebugTools_makeDirectory.m                         	1            	
+	54	script_test_fcn_DebugTools_number2string.m                         	1            	
+	55	script_test_fcn_DebugTools_parseStringIntoCells.m                  	1            	
+	56	script_test_fcn_DebugTools_printDirectoryListing.m                 	1            	
+	57	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	1            	
+	58	script_test_fcn_DebugTools_queryNumberRange.m                      	1            	
+	59	script_test_fcn_DebugTools_replaceStringInDirectory.m              	1            	
+	60	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	1            	
+[Warning: A "TO-DO" required string was NOT found in one of the functions or scripts - see
+listing above. This should be fixed to maintain compatibilty.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m', 204)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',204,0)">line 204</a>)] 
+
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	fcn_DebugTools_addStringToEnd.m                                    	1            	
+	2	fcn_DebugTools_addSubdirectoriesToPath.m                           	1            	
+	3	fcn_DebugTools_autoInstallRepos.m                                  	1            	
+	4	fcn_DebugTools_breakArrayByNans.m                                  	1            	
+	5	fcn_DebugTools_checkInputsToFunctions.m                            	1            	
+	6	fcn_DebugTools_compareDirectoryListings.m                          	1            	
+	7	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	1            	
+	8	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	1            	
+	9	fcn_DebugTools_convertVariableToCellString.m                       	1            	
+	10	fcn_DebugTools_countBytesInDirectoryListing.m                      	1            	
+	11	fcn_DebugTools_cprintf.m                                           	0            	
+	12	fcn_DebugTools_debugPrintStringToNCharacters.m                     	1            	
+	13	fcn_DebugTools_debugPrintTableToNCharacters.m                      	1            	
+	14	fcn_DebugTools_directoryStringQuery.m                              	1            	
+	15	fcn_DebugTools_doStringsMatch.m                                    	1            	
+	16	fcn_DebugTools_extractNumberFromStringCell.m                       	1            	
+	17	fcn_DebugTools_extractPlotFormatFromString.m                       	1            	
+	18	fcn_DebugTools_findLatestGitHubRelease.asv                         	1            	
+	19	fcn_DebugTools_findLatestGitHubRelease.m                           	1            	
+	20	fcn_DebugTools_installDependencies.m                               	1            	
+	21	fcn_DebugTools_listDirectoryContents.m                             	1            	
+	22	fcn_DebugTools_makeDirectory.m                                     	1            	
+	23	fcn_DebugTools_number2string.m                                     	1            	
+	24	fcn_DebugTools_parseStringIntoCells.m                              	1            	
+	25	fcn_DebugTools_printDirectoryListing.m                             	1            	
+	26	fcn_DebugTools_printNumeredDirectoryList.m                         	1            	
+	27	fcn_DebugTools_queryNumberRange.m                                  	1            	
+	28	fcn_DebugTools_replaceStringInDirectory.m                          	1            	
+	29	fcn_DebugTools_sortDirectoryListingByTime.m                        	1            	
+	30	script_DebugTools_changeNames.m                                    	0            	
+	31	script_test_all_functions.asv                                      	0            	
+	32	script_test_all_functions.m                                        	0            	
+	33	script_test_fcn_DebugTools_addStringToEnd.m                        	0            	
+	34	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	0            	
+	35	script_test_fcn_DebugTools_autoInstallRepos.m                      	0            	
+	36	script_test_fcn_DebugTools_breakArrayByNans.m                      	0            	
+	37	script_test_fcn_DebugTools_checkInputsToFunctions.m                	0            	
+	38	script_test_fcn_DebugTools_compareDirectoryListings.m              	0            	
+	39	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	0            	
+	40	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	0            	
+	41	script_test_fcn_DebugTools_convertVariableToCellString.m           	0            	
+	42	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	0            	
+	43	script_test_fcn_DebugTools_cprintf.m                               	0            	
+	44	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	0            	
+	45	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	0            	
+	46	script_test_fcn_DebugTools_directoryStringQuery.m                  	0            	
+	47	script_test_fcn_DebugTools_doStringsMatch.m                        	0            	
+	48	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	0            	
+	49	script_test_fcn_DebugTools_extractPlotFormatFromString.m           	0            	
+	50	script_test_fcn_DebugTools_findLatestGitHubRelease.m               	0            	
+	51	script_test_fcn_DebugTools_installDependencies.m                   	0            	
+	52	script_test_fcn_DebugTools_listDirectoryContents.m                 	0            	
+	53	script_test_fcn_DebugTools_makeDirectory.m                         	0            	
+	54	script_test_fcn_DebugTools_number2string.m                         	0            	
+	55	script_test_fcn_DebugTools_parseStringIntoCells.m                  	0            	
+	56	script_test_fcn_DebugTools_printDirectoryListing.m                 	0            	
+	57	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	0            	
+	58	script_test_fcn_DebugTools_queryNumberRange.m                      	0            	
+	59	script_test_fcn_DebugTools_replaceStringInDirectory.m              	0            	
+	60	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	0            	
+[Warning: A "MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS" required string was NOT found in one
+of the functions or scripts - see listing above. This should be fixed to maintain
+compatibilty.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m', 204)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',204,0)">line 204</a>)] 
+
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	fcn_DebugTools_addStringToEnd.m                                    	1            	
+	2	fcn_DebugTools_addSubdirectoriesToPath.m                           	1            	
+	3	fcn_DebugTools_autoInstallRepos.m                                  	1            	
+	4	fcn_DebugTools_breakArrayByNans.m                                  	1            	
+	5	fcn_DebugTools_checkInputsToFunctions.m                            	1            	
+	6	fcn_DebugTools_compareDirectoryListings.m                          	1            	
+	7	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	1            	
+	8	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	1            	
+	9	fcn_DebugTools_convertVariableToCellString.m                       	1            	
+	10	fcn_DebugTools_countBytesInDirectoryListing.m                      	1            	
+	11	fcn_DebugTools_cprintf.m                                           	0            	
+	12	fcn_DebugTools_debugPrintStringToNCharacters.m                     	1            	
+	13	fcn_DebugTools_debugPrintTableToNCharacters.m                      	1            	
+	14	fcn_DebugTools_directoryStringQuery.m                              	1            	
+	15	fcn_DebugTools_doStringsMatch.m                                    	1            	
+	16	fcn_DebugTools_extractNumberFromStringCell.m                       	1            	
+	17	fcn_DebugTools_extractPlotFormatFromString.m                       	1            	
+	18	fcn_DebugTools_findLatestGitHubRelease.asv                         	1            	
+	19	fcn_DebugTools_findLatestGitHubRelease.m                           	1            	
+	20	fcn_DebugTools_installDependencies.m                               	1            	
+	21	fcn_DebugTools_listDirectoryContents.m                             	1            	
+	22	fcn_DebugTools_makeDirectory.m                                     	1            	
+	23	fcn_DebugTools_number2string.m                                     	1            	
+	24	fcn_DebugTools_parseStringIntoCells.m                              	1            	
+	25	fcn_DebugTools_printDirectoryListing.m                             	1            	
+	26	fcn_DebugTools_printNumeredDirectoryList.m                         	1            	
+	27	fcn_DebugTools_queryNumberRange.m                                  	1            	
+	28	fcn_DebugTools_replaceStringInDirectory.m                          	1            	
+	29	fcn_DebugTools_sortDirectoryListingByTime.m                        	1            	
+	30	script_DebugTools_changeNames.m                                    	0            	
+	31	script_test_all_functions.asv                                      	0            	
+	32	script_test_all_functions.m                                        	0            	
+	33	script_test_fcn_DebugTools_addStringToEnd.m                        	0            	
+	34	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	0            	
+	35	script_test_fcn_DebugTools_autoInstallRepos.m                      	0            	
+	36	script_test_fcn_DebugTools_breakArrayByNans.m                      	0            	
+	37	script_test_fcn_DebugTools_checkInputsToFunctions.m                	0            	
+	38	script_test_fcn_DebugTools_compareDirectoryListings.m              	0            	
+	39	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	0            	
+	40	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	0            	
+	41	script_test_fcn_DebugTools_convertVariableToCellString.m           	0            	
+	42	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	0            	
+	43	script_test_fcn_DebugTools_cprintf.m                               	0            	
+	44	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	0            	
+	45	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	0            	
+	46	script_test_fcn_DebugTools_directoryStringQuery.m                  	0            	
+	47	script_test_fcn_DebugTools_doStringsMatch.m                        	0            	
+	48	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	0            	
+	49	script_test_fcn_DebugTools_extractPlotFormatFromString.m           	0            	
+	50	script_test_fcn_DebugTools_findLatestGitHubRelease.m               	0            	
+	51	script_test_fcn_DebugTools_installDependencies.m                   	0            	
+	52	script_test_fcn_DebugTools_listDirectoryContents.m                 	0            	
+	53	script_test_fcn_DebugTools_makeDirectory.m                         	0            	
+	54	script_test_fcn_DebugTools_number2string.m                         	0            	
+	55	script_test_fcn_DebugTools_parseStringIntoCells.m                  	0            	
+	56	script_test_fcn_DebugTools_printDirectoryListing.m                 	0            	
+	57	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	0            	
+	58	script_test_fcn_DebugTools_queryNumberRange.m                      	0            	
+	59	script_test_fcn_DebugTools_replaceStringInDirectory.m              	0            	
+	60	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	0            	
+[Warning: A "MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG" required string was NOT found in one of
+the functions or scripts - see listing above. This should be fixed to maintain
+compatibilty.] 
+[> In <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m', 204)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',204,0)">line 204</a>)] 
+<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',208,1)">208 </a>[...
+try open('fcn_DebugTools_cprintf'); catch edit('fcn_DebugTools_cprintf'); end
+if system_dependent('IsDebugMode')==1, dbquit all; end
+
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	fcn_DebugTools_addStringToEnd.m                                    	1            	
+	2	fcn_DebugTools_addSubdirectoriesToPath.m                           	1            	
+	3	fcn_DebugTools_autoInstallRepos.m                                  	1            	
+	4	fcn_DebugTools_breakArrayByNans.m                                  	1            	
+	5	fcn_DebugTools_checkInputsToFunctions.m                            	1            	
+	6	fcn_DebugTools_compareDirectoryListings.m                          	1            	
+	7	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	1            	
+	8	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	1            	
+	9	fcn_DebugTools_convertVariableToCellString.m                       	1            	
+	10	fcn_DebugTools_countBytesInDirectoryListing.m                      	1            	
+	11	fcn_DebugTools_cprintf.m                                           	1            	
+	12	fcn_DebugTools_debugPrintStringToNCharacters.m                     	1            	
+	13	fcn_DebugTools_debugPrintTableToNCharacters.m                      	1            	
+	14	fcn_DebugTools_directoryStringQuery.m                              	1            	
+	15	fcn_DebugTools_doStringsMatch.m                                    	1            	
+	16	fcn_DebugTools_extractNumberFromStringCell.m                       	1            	
+	17	fcn_DebugTools_extractPlotFormatFromString.m                       	1            	
+	18	fcn_DebugTools_findLatestGitHubRelease.asv                         	1            	
+	19	fcn_DebugTools_findLatestGitHubRelease.m                           	1            	
+	20	fcn_DebugTools_installDependencies.m                               	1            	
+	21	fcn_DebugTools_listDirectoryContents.m                             	1            	
+	22	fcn_DebugTools_makeDirectory.m                                     	1            	
+	23	fcn_DebugTools_number2string.m                                     	1            	
+	24	fcn_DebugTools_parseStringIntoCells.m                              	1            	
+	25	fcn_DebugTools_printDirectoryListing.m                             	1            	
+	26	fcn_DebugTools_printNumeredDirectoryList.m                         	1            	
+	27	fcn_DebugTools_queryNumberRange.m                                  	1            	
+	28	fcn_DebugTools_replaceStringInDirectory.m                          	1            	
+	29	fcn_DebugTools_sortDirectoryListingByTime.m                        	1            	
+	30	script_DebugTools_changeNames.m                                    	1            	
+	31	script_test_all_functions.asv                                      	1            	
+	32	script_test_all_functions.m                                        	1            	
+	33	script_test_fcn_DebugTools_addStringToEnd.m                        	1            	
+	34	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	1            	
+	35	script_test_fcn_DebugTools_autoInstallRepos.m                      	1            	
+	36	script_test_fcn_DebugTools_breakArrayByNans.m                      	1            	
+	37	script_test_fcn_DebugTools_checkInputsToFunctions.m                	1            	
+	38	script_test_fcn_DebugTools_compareDirectoryListings.m              	1            	
+	39	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	1            	
+	40	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	1            	
+	41	script_test_fcn_DebugTools_convertVariableToCellString.m           	1            	
+	42	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	1            	
+	43	script_test_fcn_DebugTools_cprintf.m                               	1            	
+	44	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	1            	
+	45	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	1            	
+	46	script_test_fcn_DebugTools_directoryStringQuery.m                  	1            	
+	47	script_test_fcn_DebugTools_doStringsMatch.m                        	1            	
+	48	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	1            	
+	49	script_test_fcn_DebugTools_extractPlotFormatFromString.m           	1            	
+	50	script_test_fcn_DebugTools_findLatestGitHubRelease.m               	1            	
+	51	script_test_fcn_DebugTools_installDependencies.m                   	1            	
+	52	script_test_fcn_DebugTools_listDirectoryContents.m                 	1            	
+	53	script_test_fcn_DebugTools_makeDirectory.m                         	1            	
+	54	script_test_fcn_DebugTools_number2string.m                         	1            	
+	55	script_test_fcn_DebugTools_parseStringIntoCells.m                  	1            	
+	56	script_test_fcn_DebugTools_printDirectoryListing.m                 	1            	
+	57	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	1            	
+	58	script_test_fcn_DebugTools_queryNumberRange.m                      	1            	
+	59	script_test_fcn_DebugTools_replaceStringInDirectory.m              	1            	
+	60	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	1            	
+flagsStringWasFoundInFiles>0
+ans =
+  60×1 <a href="matlab:helpPopup('logical')" style="font-weight:bold">logical</a> array
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   0
+   0
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+flagsStringWasFoundInFilesRaw
+flagsStringWasFoundInFilesRaw =
+  60×1 <a href="matlab:helpPopup('logical')" style="font-weight:bold">logical</a> array
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+   1
+if system_dependent('IsDebugMode')==1, dbquit; end
+
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	fcn_DebugTools_addStringToEnd.m                                    	1            	
+	2	fcn_DebugTools_addSubdirectoriesToPath.m                           	1            	
+	3	fcn_DebugTools_autoInstallRepos.m                                  	1            	
+	4	fcn_DebugTools_breakArrayByNans.m                                  	1            	
+	5	fcn_DebugTools_checkInputsToFunctions.m                            	1            	
+	6	fcn_DebugTools_compareDirectoryListings.m                          	1            	
+	7	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	1            	
+	8	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	1            	
+	9	fcn_DebugTools_convertVariableToCellString.m                       	1            	
+	10	fcn_DebugTools_countBytesInDirectoryListing.m                      	1            	
+	11	fcn_DebugTools_cprintf.m                                           	0            	
+	12	fcn_DebugTools_debugPrintStringToNCharacters.m                     	1            	
+	13	fcn_DebugTools_debugPrintTableToNCharacters.m                      	1            	
+	14	fcn_DebugTools_directoryStringQuery.m                              	1            	
+	15	fcn_DebugTools_doStringsMatch.m                                    	1            	
+	16	fcn_DebugTools_extractNumberFromStringCell.m                       	1            	
+	17	fcn_DebugTools_extractPlotFormatFromString.m                       	1            	
+	18	fcn_DebugTools_findLatestGitHubRelease.asv                         	1            	
+	19	fcn_DebugTools_findLatestGitHubRelease.m                           	1            	
+	20	fcn_DebugTools_installDependencies.m                               	1            	
+	21	fcn_DebugTools_listDirectoryContents.m                             	1            	
+	22	fcn_DebugTools_makeDirectory.m                                     	1            	
+	23	fcn_DebugTools_number2string.m                                     	1            	
+	24	fcn_DebugTools_parseStringIntoCells.m                              	1            	
+	25	fcn_DebugTools_printDirectoryListing.m                             	1            	
+	26	fcn_DebugTools_printNumeredDirectoryList.m                         	1            	
+	27	fcn_DebugTools_queryNumberRange.m                                  	1            	
+	28	fcn_DebugTools_replaceStringInDirectory.m                          	1            	
+	29	fcn_DebugTools_sortDirectoryListingByTime.m                        	1            	
+	30	script_DebugTools_changeNames.m                                    	0            	
+	31	script_test_all_functions.asv                                      	0            	
+	32	script_test_all_functions.m                                        	0            	
+	33	script_test_fcn_DebugTools_addStringToEnd.m                        	0            	
+	34	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	0            	
+	35	script_test_fcn_DebugTools_autoInstallRepos.m                      	0            	
+	36	script_test_fcn_DebugTools_breakArrayByNans.m                      	0            	
+	37	script_test_fcn_DebugTools_checkInputsToFunctions.m                	0            	
+	38	script_test_fcn_DebugTools_compareDirectoryListings.m              	0            	
+	39	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	0            	
+	40	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	0            	
+	41	script_test_fcn_DebugTools_convertVariableToCellString.m           	0            	
+	42	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	0            	
+	43	script_test_fcn_DebugTools_cprintf.m                               	0            	
+	44	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	0            	
+	45	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	0            	
+	46	script_test_fcn_DebugTools_directoryStringQuery.m                  	0            	
+	47	script_test_fcn_DebugTools_doStringsMatch.m                        	0            	
+	48	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	0            	
+	49	script_test_fcn_DebugTools_extractPlotFormatFromString.m           	0            	
+	50	script_test_fcn_DebugTools_findLatestGitHubRelease.m               	0            	
+	51	script_test_fcn_DebugTools_installDependencies.m                   	0            	
+	52	script_test_fcn_DebugTools_listDirectoryContents.m                 	0            	
+	53	script_test_fcn_DebugTools_makeDirectory.m                         	0            	
+	54	script_test_fcn_DebugTools_number2string.m                         	0            	
+	55	script_test_fcn_DebugTools_parseStringIntoCells.m                  	0            	
+	56	script_test_fcn_DebugTools_printDirectoryListing.m                 	0            	
+	57	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	0            	
+	58	script_test_fcn_DebugTools_queryNumberRange.m                      	0            	
+	59	script_test_fcn_DebugTools_replaceStringInDirectory.m              	0            	
+	60	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	0            	
+if system_dependent('IsDebugMode')==1, dbquit; end
+
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	fcn_DebugTools_addStringToEnd.m                                    	1            	
+	2	fcn_DebugTools_addSubdirectoriesToPath.m                           	1            	
+	3	fcn_DebugTools_autoInstallRepos.m                                  	1            	
+	4	fcn_DebugTools_breakArrayByNans.m                                  	1            	
+	5	fcn_DebugTools_checkInputsToFunctions.m                            	1            	
+	6	fcn_DebugTools_compareDirectoryListings.m                          	1            	
+	7	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	1            	
+	8	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	1            	
+	9	fcn_DebugTools_convertVariableToCellString.m                       	1            	
+	10	fcn_DebugTools_countBytesInDirectoryListing.m                      	1            	
+	11	fcn_DebugTools_cprintf.m                                           	0            	
+	12	fcn_DebugTools_debugPrintStringToNCharacters.m                     	1            	
+	13	fcn_DebugTools_debugPrintTableToNCharacters.m                      	1            	
+	14	fcn_DebugTools_directoryStringQuery.m                              	1            	
+	15	fcn_DebugTools_doStringsMatch.m                                    	1            	
+	16	fcn_DebugTools_extractNumberFromStringCell.m                       	1            	
+	17	fcn_DebugTools_extractPlotFormatFromString.m                       	1            	
+	18	fcn_DebugTools_findLatestGitHubRelease.asv                         	1            	
+	19	fcn_DebugTools_findLatestGitHubRelease.m                           	1            	
+	20	fcn_DebugTools_installDependencies.m                               	1            	
+	21	fcn_DebugTools_listDirectoryContents.m                             	1            	
+	22	fcn_DebugTools_makeDirectory.m                                     	1            	
+	23	fcn_DebugTools_number2string.m                                     	1            	
+	24	fcn_DebugTools_parseStringIntoCells.m                              	1            	
+	25	fcn_DebugTools_printDirectoryListing.m                             	1            	
+	26	fcn_DebugTools_printNumeredDirectoryList.m                         	1            	
+	27	fcn_DebugTools_queryNumberRange.m                                  	1            	
+	28	fcn_DebugTools_replaceStringInDirectory.m                          	1            	
+	29	fcn_DebugTools_sortDirectoryListingByTime.m                        	1            	
+	30	script_DebugTools_changeNames.m                                    	0            	
+	31	script_test_all_functions.asv                                      	0            	
+	32	script_test_all_functions.m                                        	0            	
+	33	script_test_fcn_DebugTools_addStringToEnd.m                        	0            	
+	34	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	0            	
+	35	script_test_fcn_DebugTools_autoInstallRepos.m                      	0            	
+	36	script_test_fcn_DebugTools_breakArrayByNans.m                      	0            	
+	37	script_test_fcn_DebugTools_checkInputsToFunctions.m                	0            	
+	38	script_test_fcn_DebugTools_compareDirectoryListings.m              	0            	
+	39	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	0            	
+	40	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	0            	
+	41	script_test_fcn_DebugTools_convertVariableToCellString.m           	0            	
+	42	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	0            	
+	43	script_test_fcn_DebugTools_cprintf.m                               	0            	
+	44	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	0            	
+	45	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	0            	
+	46	script_test_fcn_DebugTools_directoryStringQuery.m                  	0            	
+	47	script_test_fcn_DebugTools_doStringsMatch.m                        	0            	
+	48	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	0            	
+	49	script_test_fcn_DebugTools_extractPlotFormatFromString.m           	0            	
+	50	script_test_fcn_DebugTools_findLatestGitHubRelease.m               	0            	
+	51	script_test_fcn_DebugTools_installDependencies.m                   	0            	
+	52	script_test_fcn_DebugTools_listDirectoryContents.m                 	0            	
+	53	script_test_fcn_DebugTools_makeDirectory.m                         	0            	
+	54	script_test_fcn_DebugTools_number2string.m                         	0            	
+	55	script_test_fcn_DebugTools_parseStringIntoCells.m                  	0            	
+	56	script_test_fcn_DebugTools_printDirectoryListing.m                 	0            	
+	57	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	0            	
+	58	script_test_fcn_DebugTools_queryNumberRange.m                      	0            	
+	59	script_test_fcn_DebugTools_replaceStringInDirectory.m              	0            	
+	60	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	0            	
+Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m', 204)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',204,0)">line 204</a>)
+A "MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS" required string was NOT found in one of the
+functions or scripts - see listing above. This should be fixed to maintain compatibilty.
+
+try open('fcn_DebugTools_addStringToEnd'); catch edit('fcn_DebugTools_addStringToEnd'); end
+
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	fcn_DebugTools_addStringToEnd.m                                    	1            	
+	2	fcn_DebugTools_addSubdirectoriesToPath.m                           	1            	
+	3	fcn_DebugTools_autoInstallRepos.m                                  	1            	
+	4	fcn_DebugTools_breakArrayByNans.m                                  	1            	
+	5	fcn_DebugTools_checkInputsToFunctions.m                            	1            	
+	6	fcn_DebugTools_compareDirectoryListings.m                          	1            	
+	7	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	1            	
+	8	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	1            	
+	9	fcn_DebugTools_convertVariableToCellString.m                       	1            	
+	10	fcn_DebugTools_countBytesInDirectoryListing.m                      	1            	
+	11	fcn_DebugTools_cprintf.m                                           	0            	
+	12	fcn_DebugTools_debugPrintStringToNCharacters.m                     	1            	
+	13	fcn_DebugTools_debugPrintTableToNCharacters.m                      	1            	
+	14	fcn_DebugTools_directoryStringQuery.m                              	1            	
+	15	fcn_DebugTools_doStringsMatch.m                                    	1            	
+	16	fcn_DebugTools_extractNumberFromStringCell.m                       	1            	
+	17	fcn_DebugTools_extractPlotFormatFromString.m                       	1            	
+	18	fcn_DebugTools_findLatestGitHubRelease.asv                         	1            	
+	19	fcn_DebugTools_findLatestGitHubRelease.m                           	1            	
+	20	fcn_DebugTools_installDependencies.m                               	1            	
+	21	fcn_DebugTools_listDirectoryContents.m                             	1            	
+	22	fcn_DebugTools_makeDirectory.m                                     	1            	
+	23	fcn_DebugTools_number2string.m                                     	1            	
+	24	fcn_DebugTools_parseStringIntoCells.m                              	1            	
+	25	fcn_DebugTools_printDirectoryListing.m                             	1            	
+	26	fcn_DebugTools_printNumeredDirectoryList.m                         	1            	
+	27	fcn_DebugTools_queryNumberRange.m                                  	1            	
+	28	fcn_DebugTools_replaceStringInDirectory.m                          	1            	
+	29	fcn_DebugTools_sortDirectoryListingByTime.m                        	1            	
+	30	script_DebugTools_changeNames.m                                    	0            	
+	31	script_test_all_functions.asv                                      	0            	
+	32	script_test_all_functions.m                                        	0            	
+	33	script_test_fcn_DebugTools_addStringToEnd.m                        	0            	
+	34	script_test_fcn_DebugTools_addSubdirectoriesToPath.m               	0            	
+	35	script_test_fcn_DebugTools_autoInstallRepos.m                      	0            	
+	36	script_test_fcn_DebugTools_breakArrayByNans.m                      	0            	
+	37	script_test_fcn_DebugTools_checkInputsToFunctions.m                	0            	
+	38	script_test_fcn_DebugTools_compareDirectoryListings.m              	0            	
+	39	script_test_fcn_DebugTools_confirmTimeToProcessDirectory.m         	0            	
+	40	script_test_fcn_DebugTools_convertBinaryToYesNoStrings.m           	0            	
+	41	script_test_fcn_DebugTools_convertVariableToCellString.m           	0            	
+	42	script_test_fcn_DebugTools_countBytesInDirectoryListing.m          	0            	
+	43	script_test_fcn_DebugTools_cprintf.m                               	0            	
+	44	script_test_fcn_DebugTools_debugPrintStringToNCharacters.m         	0            	
+	45	script_test_fcn_DebugTools_debugPrintTableToNCharacters.m          	0            	
+	46	script_test_fcn_DebugTools_directoryStringQuery.m                  	0            	
+	47	script_test_fcn_DebugTools_doStringsMatch.m                        	0            	
+	48	script_test_fcn_DebugTools_extractNumberFromStringCell.m           	0            	
+	49	script_test_fcn_DebugTools_extractPlotFormatFromString.m           	0            	
+	50	script_test_fcn_DebugTools_findLatestGitHubRelease.m               	0            	
+	51	script_test_fcn_DebugTools_installDependencies.m                   	0            	
+	52	script_test_fcn_DebugTools_listDirectoryContents.m                 	0            	
+	53	script_test_fcn_DebugTools_makeDirectory.m                         	0            	
+	54	script_test_fcn_DebugTools_number2string.m                         	0            	
+	55	script_test_fcn_DebugTools_parseStringIntoCells.m                  	0            	
+	56	script_test_fcn_DebugTools_printDirectoryListing.m                 	0            	
+	57	script_test_fcn_DebugTools_printNumeredDirectoryList.m             	0            	
+	58	script_test_fcn_DebugTools_queryNumberRange.m                      	0            	
+	59	script_test_fcn_DebugTools_replaceStringInDirectory.m              	0            	
+	60	script_test_fcn_DebugTools_sortDirectoryListingByTime.m            	0            	
+Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m', 233)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',233,0)">line 233</a>)
+A "MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS" required string was NOT found in one of the
+functions or scripts - see listing above. This should be fixed to maintain compatibilty.
+
+Unrecognized function or variable 'fileListFunctionsFolderNoDirectoriesFunctionsOnly'.
+Error in <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m', 229)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',229,0)">line 229</a>)
+    flagsStringWasFoundInFilesRaw =
+    fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesFunctionsOnly,
+    queryString, (-1));
+
+
+
+		m-filename                                                         	string found?	
+Folder: C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+	1	fcn_DebugTools_addStringToEnd.m                                    	1            	
+	2	fcn_DebugTools_addSubdirectoriesToPath.m                           	1            	
+	3	fcn_DebugTools_autoInstallRepos.m                                  	1            	
+	4	fcn_DebugTools_breakArrayByNans.m                                  	1            	
+	5	fcn_DebugTools_checkInputsToFunctions.m                            	1            	
+	6	fcn_DebugTools_compareDirectoryListings.m                          	1            	
+	7	fcn_DebugTools_confirmTimeToProcessDirectory.m                     	1            	
+	8	fcn_DebugTools_convertBinaryToYesNoStrings.m                       	1            	
+	9	fcn_DebugTools_convertVariableToCellString.m                       	1            	
+	10	fcn_DebugTools_countBytesInDirectoryListing.m                      	1            	
+	11	fcn_DebugTools_cprintf.m                                           	0            	
+	12	fcn_DebugTools_debugPrintStringToNCharacters.m                     	1            	
+	13	fcn_DebugTools_debugPrintTableToNCharacters.m                      	1            	
+	14	fcn_DebugTools_directoryStringQuery.m                              	1            	
+	15	fcn_DebugTools_doStringsMatch.m                                    	1            	
+	16	fcn_DebugTools_extractNumberFromStringCell.m                       	1            	
+	17	fcn_DebugTools_extractPlotFormatFromString.m                       	1            	
+	18	fcn_DebugTools_findLatestGitHubRelease.asv                         	1            	
+	19	fcn_DebugTools_findLatestGitHubRelease.m                           	1            	
+	20	fcn_DebugTools_installDependencies.m                               	1            	
+	21	fcn_DebugTools_listDirectoryContents.m                             	1            	
+	22	fcn_DebugTools_makeDirectory.m                                     	1            	
+	23	fcn_DebugTools_number2string.m                                     	1            	
+	24	fcn_DebugTools_parseStringIntoCells.m                              	1            	
+	25	fcn_DebugTools_printDirectoryListing.m                             	1            	
+	26	fcn_DebugTools_printNumeredDirectoryList.m                         	1            	
+	27	fcn_DebugTools_queryNumberRange.m                                  	1            	
+	28	fcn_DebugTools_replaceStringInDirectory.m                          	1            	
+	29	fcn_DebugTools_sortDirectoryListingByTime.m                        	1            	
+Error using <a href="matlab:matlab.lang.internal.introspective.errorDocCallback('script_test_all_functions', 'C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m', 233)" style="font-weight:bold">script_test_all_functions</a> (<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',233,0)">line 233</a>)
+A "MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS" required string was NOT found in one of the
+functions or scripts - see listing above. This should be fixed to maintain compatibilty.
+
+try open('fcn_DebugTools_cprintf'); catch edit('fcn_DebugTools_cprintf'); end
+clc
+script_test_all_functions
+<strong>Checking root folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+</strong><strong></strong><strong>	Checking that there is 1 m-file in root folder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a demo file, script_demo_DebugTools.m: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a README.md file: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Functions subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Data subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Documents subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Installer subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Images subfolder: </strong><strong>PASSED.
+</strong><strong>Checking main demo file:
+	script_demo_DebugTools.m:
+</strong><strong>	Checking that it contains "REVISION HISTORY": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "TO-DO": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG": </strong><strong>PASSED.
+</strong><a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',238,1)">238 </a>[...
+if system_dependent('IsDebugMode')==1, dbquit; end
+<strong>Checking functions folder:
+	script_demo_DebugTools.m:
+</strong>script_test_all_functions
+<strong>Checking root folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+</strong><strong></strong><strong>	Checking that there is 1 m-file in root folder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a demo file, script_demo_DebugTools.m: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a README.md file: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Functions subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Data subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Documents subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Installer subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Images subfolder: </strong><strong>PASSED.
+</strong><strong>Checking main demo file:
+	script_demo_DebugTools.m:
+</strong><strong>	Checking that main demo contains required strings: </strong><strong>	Checking that it contains "REVISION HISTORY": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "TO-DO": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG": </strong><strong>PASSED.
+</strong><strong>Checking functions folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+</strong><strong>	Checking that functions folder contains no forbidden strings: </strong><strong>PASSED.
+</strong><strong>PASSED.
+</strong><strong>	Checking that functions folder contains no warning strings: </strong><strong>PASSED.
+</strong><strong>PASSED.
+</strong><strong>	Checking that all files in functions folder contains required strings: </strong><strong>PASSED.
+</strong><strong>PASSED.
+</strong><strong>	Checking that functions within functions folder contains function-required strings: </strong><strong>PASSED.
+</strong><strong>PASSED.
+</strong><a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',261,1)">261 </a>[...
+<strong>	Checking that all files in functions folder contains required strings: </strong><strong>PASSED.
+</strong><strong>PASSED.
+</strong>if system_dependent('IsDebugMode')==1, dbquit all; end
+script_test_all_functions
+<strong>Checking root folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+</strong><strong></strong><strong>	Checking that there is 1 m-file in root folder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a demo file, script_demo_DebugTools.m: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a README.md file: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Functions subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Data subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Documents subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Installer subfolder: </strong><strong>PASSED.
+</strong><strong>	Checking that there is a Images subfolder: </strong><strong>PASSED.
+</strong><strong>Checking main demo file:
+	script_demo_DebugTools.m:
+</strong><strong>	Checking that main demo contains required strings: </strong><strong>	Checking that it contains "REVISION HISTORY": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "TO-DO": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS": </strong><strong>PASSED.
+</strong><strong>	Checking that it contains "MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG": </strong><strong>PASSED.
+</strong><strong>Checking functions folder:
+	C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions:
+</strong><strong>	Checking that functions folder contains no forbidden strings: </strong><strong>PASSED.
+</strong><strong>	Checking that functions folder contains no warning strings: </strong><strong>PASSED.
+</strong><strong>	Checking that all files in functions folder contains required strings: </strong><strong>PASSED.
+</strong><strong>	Checking that functions within functions folder contains function-required strings: </strong><strong>PASSED.
+</strong><a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',283,1)">283 </a>[...

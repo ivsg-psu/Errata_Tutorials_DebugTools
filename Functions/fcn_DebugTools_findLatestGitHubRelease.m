@@ -74,6 +74,11 @@ function latestReleaseStruct = fcn_DebugTools_findLatestGitHubRelease(owner, rep
 % - Formatted revision lists to Markdown format
 % - Fixed variable naming for clarity:
 %   % * fig_+num to figNum
+%
+% 2025_11_22 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_findLatestGitHubRelease
+%   % * Made error handling more verbose
+%   % * Added warn+ings with 'backtrace' option on
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
@@ -176,7 +181,9 @@ apiUrl = sprintf('https://api.github.com/repos/%s/%s/releases/latest', owner, re
 try
     latestReleaseStruct = webread(apiUrl);
 catch ME
-    disp(['Error fetching release information for ', owner, '/', repo, ': ', ME.message]);
+    warning('backtrace','on');
+    warning('Unable to find API url link - throwing error')
+    error('Error fetching release information for: \n\tOwner: %s\n\tRepo: %s\n\t Error message: %s\n', owner, repo, ME.message);
     return;
 end
 

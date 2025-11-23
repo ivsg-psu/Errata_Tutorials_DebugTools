@@ -1,10 +1,12 @@
 function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newString, varargin)
 % fcn_DebugTools_replaceStringInDirectory
-% Replaces 'oldString' with 'newString' in all files within 'directoryPath'.
+% Replaces 'oldString' with 'newString' in all files within
+% 'directoryPath'. An optional flag allows the search to skip commented-out
+% lines.
 %
 % FORMAT:
 %
-%      fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newString, (filenameNewString), (figNum));
+%      fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newString, (filenameNewString), (flagSkipCommentedLines), (figNum));
 %
 % INPUTS:
 %
@@ -20,6 +22,9 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 %      filenameNewString: the string that will be searched for in the file
 %      name to ID files to change. Default is newString.
 %
+%      flagSkipCommentedLines: if set other than 0, will skip commented
+%      lines. Default is 0, to include commented lines.
+% 
 %      figNum: a figure number to plot results. If set to -1, skips any
 %      input checking or debugging, no figures will be generated, and sets
 %      up code to maximize speed. If set to 1, will query user to confirm
@@ -62,6 +67,12 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 %   % * fig_+num to figNum
 % - In fcn_DebugTools_replaceStringInDirectory
 %   % * Added verification for changing input
+%
+% 2025_11_23 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_replaceStringInDirectory
+%   % * Added flag option to specify skip or no-skip on lines for
+%   %   % replacements
+
 
 % TO-DO:
 % 
@@ -73,7 +84,7 @@ function fcn_DebugTools_replaceStringInDirectory(directoryPath, oldString, newSt
 % Check if flag_max_speed set. This occurs if the figNum variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 5; % The largest Number of argument inputs to the function
+MAX_NARGIN = 6; % The largest Number of argument inputs to the function
 flag_max_speed = 0; % The default. This runs code with all error checking
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
     flag_do_debug = 0; % Flag to plot the results for debugging
@@ -134,6 +145,15 @@ if 4 <= nargin
     end
 end
 
+% Does user want to specify flagSkipCommentedLines?
+flagSkipCommentedLines = 0;
+if 5 <= nargin
+    temp = varargin{2};
+    if ~isempty(temp)
+        flagSkipCommentedLines = temp;
+    end
+end
+
 % Does user want to show the plots?
 flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
@@ -182,11 +202,11 @@ for ith_file = 1:length(fileList)
                 thisLine = fileContent(ith_line,1);
                 thisLineCharacters = char(thisLine);
                 if contains(thisLine,oldString)
-                    if thisLineCharacters(1)~='%'
+                    if (thisLineCharacters(1)=='%') && (0~=flagSkipCommentedLines)
+                        numSkipped = numSkipped+1;
+                    else
                         modifiedContent(ith_line,1) = replace(thisLine, oldString, newString);
                         numChanged = numChanged+1;
-                    else
-                        numSkipped = numSkipped+1;
                     end
                 end
             end

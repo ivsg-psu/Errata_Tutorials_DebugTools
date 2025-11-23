@@ -1,4 +1,39 @@
 function count = fcn_DebugTools_cprintf(style,format,varargin) %#ok<*JAPIMATHWORKS>
+
+%% Debugging and Input checks
+
+% Check if flag_max_speed set. This occurs if the figNum variable input
+% argument (varargin) is given a number of -1, which is not a valid figure
+% number.
+MAX_NARGIN = 4; % The largest Number of argument inputs to the function
+flag_max_speed = 0; %#ok<*NASGU>
+if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
+    flag_check_inputs = 0; % Flag to perform input checking
+    flag_max_speed = 1;
+else
+    % Check to see if we are externally setting debug mode to be "on"
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
+    flag_check_inputs = 1; % Flag to perform input checking
+    MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
+    MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
+    if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
+        flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG); 
+        flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
+    end
+end
+
+% flag_do_debug = 1;
+
+if flag_do_debug
+    st = dbstack; %#ok<*UNRCH>
+    fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
+    debug_figNum = 999978; 
+else
+    debug_figNum = []; 
+end
+
+
 % FCN_DEBUGTOOLS_CPRINTF displays styled formatted text in the Command
 % Window. NOTE: this is a wrapper function for the classic cprintf
 % function. Where appropriate, the readme below has been modified and/or
@@ -159,6 +194,11 @@ function count = fcn_DebugTools_cprintf(style,format,varargin) %#ok<*JAPIMATHWOR
 % CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 % OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 % OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+% REVISION HISTORY:
+% 
+% 2025_11_23 by Sean Brennan, sbrennan@psu.edu
+% - Added this revision history area
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
