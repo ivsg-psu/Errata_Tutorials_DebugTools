@@ -146,6 +146,18 @@
 %   %   % to have correct directory and filename inputs
 %   % * added checks for required strings to functions
 % (new release)
+%
+% 2025_12_17 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_debugPrintTableToNCharacters
+%   % * Changed figNum input to FID, to allow prints to files
+%   % * Fixed issue where extra line feeds were being added above table
+%   % * Allow empty headers and table data, causing these prints to be skipped
+%   % * Allow multi-type formatting, specified by row memberships
+% - In script_test_fcn_DebugTools_debugPrintStringToNCharacters
+%   % * Changed figNum input to FID, to allow prints to files
+%   % * Created many more test cases to demo new features
+
+% (new release)
 
 % TO-DO:
 % 

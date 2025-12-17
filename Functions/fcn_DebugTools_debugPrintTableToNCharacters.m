@@ -12,10 +12,11 @@ function fcn_DebugTools_debugPrintTableToNCharacters(...
 % INPUTS:
 %
 %      table_data: a matrix of N rows, M columns, containing data to be
-%      printed
+%      printed. If an empty entry is given, no table is printed.
 %
 %      header_strings: a cell array, M long, containing characters to be
-%      printed as headers
+%      printed as headers. If an empty entry is given, no header is
+%      printed.
 %
 %      formatter_strings: a cell array, M long, containing the print
 %      specification for each column
@@ -26,8 +27,8 @@ function fcn_DebugTools_debugPrintTableToNCharacters(...
 %
 %      (OPTIONAL INPUTS)
 %
-%      figNum: a figure number to plot results. If set to -1, skips any
-%      input checking or debugging, no figures will be generated, and sets
+%      fid: a FID number to print results. If set to -1, skips any
+%      input checking or debugging, no prints will be generated, and sets
 %      up code to maximize speed. 
 %
 % OUTPUTS:
@@ -60,6 +61,12 @@ function fcn_DebugTools_debugPrintTableToNCharacters(...
 % - Formatted revision lists to Markdown format
 % - Fixed variable naming for clarity:
 %   % * fig_+num to figNum
+%
+% 2025_12_17 by Sean Brennan, sbrennan@psu.edu
+% - Changed figNum input to FID, to allow prints to files
+% - Fixed issue where extra line feeds were being added above table
+% - Allow empty headers and table data, causing these prints to be skipped
+% - Allow multi-type formatting, specified by row memberships
 
 
 % TO-DO:
@@ -68,7 +75,7 @@ function fcn_DebugTools_debugPrintTableToNCharacters(...
 
 %% Debugging and Input checks
 
-% Check if flag_max_speed set. This occurs if the figNum variable input
+% Check if flag_max_speed set. This occurs if the fid variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
 MAX_NARGIN = 5; % The largest Number of argument inputs to the function
@@ -130,12 +137,13 @@ if 0 == flag_max_speed
 end
 
 
-% Check to see if user specifies figNum?
+% Check to see if user specifies fid?
 flag_do_plots = 0; % Default is to NOT show plots
+fid = 1; % Default is to print to the console
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp)
-        figNum = temp; %#ok<NASGU>
+        fid = temp; 
         flag_do_plots = 1;
     end
 end
@@ -153,35 +161,88 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 N_header_strings = length(header_strings);
-N_data_rows = length(table_data(:,1));
+N_data_rows = size(table_data,1);
+N_data_cols = size(table_data,2);
+N_formats = size(formatter_strings,1);
+
+% Fill in the formatting of numeric and color values
+numericformatter_strings = cell(N_formats, N_data_cols); 
+colorformatter_strings   = cell(N_formats, N_data_cols);
+row_memberships   = cell(N_formats, 1);
+
+% Fill in the formats as a cell array. Note that the last column is the
+% row membership
+for jth_format = 1:N_formats
+    for ith_format_string = 1:N_data_cols
+        thisFormatString = formatter_strings{jth_format, ith_format_string};
+        if strcmp(thisFormatString(1),'%')
+            numericformatter_strings{jth_format, ith_format_string} = thisFormatString;
+            colorformatter_strings{jth_format, ith_format_string} = [];
+        else
+            % A color designation has been given
+            numericformatter_strings{jth_format, ith_format_string} = cat(2,'%',extractAfter(thisFormatString,'%'));
+            colorformatter_strings{jth_format, ith_format_string} = extractBefore(thisFormatString,' %');
+        end
+    end
+
+    % Check to see if row membership has been specified
+    if size(formatter_strings,2)==(N_data_cols+1)
+        row_memberships{jth_format} = formatter_strings{jth_format,N_data_cols+1};
+    end
+end
 
 % Print the header
-fprintf(1,'\n\n');
-for ith_header = 1:N_header_strings
-    header_str = header_strings{ith_header};
-    if length(N_chars)==N_header_strings
-         fixed_header_str = fcn_DebugTools_debugPrintStringToNCharacters(header_str,N_chars(ith_header));
-    else
-        fixed_header_str = fcn_DebugTools_debugPrintStringToNCharacters(header_str,N_chars);
+if ~isempty(header_strings)
+    for ith_header = 1:N_header_strings
+        header_str = header_strings{ith_header};
+
+        % Do each of the columns have different widths?
+        if length(N_chars)==N_header_strings
+            fixed_header_str = fcn_DebugTools_debugPrintStringToNCharacters(header_str,N_chars(ith_header));
+        else
+            fixed_header_str = fcn_DebugTools_debugPrintStringToNCharacters(header_str,N_chars);
+        end
+        
+        fprintf(fid,'%s ', fixed_header_str);
     end
-    fprintf(1,'%s ', fixed_header_str);
+    fprintf(fid,'\n');
 end
-fprintf(1,'\n');
 
 % Print the results
 if ~isempty(table_data)
     for ith_row =1:N_data_rows
-        for jth_col = 1:N_header_strings
-            data_str = sprintf(formatter_strings{jth_col},table_data(ith_row,jth_col));
-            if length(N_chars)==N_header_strings
+
+        % Which formatting row to use for formatting? This is specified by
+        % the membership column, which is saved in the "row_memberships"
+        % cell array. We search through this to see if the current row
+        % matches anything listed.
+        membershipToUse = 1;
+        for ith_membership = 1:length(row_memberships)
+            theseMembers = row_memberships{ith_membership};
+            if ~isempty(theseMembers)
+                if ismember(ith_row,theseMembers)
+                    membershipToUse = ith_membership;
+                end
+            end
+        end
+
+        for jth_col = 1:N_data_cols
+            data_str = sprintf(numericformatter_strings{membershipToUse, jth_col},table_data(ith_row,jth_col));
+
+            % Do each of the columns have different widths?
+            if length(N_chars)==N_data_cols
                 fixed_data_str = fcn_DebugTools_debugPrintStringToNCharacters(data_str,N_chars(jth_col));
             else
                 fixed_data_str = fcn_DebugTools_debugPrintStringToNCharacters(data_str,N_chars);
             end
-            fprintf(1,'%s ',...
-                fixed_data_str);
+
+            if 1==fid && ~isempty(colorformatter_strings{membershipToUse, jth_col})
+                fcn_DebugTools_cprintf(colorformatter_strings{membershipToUse, jth_col},'%s ',fixed_data_str)
+            else
+                fprintf(fid,'%s ',fixed_data_str);
+            end
         end % ends looping through columns
-        fprintf(1,'\n');
+        fprintf(fid,'\n');
         
     end % Ends looping down the rows
 end % Ends check to see if table isempty

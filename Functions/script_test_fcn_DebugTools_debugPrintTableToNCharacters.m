@@ -14,14 +14,38 @@
 %
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
 % - Formatted revision lists to Markdown format
+%
+% 2025_12_17 by Sean Brennan, sbrennan@psu.edu
+% - Changed figNum input to FID, to allow prints to files
+% - Created many more test cases to demo new features
+
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
 % - fill in to-do items here.
 
-close all;
+%% Code demos start here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%   _____                              ____   __    _____          _
+%  |  __ \                            / __ \ / _|  / ____|        | |
+%  | |  | | ___ _ __ ___   ___  ___  | |  | | |_  | |     ___   __| | ___
+%  | |  | |/ _ \ '_ ` _ \ / _ \/ __| | |  | |  _| | |    / _ \ / _` |/ _ \
+%  | |__| |  __/ | | | | | (_) \__ \ | |__| | |   | |___| (_) | (_| |  __/
+%  |_____/ \___|_| |_| |_|\___/|___/  \____/|_|    \_____\___/ \__,_|\___|
+%
+%
+% See: https://patorjk.com/software/taag/#p=display&f=Big&t=Demos%20Of%20Code
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Figures start with 1
 
-%% Basic test case
+close all;
+fprintf(1,'Figure: 1XXXXXX: DEMO cases\n');
+
+%% DEMO case: basic call with all columns of same fixed character width
+figNum = 10001;
+titleString = sprintf('DEMO case: basic call with all columns of same fixed character width');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 
 % Fill in test data
 Npoints = 10;
@@ -38,7 +62,10 @@ N_chars = 15; % All columns have same number of characters
 fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
 
 
-%% Advanced test case
+%% DEMO case: each column has different widths
+figNum = 10002;
+titleString = sprintf('DEMO case: each column has different widths');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
 
 % Fill in test data
 Npoints = 10;
@@ -54,11 +81,369 @@ formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How sh
 N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
 fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
 
+%% DEMO case: no header will be printed, only the table
+figNum = 10003;
+titleString = sprintf('DEMO case: no header will be printed, only the table');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+intersection_points = rand(Npoints,2);
+s_coordinates_in_traversal_1 = rand(Npoints,1);
+s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+
+header_strings = []; % [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
+N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+
+%% DEMO case: no table will be printed, only the header
+figNum = 10004;
+titleString = sprintf('DEMO case: no table will be printed, only the header');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+% Npoints = 10;
+% point_IDs = (1:Npoints)';
+% intersection_points = rand(Npoints,2);
+% s_coordinates_in_traversal_1 = rand(Npoints,1);
+% s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = []; % [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+
+header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
+N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+
+%% DEMO case: dumb case where neither table data nor header are printed
+figNum = 10005;
+titleString = sprintf('DEMO case: dumb case where neither table data nor header are printed');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+% Npoints = 10;
+% point_IDs = (1:Npoints)';
+% intersection_points = rand(Npoints,2);
+% s_coordinates_in_traversal_1 = rand(Npoints,1);
+% s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = []; % [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+
+header_strings = []; % [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
+N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+
+%% DEMO case: 2nd column is red, 3rd is bold blue
+figNum = 10006;
+titleString = sprintf('DEMO case: 2nd column is red, 3rd is bold blue');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+intersection_points = rand(Npoints,2);
+s_coordinates_in_traversal_1 = rand(Npoints,1);
+s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+
+header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'red %.12f'},{'*blue %.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
+N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+
+
+%% DEMO case: print rows 3 and 7 in red, column 3 in blue otherwise
+figNum = 10007;
+titleString = sprintf('DEMO case: print rows 3 and 7 in red, column 3 in blue otherwise');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+intersection_points = rand(Npoints,2);
+s_coordinates_in_traversal_1 = rand(Npoints,1);
+s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+rowsToFormat = [3 7];
+header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+
+formatter_strings = [...
+    {'%.0d'},{'%.12f'},{'*blue %.12f'},{'%.12f'},{'%.12f'},{[]}; 
+    {'red %.0d'},{'red %.12f'},{'red %.12f'},{'red %.12f'},{'red %.12f'},{rowsToFormat}]; 
+
+
+N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+
+rowToPrintInRed = 1;
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+
+
+%% DEMO case: print to a file (defaults to black/white, even if print spec includes colors)
+figNum = 10008;
+titleString = sprintf('DEMO case: print to a file (defaults to black/white, even if print spec includes colors)');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+intersection_points = rand(Npoints,2);
+s_coordinates_in_traversal_1 = rand(Npoints,1);
+s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+
+header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'red %.12f'},{'*blue %.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
+N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fid = fopen('test.txt','w');
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars, fid);
+fclose(fid);
+
+fprintf(1,'Below are the contents of file text.txt, which will be deleted after showing this result:\n');
+type('test.txt');
+
+delete('test.txt');
+
+%% Test cases start here. These are very simple, usually trivial
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  _______ ______  _____ _______ _____
+% |__   __|  ____|/ ____|__   __/ ____|
+%    | |  | |__  | (___    | | | (___
+%    | |  |  __|  \___ \   | |  \___ \
+%    | |  | |____ ____) |  | |  ____) |
+%    |_|  |______|_____/   |_| |_____/
+%
+%
+%
+% See: https://patorjk.com/software/taag/#p=display&f=Big&t=TESTS
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Figures start with 2
+
+close all;
+fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
+
+%% TEST case: This one returns nothing since there is no portion of the path in criteria
+% figNum = 20001;
+% titleString = sprintf('TEST case: This one returns nothing since there is no portion of the path in criteria');
+% fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+% figure(figNum); clf;
+
+
+
+%% Fast Mode Tests
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ______        _     __  __           _        _______        _
+% |  ____|      | |   |  \/  |         | |      |__   __|      | |
+% | |__ __ _ ___| |_  | \  / | ___   __| | ___     | | ___  ___| |_ ___
+% |  __/ _` / __| __| | |\/| |/ _ \ / _` |/ _ \    | |/ _ \/ __| __/ __|
+% | | | (_| \__ \ |_  | |  | | (_) | (_| |  __/    | |  __/\__ \ |_\__ \
+% |_|  \__,_|___/\__| |_|  |_|\___/ \__,_|\___|    |_|\___||___/\__|___/
+%
+%
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=Fast%20Mode%20Tests
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Figures start with 8
+
+close all;
+fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
+
+% %% Basic example - NO FIGURE
+% figNum = 80001;
+% fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
+% figure(figNum); close(figNum);
+% 
+% thisSourceFolderName = fullfile(pwd,'Data','processOneTimeclean','From');
+% thisDestinationFolder = fullfile(pwd,'Data','processOneTimeclean','To');
+% 
+% if exist(thisDestinationFolder,'dir')
+%     [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
+%     if ~SUCCESS
+%         error('Unable to remove test directory');
+%     end
+% end
+% 
+% % Call the function
+% fcn_DataPipe_processOneTimeclean(thisSourceFolderName, thisDestinationFolder, ([]));
+% 
+% sgtitle(titleString, 'Interpreter','none');
+% 
+% % Check variable types
+% assert(exist(thisDestinationFolder,'dir'));
+% 
+% % Check variable sizes
+% temp = dir(thisDestinationFolder);
+% assert(length(temp)==4);
+% 
+% % % Check variable values
+% % assert(all(~flags_folderWasPreviouslyZipped));
+% 
+% [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
+% if ~SUCCESS
+%     error('Unable to remove test directory');
+% end
+% 
+% % Make sure plot did NOT open up
+% figHandles = get(groot, 'Children');
+% assert(~any(figHandles==figNum));
+% 
+% 
+% %% Basic fast mode - NO FIGURE, FAST MODE
+% figNum = 80002;
+% fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
+% figure(figNum); close(figNum);
+% 
+% thisSourceFolderName = fullfile(pwd,'Data','processOneTimeclean','From');
+% thisDestinationFolder = fullfile(pwd,'Data','processOneTimeclean','To');
+% 
+% if exist(thisDestinationFolder,'dir')
+%     [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
+%     if ~SUCCESS
+%         error('Unable to remove test directory');
+%     end
+% end
+% 
+% % Call the function
+% fcn_DataPipe_processOneTimeclean(thisSourceFolderName, thisDestinationFolder, (-1));
+% 
+% sgtitle(titleString, 'Interpreter','none');
+% 
+% % Check variable types
+% assert(exist(thisDestinationFolder,'dir'));
+% 
+% % Check variable sizes
+% temp = dir(thisDestinationFolder);
+% assert(length(temp)==4);
+% 
+% % % Check variable values
+% % assert(all(~flags_folderWasPreviouslyZipped));
+% 
+% [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
+% if ~SUCCESS
+%     error('Unable to remove test directory');
+% end
+% 
+% % Make sure plot did NOT open up
+% figHandles = get(groot, 'Children');
+% assert(~any(figHandles==figNum));
+% 
+% 
+% %% Compare speeds of pre-calculation versus post-calculation versus a fast variant
+% figNum = 80003;
+% fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
+% figure(figNum);
+% close(figNum);
+% 
+% thisSourceFolderName = fullfile(pwd,'Data','processOneTimeclean','From');
+% thisDestinationFolder = fullfile(pwd,'Data','processOneTimeclean','To');
+% 
+% if exist(thisDestinationFolder,'dir')
+%     [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
+%     if ~SUCCESS
+%         error('Unable to remove test directory');
+%     end
+% end
+% 
+% Niterations = 1;
+% 
+% % Do calculation without pre-calculation
+% tic;
+% for ith_test = 1:Niterations
+%     % Call the function
+%     fcn_DataPipe_processOneTimeclean(thisSourceFolderName, thisDestinationFolder, ([]));
+% 
+% end
+% slow_method = toc;
+% 
+% % Do calculation with pre-calculation, FAST_MODE on
+% tic;
+% for ith_test = 1:Niterations
+%     % Call the function
+%     fcn_DataPipe_processOneTimeclean(thisSourceFolderName, thisDestinationFolder, (-1));
+% 
+% end
+% fast_method = toc;
+% 
+% 
+% [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
+% if ~SUCCESS
+%     error('Unable to remove test directory');
+% end
+% 
+% 
+% % Make sure plot did NOT open up
+% figHandles = get(groot, 'Children');
+% assert(~any(figHandles==figNum));
+% 
+% % Plot results as bar chart
+% figure(373737);
+% clf;
+% hold on;
+% 
+% X = categorical({'Normal mode','Fast mode'});
+% X = reordercats(X,{'Normal mode','Fast mode'}); % Forces bars to appear in this exact order, not alphabetized
+% Y = [slow_method fast_method ]*1000/Niterations;
+% bar(X,Y)
+% ylabel('Execution time (Milliseconds)')
+% 
+% 
+% % Make sure plot did NOT open up
+% figHandles = get(groot, 'Children');
+% assert(~any(figHandles==figNum));
+% 
+
+%% BUG cases
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  ____  _    _  _____
+% |  _ \| |  | |/ ____|
+% | |_) | |  | | |  __    ___ __ _ ___  ___  ___
+% |  _ <| |  | | | |_ |  / __/ _` / __|/ _ \/ __|
+% | |_) | |__| | |__| | | (_| (_| \__ \  __/\__ \
+% |____/ \____/ \_____|  \___\__,_|___/\___||___/
+%
+% See: http://patorjk.com/software/taag/#p=display&v=0&f=Big&t=BUG%20cases
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% All bug case figures start with the number 9
+
+% close all;
+
+%% BUG 
+
 %% Fail conditions
 if 1==0
-
-    %% Bad integer (not numeric)
-    N_chars = 'a';
-    fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
-
+    
 end
+
+
+%% Functions follow
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   ______                _   _
+%  |  ____|              | | (_)
+%  | |__ _   _ _ __   ___| |_ _  ___  _ __  ___
+%  |  __| | | | '_ \ / __| __| |/ _ \| '_ \/ __|
+%  | |  | |_| | | | | (__| |_| | (_) | | | \__ \
+%  |_|   \__,_|_| |_|\___|\__|_|\___/|_| |_|___/
+%
+% See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
+
+% 
+% 
+% %% fcn_INTERNAL_loadExampleData
+% function tempXYdata = fcn_INTERNAL_loadExampleData(dataSetNumber)
+% % Call the function to fill in an array of "path" type
+% laps_array = fcn_Laps_fillSampleLaps(-1);
+% 
+% 
+% % Use the last data
+% tempXYdata = laps_array{dataSetNumber};
+% end % Ends fcn_INTERNAL_loadExampleData

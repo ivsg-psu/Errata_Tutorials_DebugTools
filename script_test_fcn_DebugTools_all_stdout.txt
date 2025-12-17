@@ -26552,3 +26552,17 @@ script_test_all_functions
 </strong><strong>	Checking that all files in functions folder contains required strings: </strong><strong>PASSED.
 </strong><strong>	Checking that functions within functions folder contains function-required strings: </strong><strong>PASSED.
 </strong><a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\Errata\Tutorials\DebugTools\Functions\script_test_all_functions.m',283,1)">283 </a>[...
+if system_dependent('IsDebugMode')==1, dbquit; end
+script_demo_LoadRawDataToMATLAB
+	Removing deprecated library: DebugTools_v2025_11_20 ...Done.
+	Adding library: DebugTools_v2025_11_23 ...Done.
+	Copying function fcn_DebugTools_autoInstallRepos.m to Installer folder...Done.
+	Skipping already installed library: PathClass_v2025_11_13
+	Skipping already installed library: GetUserInputPath_v2025_04_27
+	Skipping already installed library: PlotRoad_v2025_11_13
+	Skipping already installed library: GeometryClass_v2025_10_20
+	Skipping already installed library: GPSClass_v2023_06_29
+<a href="matlab: opentoline('C:\Users\snb10\Desktop\GitHubRepos\IVSG\FieldDataCollection\DataCollectionProcedures\LoadRawDataToMATLAB\script_demo_LoadRawDataToMATLAB.m',144,1)">144 </a>fprintf(1,['Welcome to the demo code for the LoadRawDataToMATLAB library! \n' ...
+if system_dependent('IsDebugMode')==1, dbquit; end
+uiopen('C:\Users\snb10\Desktop\GitHubRepos\IVSG\FieldDataCollection\DataCollectionProcedures\LoadRawDataToMATLAB\Functions\script_test_all_functions.m',1)
+script_test_all_functions

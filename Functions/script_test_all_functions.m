@@ -404,32 +404,73 @@ ylabel('Elapsed time to test (sec)');
 
 %% Check which files contain key strings?
 if 1==0
-    clc
-    functionsDirectoryQueryAllFiles = fullfile(pwd,'Functions','*.*');
-    % Use the following instead, if wish to do subdirectories
-    % directoryQuery = fullfile(pwd,'Functions','**','*.*');
+    functionsFolder = fullfile(pwd,'Functions');
+    fcn_DebugTools_cprintf('*blue','Searching and Replacing common naming errors in folder:\n\t%s\n', functionsFolder);
+    badAndReplacementStrings = {
+        cat(2,'% -',' wrote'), '% - Wrote';
+        cat(2,'% -',' added'), '% - Added';
+        cat(2,'% -',' removed'), '% - Removed';
+        cat(2,'% -',' updated'), '% - Updated';
+        cat(2,'% -',' renamed'), '% - Renamed';        
+        cat(2,'% -',' changed'), '% - Changed';        
+        cat(2,'% -',' fixed'), '% - Fixed';        
+        cat(2,'% -',' first'), '% - First';        
+        cat(2,'% -','-'), '% -';
+        cat(2,'TO',' DO'), 'TO-DO';
+        cat(2,'Revi','sion history'), 'REVISION HISTORY';
+        cat(2,'% Up','dates'),'% REVISION HISTORY';
+        cat(2,'% UP','DATES'),'% REVISION HISTORY';
+        cat(2,'fi','g_num'), 'figNum';
+        cat(2,': sbre','nnan@psu.edu'),' by Sean Brennan, sbrennan@psu.edu';
+        cat(2,' - Se','an Brennan, sbrennan@psu.edu'),' by Sean Brennan, sbrennan@psu.edu';
+        cat(2,' - S.',' Brennan'), ' by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'0 ','- sbrennan@psu.edu'), '0 by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'1 ','- sbrennan@psu.edu'), '1 by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'2 ','- sbrennan@psu.edu'), '2 by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'3 ','- sbrennan@psu.edu'), '3 by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'4 ','- sbrennan@psu.edu'), '4 by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'5 ','- sbrennan@psu.edu'), '5 by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'6 ','- sbrennan@psu.edu'), '6 by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'7 ','- sbrennan@psu.edu'), '7 by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'8 ','- sbrennan@psu.edu'), '8 by Sean Brennan, sbrennan@psu.edu';
+        % cat(2,'9 ','- sbrennan@psu.edu'), '9 by Sean Brennan, sbrennan@psu.edu';
+        };
+    for ith_replacement = 1:size(badAndReplacementStrings,1)        
+        queryString = badAndReplacementStrings{ith_replacement,1};
+        replacementString = badAndReplacementStrings{ith_replacement,2};
+        fcn_DebugTools_cprintf('*blue','\tChecking for string: %s and replacing with %s: ', queryString, replacementString);
 
-    fileListFunctionsFolderAllFiles = dir(functionsDirectoryQueryAllFiles); %cat(2,'.',filesep,filesep,'script_test_fcn_*.m'));
+        functionsDirectoryQueryAllFiles = fullfile(pwd,'Functions','*.*');
+        % Use the following instead, if wish to do subdirectories
+        % directoryQuery = fullfile(pwd,'Functions','**','*.*');
 
-    % Filter out directories from the list
-    fileListFunctionsFolderNoDirectoriesAllFiles = fileListFunctionsFolderAllFiles(~[fileListFunctionsFolderAllFiles.isdir]);
+        fileListFunctionsFolderAllFiles = dir(functionsDirectoryQueryAllFiles); %cat(2,'.',filesep,filesep,'script_test_fcn_*.m'));
 
-    % Set a query string to search for. Separate it into parts so that this
-    % file does not show up on search list! :-)
-    queryString = cat(2,'TO',' DO');
-    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, (-1));
-    % flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
-    if sum(flagsStringWasFoundInFilesRaw)>0
-        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, 1);
-        error('A "%s" was found in one of the functions - see listing above.', queryString);
-    end
+        % Filter out directories from the list
+        fileListFunctionsFolderNoDirectoriesAllFiles = fileListFunctionsFolderAllFiles(~[fileListFunctionsFolderAllFiles.isdir]);
 
-    %%
-    if 1==0
-        %%%% WARNING - USE THIS WITH CAUTION! %%%%%%%%%%%%
+        % Set a query string to search for. Separate it into parts so that this
+        % file does not show up on search list! :-)
+        flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, (-1));
+        % flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+        if sum(flagsStringWasFoundInFilesRaw)>0
+            fcn_DebugTools_cprintf('*Red','FAILED.\n');
+            fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectoriesAllFiles, queryString, 1);
+            warning('A "%s" was found in one of the functions - see listing above.', queryString);
+        else
+            fcn_DebugTools_cprintf('*Green','PASSED.\n');
+        end
+
         if 1==0
-            functionsDirectory = fullfile(pwd,'Functions');
-            fcn_DebugTools_replaceStringInDirectory(functionsDirectory, cat(2,'TO',' DO'), cat(2,'TO','-DO'), ('fcn_'), (-1));
+            %%%% WARNING - USE THIS WITH CAUTION! %%%%%%%%%%%%
+            if 1==0
+                if sum(flagsStringWasFoundInFilesRaw)>0
+                    fcn_DebugTools_cprintf('*Red','\n\tINITIATING REPLACEMENT of %s with %s.\n', queryString, replacementString);
+                    functionsDirectory = fullfile(pwd,'Functions');
+                    flagSkipCommentedLines = 0;
+                    fcn_DebugTools_replaceStringInDirectory(functionsDirectory, queryString, replacementString, ('fcn_'), (flagSkipCommentedLines), (-1));
+                end
+            end
         end
     end
 end
