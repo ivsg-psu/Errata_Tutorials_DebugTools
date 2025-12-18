@@ -156,7 +156,6 @@
 % - In script_test_fcn_DebugTools_debugPrintStringToNCharacters
 %   % * Changed figNum input to FID, to allow prints to files
 %   % * Created many more test cases to demo new features
-
 % (new release)
 
 % TO-DO:
