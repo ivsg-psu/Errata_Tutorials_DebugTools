@@ -157,6 +157,17 @@
 %   % * Changed figNum input to FID, to allow prints to files
 %   % * Created many more test cases to demo new features
 % (new release)
+%
+% 2025_12_18 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_checkInputsToFunctions
+%   % * Added charstring format check cases
+% - In fcn_DebugTools_checkInputsToFunctions
+%   % * Added char_string format checks
+%   % * Added squarematrix format checks
+%   % * Fixed bug in integer checking where not all elements were tested
+% - In script_test_fcn_DebugTools_checkInputsToFunctions
+%   % * Added char_string format check cases
+
 
 % TO-DO:
 % 

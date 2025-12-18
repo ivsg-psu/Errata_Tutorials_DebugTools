@@ -122,7 +122,12 @@ varargin...
 % - Formatted revision lists to Markdown format
 % - Fixed variable naming for clarity:
 %   % * fig_+num to figNum
-
+%
+% 2025_12_18 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_checkInputsToFunctions
+%   % * Added char_string format checks
+%   % * Added squarematrix format checks
+%   % * Fixed bug in integer checking where not all elements were tested
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
@@ -291,6 +296,7 @@ function flags = INTERNAL_fcn_setDefaultFlagsToOff %#ok<*DEFNU>
 flags.check_if_isnumeric = 0; % Check to see if isnumeric
 flags.check_if_positive = 0; % Check to see if number is greater than or equal to zero
 flags.check_if_strictly_positive = 0; % Check to see if number is greater than zero, and not zero
+flags.check_if_squarematrix = 0; % Check to see if input is a square matrix
 flags.check_required_columns  = 0; % Check the number of columns
 flags.minNrequiredcolumns  = 0; % No check
 flags.maxNrequiredcolumns  = 0; % No check
@@ -299,6 +305,7 @@ flags.check_if_numeric = 0; % Check that the variable is numeric
 flags.check_if_integer = 0; % Check that the variable is an integer
 flags.check_if_char = 0; % Check that the variable is a character
 flags.check_if_string = 0; % Check that the variable is a string
+flags.check_if_char_string = 0; % Check that the variable is either a character or a string
 flags.check_if_doesFileExist = 0; % Check that the variable is an existing file
 flags.check_if_doesDirectoryExist = 0; % Check that the variable is an existing directory
 flags.check_requiredRowLength = 0;     % Don't check for required length
@@ -396,15 +403,15 @@ end
 pattern = digitsPattern(1)+"column_of";
 if contains(variableTypeString,pattern)
     match = extract(variableTypeString,pattern);
-    string_result = match{1};
-    ncols_max = str2double(string_result(1));
+    match_result = match{1};
+    ncols_max = str2double(match_result(1));
 
     % Check for NorMcolumn_of format
     pattern = digitsPattern(1)+"or"+digitsPattern(1)+"column_of";
     if contains(variableTypeString,pattern)
         match = extract(variableTypeString,pattern);
-        string_result = match{1};
-        ncols_min = str2double(string_result(1));
+        match_result = match{1};
+        ncols_min = str2double(match_result(1));
     else
         ncols_min = ncols_max;
     end
@@ -423,8 +430,8 @@ pattern = digitsPattern(1)+"orMorecolumn_of";
 if contains(variableTypeString,pattern)
     
     match = extract(variableTypeString,pattern);
-    string_result = match{1};
-    ncols_min = str2double(string_result(1));
+    match_result = match{1};
+    ncols_min = str2double(match_result(1));
     ncols_max = inf;
 
     flags.check_if_isnumeric = 1; % Must be a number
@@ -451,6 +458,12 @@ if contains(variableTypeString,pattern)
     end
 end
 
+% squarematrix_XXX
+pattern = 'squarematrix_';
+if contains(variableTypeString,pattern)
+    flags.check_if_squarematrix = 1;
+    flag_pattern_was_matched = 1;
+end
 
 % XXX_of_numbers
 pattern = '_of_numbers';
@@ -487,17 +500,24 @@ if contains(variableTypeString,pattern)
     flag_pattern_was_matched = 1;
 end
 
+% XXX_of_char_strings
+pattern = '_of_char_strings';
+if contains(variableTypeString,pattern)
+    flags.check_if_char_string = 1; % Check that the variable is a string
+    flag_pattern_was_matched = 1;
+end
+
 % DoesFileExist
 pattern = 'DoesFileExist';
 if contains(variableTypeString,pattern)
-    flags.check_if_doesFileExist = 1; % Check that the variable is a string
+    flags.check_if_doesFileExist = 1; % Check that the variable is an existing file
     flag_pattern_was_matched = 1;
 end
 
 % DoesDirectoryExist
 pattern = 'DoesDirectoryExist';
 if contains(variableTypeString,pattern)
-    flags.check_if_doesDirectoryExist = 1; % Check that the variable is a string
+    flags.check_if_doesDirectoryExist = 1; % Check that the variable is an existing directory
     flag_pattern_was_matched = 1;
 end
 
@@ -571,6 +591,14 @@ if flags.check_if_strictly_positive
     end
 end
 
+% Squarematrix?
+if flags.check_if_squarematrix  
+    if size(variable,1)~=size(variable,2)
+        errorStruct.message =sprintf('The %s input must be square, e.g. the number of rows must equal the number of columns.',variable_name);
+        error(errorStruct);
+    end
+end
+
 % NaN?
 if flags.check_if_noNaN   
     if any(isnan(variable),'all')        
@@ -589,7 +617,7 @@ end
 
 % Integer?
 if flags.check_if_integer   
-    if ~all(round(variable)==variable)        
+    if ~all(round(variable)==variable, 'all')        
         errorStruct.message =sprintf('The %s input must be an integer.',variable_name);
         error(errorStruct);
     end
@@ -610,6 +638,15 @@ if flags.check_if_string
         error(errorStruct);
     end
 end
+
+% Charstring?
+if flags.check_if_char_string   
+    if ~isstring(variable) && ~ischar(variable)
+        errorStruct.message =sprintf('The %s input must be either a string or a character type.',variable_name);
+        error(errorStruct);
+    end
+end
+
 
 % DoesFileExist?
 if flags.check_if_doesFileExist
@@ -814,6 +851,11 @@ allowable_inputs(num_inputs).name = 'strictlypositive_...';
 allowable_inputs(num_inputs).description = 'checks that the input type is strictlypositive ...';
 
 num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = 'squarematrix_...';
+allowable_inputs(num_inputs).description = 'checks that the input has the same number of rows and columns ...';
+
+
+num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = '_of_numbers...';
 allowable_inputs(num_inputs).description = 'checks that the input type is numeric (uses isnumeric)...';
 
@@ -832,6 +874,10 @@ allowable_inputs(num_inputs).description = 'checks that the input type is a char
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = '_of_strings...';
 allowable_inputs(num_inputs).description = 'checks that the input type is a string type (uses isstring)';
+
+num_inputs = num_inputs+1;
+allowable_inputs(num_inputs).name = '_of_char_strings...';
+allowable_inputs(num_inputs).description = 'checks that the input type is either a char or a string type (uses isstring and ischar)';
 
 num_inputs = num_inputs+1;
 allowable_inputs(num_inputs).name = 'DoesFileExist...';

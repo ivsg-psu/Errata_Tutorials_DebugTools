@@ -40,10 +40,14 @@
 %
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
 % - Formatted revision lists to Markdown format
+%
+% 2025_12_18 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_checkInputsToFunctions
+%   % * Added char_string format check cases
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
-% - Need to put into standard form
+% - (add to-do items here)
 
 
 %% Echo options
@@ -98,6 +102,27 @@ fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'positive_',3);
 %% Test the strictlypositive_ type (success)
 column_of_numbers_test = [1 2; 3 4];
 fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'strictlypositive_');
+
+%% squarematrix_
+ %                                                 _        _      
+ %                                                | |      (_)     
+ %  ___  __ _ _   _  __ _ _ __ ___ _ __ ___   __ _| |_ _ __ ___  __
+ % / __|/ _` | | | |/ _` | '__/ _ \ '_ ` _ \ / _` | __| '__| \ \/ /
+ % \__ \ (_| | |_| | (_| | | |  __/ | | | | | (_| | |_| |  | |>  < 
+ % |___/\__, |\__,_|\__,_|_|  \___|_| |_| |_|\__,_|\__|_|  |_/_/\_\
+ %         | |                                                     
+ %         |_|                                                     
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=squarematrix&x=none&v=3&h=4&w=80&we=false
+
+%% Test the squarematrix_ type (success)
+squarematrix_test = 4;
+fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_');
+
+squarematrix_test = [4 1; 3 2];
+fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_');
+
+squarematrix_test = [4 0 0; 1 3 0; 2 0 1];
+fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_',3);
 
 %% 1column_of_numbers
 % 
@@ -387,6 +412,27 @@ fcn_DebugTools_checkInputsToFunctions(Chars_test, '_of_chars');
 String_test = "abcdefg";
 fcn_DebugTools_checkInputsToFunctions(String_test, '_of_strings');
 
+%% Char_String Types
+ %   _____   _                                _____   _            _                       
+ %  / ____| | |                              / ____| | |          (_)                      
+ % | |      | |__     __ _   _ __           | (___   | |_   _ __   _   _ __     __ _   ___ 
+ % | |      | '_ \   / _` | | '__|           \___ \  | __| | '__| | | | '_ \   / _` | / __|
+ % | |____  | | | | | (_| | | |              ____) | | |_  | |    | | | | | | | (_| | \__ \
+ %  \_____| |_| |_|  \__,_| |_|             |_____/   \__| |_|    |_| |_| |_|  \__, | |___/
+ %                                  ______                                      __/ |      
+ %                                 |______|                                    |___/    
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=Char_Strings&x=none&v=3&h=0&w=80&we=false
+
+%% Basic char_string test (pass as string)
+
+CharString_test = "abcdefg";
+fcn_DebugTools_checkInputsToFunctions(CharString_test, '_of_char_strings');
+
+%% Basic char_string test (pass as character)
+
+CharString_test = 'abcdefg';
+fcn_DebugTools_checkInputsToFunctions(CharString_test, '_of_char_strings');
+
 %% DoesFileExist
 % 
 %   ______ _ _      ______      _     _   
@@ -667,6 +713,44 @@ if 1==0
     column_of_numbers_test = 0;
     fcn_DebugTools_checkInputsToFunctions(column_of_numbers_test, 'strictlypositive_');
 
+    %% squarematrix_
+    %                                                 _        _
+    %                                                | |      (_)
+    %  ___  __ _ _   _  __ _ _ __ ___ _ __ ___   __ _| |_ _ __ ___  __
+    % / __|/ _` | | | |/ _` | '__/ _ \ '_ ` _ \ / _` | __| '__| \ \/ /
+    % \__ \ (_| | |_| | (_| | | |  __/ | | | | | (_| | |_| |  | |>  <
+    % |___/\__, |\__,_|\__,_|_|  \___|_| |_| |_|\__,_|\__|_|  |_/_/\_\
+    %         | |
+    %         |_|
+    % See: http://patorjk.com/software/taag/#p=display&f=Big&t=squarematrix&x=none&v=3&h=4&w=80&we=false
+
+    %% Test the squarematrix_ type (fail)
+    squarematrix_test = [4 5];
+    fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_');
+
+    %% Test the squarematrix_ type (fail)
+    squarematrix_test = [4 1; 3 2; 2 2];
+    fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_');
+
+    %% Test the squarematrix_ type (fail)
+    squarematrix_test = [4 0 0; 1 3 0];
+    fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_',3);
+
+    %% Test the squarematrix_ type used with others (pass)
+    squarematrix_test = [4 0 0; 1 3 0; 3 4 5];
+    fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_2or3column_of_integers');
+
+    %% Test the squarematrix_ type used with others (fail)
+    squarematrix_test = [4 0 0; 1 3 0; 3 4 5.2];
+    fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_2or3column_of_integers');
+   
+    %% Test the squarematrix_ type used with others (fail)
+    squarematrix_test = eye(1);
+    fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_2or3column_of_integers');
+
+    %% Test the squarematrix_ type used with others (fail)
+    squarematrix_test = eye(4);
+    fcn_DebugTools_checkInputsToFunctions(squarematrix_test, 'squarematrix_2or3column_of_integers');
 
     %% 1column_of_numbers
     %
@@ -975,9 +1059,26 @@ if 1==0
     fcn_DebugTools_checkInputsToFunctions(String_test, '_of_strings');
 
     %% Basic string test (fail - not a string)
-     
     String_test = 'abcdefg';
     fcn_DebugTools_checkInputsToFunctions(String_test, '_of_strings');
+
+
+    %% Char_String Types
+    %   _____   _                                _____   _            _
+    %  / ____| | |                              / ____| | |          (_)
+    % | |      | |__     __ _   _ __           | (___   | |_   _ __   _   _ __     __ _   ___
+    % | |      | '_ \   / _` | | '__|           \___ \  | __| | '__| | | | '_ \   / _` | / __|
+    % | |____  | | | | | (_| | | |              ____) | | |_  | |    | | | | | | | (_| | \__ \
+    %  \_____| |_| |_|  \__,_| |_|             |_____/   \__| |_|    |_| |_| |_|  \__, | |___/
+    %                                  ______                                      __/ |
+    %                                 |______|                                    |___/
+    % See: http://patorjk.com/software/taag/#p=display&f=Big&t=Char_Strings&x=none&v=3&h=0&w=80&we=false
+
+    %% Basic char_string test (fail - not a string)
+    char_string_test = 1;
+    fcn_DebugTools_checkInputsToFunctions(char_string_test, '_of_char_strings');
+
+
 
     %% DoesFileExist
     %
