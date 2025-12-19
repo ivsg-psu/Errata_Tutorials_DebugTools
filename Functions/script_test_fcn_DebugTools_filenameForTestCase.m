@@ -40,16 +40,16 @@ figure(figNum); close(figNum);
 
 
 % Prep a folder for testing
-testFolderNameString = 'TestFilenameForTestCase';
+testFolderNameString = 'Testing_FilenameForTestCase';
 if exist(testFolderNameString,'dir')
     [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
     if ~SUCCESS
-        error('Unable to remove testFolderNameString directory');
+        error('Unable to remove Testing_FilenameForTestCase directory');
     end
 end
 [SUCCESS,~,~] = mkdir(fullfile(pwd,testFolderNameString));
 if ~SUCCESS
-    error('Unable to create testFolderNameString directory');
+    error('Unable to create Testing_FilenameForTestCase directory');
 end
 
 % Fill in inputs
@@ -64,7 +64,7 @@ fid = [];
 [fileName, flagSuccessful] = fcn_DebugTools_filenameForTestCase( directoryToCheck, filePrefixString, ...
          (NdigitsInCount), (fileExtensionString), (fid));
 
-sgtitle(titleString, 'Interpreter','none');
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
 assert(ischar(fileName));
@@ -89,9 +89,84 @@ assert(~any(figHandles==figNum));
 if exist(testFolderNameString,'dir')
     [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
     if ~SUCCESS
-        error('Unable to remove testFolderNameString directory');
+        error('Unable to remove Testing_FilenameForTestCase directory');
     end
 end
+
+%% DEMO case: basic call with 1 characters, filling up options
+figNum = 10002;
+titleString = sprintf('DEMO case: basic call with 1 characters, filling up options');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
+
+
+% Prep a folder for testing
+testFolderNameString = 'Testing_FilenameForTestCase';
+if exist(testFolderNameString,'dir')
+    [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
+    if ~SUCCESS
+        error('Unable to remove Testing_FilenameForTestCase directory');
+    end
+end
+[SUCCESS,~,~] = mkdir(fullfile(pwd,testFolderNameString));
+if ~SUCCESS
+    error('Unable to create Testing_FilenameForTestCase directory');
+end
+
+% Fill in inputs
+directoryToCheck = fullfile(pwd,testFolderNameString);
+filePrefixString = 'Example_filenameForTestCase_Case9';
+NdigitsInCount = 1;
+fileExtensionString = [];
+fid = [];
+
+% FIRST 9 CALLS - successful
+for ith_call = 1:9
+    [fileName, flagSuccessful] = fcn_DebugTools_filenameForTestCase( directoryToCheck, filePrefixString, ...
+        (NdigitsInCount), (fileExtensionString), (fid));
+    assert(flagSuccessful);
+
+    [flagSuccessful,cmdout] = fcn_DebugTools_fileTouch(fileName, (fid));
+    assert(flagSuccessful);
+
+end
+
+
+% 10th CALL - NOT successful because 10 takes up 2 digits
+[fileName, flagSuccessful] = fcn_DebugTools_filenameForTestCase( directoryToCheck, filePrefixString, ...
+         (NdigitsInCount), (fileExtensionString), (fid));
+assert(~flagSuccessful);
+
+
+% % sgtitle(titleString, 'Interpreter','none');
+% 
+% % Check variable types
+% assert(ischar(fileName));
+% assert(islogical(flagSuccessful));
+% 
+% % Check variable sizes
+% assert(size(fileName,1)==1);
+% assert(size(fileName,2)>3);
+% assert(size(flagSuccessful,1)==1);
+% assert(size(flagSuccessful,1)==1);
+% 
+% % Check variable values
+% assert(flagSuccessful);
+% assert(contains(fileName,filePrefixString));
+% assert(contains(fileName,'.mat'));
+% 
+% % Make sure plot did NOT open up
+% figHandles = get(groot, 'Children');
+% assert(~any(figHandles==figNum));
+
+% Clean up folder at end
+if exist(testFolderNameString,'dir')
+    [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
+    if ~SUCCESS
+        error('Unable to remove Testing_FilenameForTestCase directory');
+    end
+end
+
 
 %% Test cases start here. These are very simple, usually trivial
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -138,149 +213,198 @@ fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
 close all;
 fprintf(1,'Figure: 8XXXXXX: FAST mode cases\n');
 
-% %% Basic example - NO FIGURE
-% figNum = 80001;
-% fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
-% figure(figNum); close(figNum);
-% 
-% thisSourceFolderName = fullfile(pwd,'Data','processOneTimeclean','From');
-% thisDestinationFolder = fullfile(pwd,'Data','processOneTimeclean','To');
-% 
-% if exist(thisDestinationFolder,'dir')
-%     [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
-%     if ~SUCCESS
-%         error('Unable to remove test directory');
-%     end
-% end
-% 
-% % Call the function
-% fcn_DataPipe_processOneTimeclean(thisSourceFolderName, thisDestinationFolder, ([]));
-% 
+%% Basic example - NO FIGURE
+figNum = 80001;
+fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
+figure(figNum); close(figNum);
+
+% Prep a folder for testing
+testFolderNameString = 'Testing_FilenameForTestCase';
+if exist(testFolderNameString,'dir')
+    [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
+    if ~SUCCESS
+        error('Unable to remove Testing_FilenameForTestCase directory');
+    end
+end
+[SUCCESS,~,~] = mkdir(fullfile(pwd,testFolderNameString));
+if ~SUCCESS
+    error('Unable to create Testing_FilenameForTestCase directory');
+end
+
+% Fill in inputs
+directoryToCheck = fullfile(pwd,testFolderNameString);
+filePrefixString = 'Example_filenameForTestCase_Case9';
+NdigitsInCount = [];
+fileExtensionString = [];
+
+
+% Call function
+[fileName, flagSuccessful] = fcn_DebugTools_filenameForTestCase( directoryToCheck, filePrefixString, ...
+         (NdigitsInCount), (fileExtensionString), ([]));
+
 % sgtitle(titleString, 'Interpreter','none');
-% 
-% % Check variable types
-% assert(exist(thisDestinationFolder,'dir'));
-% 
-% % Check variable sizes
-% temp = dir(thisDestinationFolder);
-% assert(length(temp)==4);
-% 
-% % % Check variable values
-% % assert(all(~flags_folderWasPreviouslyZipped));
-% 
-% [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
-% if ~SUCCESS
-%     error('Unable to remove test directory');
-% end
-% 
-% % Make sure plot did NOT open up
-% figHandles = get(groot, 'Children');
-% assert(~any(figHandles==figNum));
-% 
-% 
-% %% Basic fast mode - NO FIGURE, FAST MODE
-% figNum = 80002;
-% fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
-% figure(figNum); close(figNum);
-% 
-% thisSourceFolderName = fullfile(pwd,'Data','processOneTimeclean','From');
-% thisDestinationFolder = fullfile(pwd,'Data','processOneTimeclean','To');
-% 
-% if exist(thisDestinationFolder,'dir')
-%     [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
-%     if ~SUCCESS
-%         error('Unable to remove test directory');
-%     end
-% end
-% 
-% % Call the function
-% fcn_DataPipe_processOneTimeclean(thisSourceFolderName, thisDestinationFolder, (-1));
-% 
+
+% Check variable types
+assert(ischar(fileName));
+assert(islogical(flagSuccessful));
+
+% Check variable sizes
+assert(size(fileName,1)==1);
+assert(size(fileName,2)>3);
+assert(size(flagSuccessful,1)==1);
+assert(size(flagSuccessful,1)==1);
+
+% Check variable values
+assert(flagSuccessful);
+assert(contains(fileName,filePrefixString));
+assert(contains(fileName,'.mat'));
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
+
+% Clean up folder at end
+if exist(testFolderNameString,'dir')
+    [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
+    if ~SUCCESS
+        error('Unable to remove Testing_FilenameForTestCase directory');
+    end
+end
+
+
+%% Basic fast mode - NO FIGURE, FAST MODE
+figNum = 80002;
+fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
+figure(figNum); close(figNum);
+
+% Prep a folder for testing
+testFolderNameString = 'Testing_FilenameForTestCase';
+if exist(testFolderNameString,'dir')
+    [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
+    if ~SUCCESS
+        error('Unable to remove Testing_FilenameForTestCase directory');
+    end
+end
+[SUCCESS,~,~] = mkdir(fullfile(pwd,testFolderNameString));
+if ~SUCCESS
+    error('Unable to create Testing_FilenameForTestCase directory');
+end
+
+% Fill in inputs
+directoryToCheck = fullfile(pwd,testFolderNameString);
+filePrefixString = 'Example_filenameForTestCase_Case9';
+NdigitsInCount = [];
+fileExtensionString = [];
+
+
+% Call function
+[fileName, flagSuccessful] = fcn_DebugTools_filenameForTestCase( directoryToCheck, filePrefixString, ...
+         (NdigitsInCount), (fileExtensionString), (-1));
+
 % sgtitle(titleString, 'Interpreter','none');
-% 
-% % Check variable types
-% assert(exist(thisDestinationFolder,'dir'));
-% 
-% % Check variable sizes
-% temp = dir(thisDestinationFolder);
-% assert(length(temp)==4);
-% 
-% % % Check variable values
-% % assert(all(~flags_folderWasPreviouslyZipped));
-% 
-% [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
-% if ~SUCCESS
-%     error('Unable to remove test directory');
-% end
-% 
-% % Make sure plot did NOT open up
-% figHandles = get(groot, 'Children');
-% assert(~any(figHandles==figNum));
-% 
-% 
-% %% Compare speeds of pre-calculation versus post-calculation versus a fast variant
-% figNum = 80003;
-% fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
-% figure(figNum);
-% close(figNum);
-% 
-% thisSourceFolderName = fullfile(pwd,'Data','processOneTimeclean','From');
-% thisDestinationFolder = fullfile(pwd,'Data','processOneTimeclean','To');
-% 
-% if exist(thisDestinationFolder,'dir')
-%     [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
-%     if ~SUCCESS
-%         error('Unable to remove test directory');
-%     end
-% end
-% 
-% Niterations = 1;
-% 
-% % Do calculation without pre-calculation
-% tic;
-% for ith_test = 1:Niterations
-%     % Call the function
-%     fcn_DataPipe_processOneTimeclean(thisSourceFolderName, thisDestinationFolder, ([]));
-% 
-% end
-% slow_method = toc;
-% 
-% % Do calculation with pre-calculation, FAST_MODE on
-% tic;
-% for ith_test = 1:Niterations
-%     % Call the function
-%     fcn_DataPipe_processOneTimeclean(thisSourceFolderName, thisDestinationFolder, (-1));
-% 
-% end
-% fast_method = toc;
-% 
-% 
-% [SUCCESS,~,~] = rmdir(thisDestinationFolder,'s');
-% if ~SUCCESS
-%     error('Unable to remove test directory');
-% end
-% 
-% 
-% % Make sure plot did NOT open up
-% figHandles = get(groot, 'Children');
-% assert(~any(figHandles==figNum));
-% 
-% % Plot results as bar chart
-% figure(373737);
-% clf;
-% hold on;
-% 
-% X = categorical({'Normal mode','Fast mode'});
-% X = reordercats(X,{'Normal mode','Fast mode'}); % Forces bars to appear in this exact order, not alphabetized
-% Y = [slow_method fast_method ]*1000/Niterations;
-% bar(X,Y)
-% ylabel('Execution time (Milliseconds)')
-% 
-% 
-% % Make sure plot did NOT open up
-% figHandles = get(groot, 'Children');
-% assert(~any(figHandles==figNum));
-% 
+
+% Check variable types
+assert(ischar(fileName));
+assert(islogical(flagSuccessful));
+
+% Check variable sizes
+assert(size(fileName,1)==1);
+assert(size(fileName,2)>3);
+assert(size(flagSuccessful,1)==1);
+assert(size(flagSuccessful,1)==1);
+
+% Check variable values
+assert(flagSuccessful);
+assert(contains(fileName,filePrefixString));
+assert(contains(fileName,'.mat'));
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
+
+% Clean up folder at end
+if exist(testFolderNameString,'dir')
+    [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
+    if ~SUCCESS
+        error('Unable to remove Testing_FilenameForTestCase directory');
+    end
+end
+
+%% Compare speeds of pre-calculation versus post-calculation versus a fast variant
+figNum = 80003;
+fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
+figure(figNum);
+close(figNum);
+
+% Prep a folder for testing
+testFolderNameString = 'Testing_FilenameForTestCase';
+if exist(testFolderNameString,'dir')
+    [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
+    if ~SUCCESS
+        error('Unable to remove Testing_FilenameForTestCase directory');
+    end
+end
+[SUCCESS,~,~] = mkdir(fullfile(pwd,testFolderNameString));
+if ~SUCCESS
+    error('Unable to create Testing_FilenameForTestCase directory');
+end
+
+% Fill in inputs
+directoryToCheck = fullfile(pwd,testFolderNameString);
+filePrefixString = 'Example_filenameForTestCase_Case9';
+NdigitsInCount = [];
+fileExtensionString = [];
+
+
+Niterations = 10;
+
+% Do calculation without pre-calculation
+tic;
+for ith_test = 1:Niterations
+    % Call function
+    [fileName, flagSuccessful] = fcn_DebugTools_filenameForTestCase( directoryToCheck, filePrefixString, ...
+        (NdigitsInCount), (fileExtensionString), ([]));
+end
+slow_method = toc;
+
+% Do calculation with pre-calculation, FAST_MODE on
+tic;
+for ith_test = 1:Niterations
+    % Call the function
+    [fileName, flagSuccessful] = fcn_DebugTools_filenameForTestCase( directoryToCheck, filePrefixString, ...
+        (NdigitsInCount), (fileExtensionString), (-1));
+end
+fast_method = toc;
+
+
+% Clean up folder at end
+if exist(testFolderNameString,'dir')
+    [SUCCESS,~,~] = rmdir(testFolderNameString,'s');
+    if ~SUCCESS
+        error('Unable to remove Testing_FilenameForTestCase directory');
+    end
+end
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
+
+% Plot results as bar chart
+figure(373737);
+clf;
+hold on;
+
+X = categorical({'Normal mode','Fast mode'});
+X = reordercats(X,{'Normal mode','Fast mode'}); % Forces bars to appear in this exact order, not alphabetized
+Y = [slow_method fast_method ]*1000/Niterations;
+bar(X,Y)
+ylabel('Execution time (Milliseconds)')
+
+
+% Make sure plot did NOT open up
+figHandles = get(groot, 'Children');
+assert(~any(figHandles==figNum));
+
 
 %% BUG cases
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

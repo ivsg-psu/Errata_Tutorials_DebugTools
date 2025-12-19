@@ -159,14 +159,21 @@
 % (new release)
 %
 % 2025_12_18 by Sean Brennan, sbrennan@psu.edu
-% - In script_test_fcn_DebugTools_checkInputsToFunctions
-%   % * Added charstring format check cases
+% - Wrote script_test_fcn_DebugTools_filenameForTestCase and
+%   fcn_DebugTools_filenameForTestCase
+%   % * Auto-generates save file names that do not overlap with other files
+%   %   % in given directory.
 % - In fcn_DebugTools_checkInputsToFunctions
 %   % * Added char_string format checks
 %   % * Added squarematrix format checks
 %   % * Fixed bug in integer checking where not all elements were tested
 % - In script_test_fcn_DebugTools_checkInputsToFunctions
 %   % * Added char_string format check cases
+% - In fcn_DebugTools_fileTouch
+%   % * first write of the function
+%   %   % used fcn_DebugTools_debug+PrintStringToNCharacters as a starter
+% (new release)
+%
 
 
 % TO-DO:
