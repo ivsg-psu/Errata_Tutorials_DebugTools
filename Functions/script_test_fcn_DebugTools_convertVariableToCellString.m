@@ -19,6 +19,19 @@
 
 % Test cases
 %% Single character in cell array
+result = fcn_AutoExam_convertVariableToCellString({'A'});
+assert(isequal(result,{'A'}));
+
+%% Single number in cell array - should convert to "pretty" view
+result = fcn_AutoExam_convertVariableToCellString({[4]});
+assert(isequal(result,{'4'}));
+
+%% Two numbers in a cell array 
+input = [{[45]},{[9]}];
+result = fcn_AutoExam_convertVariableToCellString(input);
+assert(isequal(result,{'45, 9'}));
+
+%% Single character in cell array
 result = fcn_DebugTools_convertVariableToCellString({'D'});
 assert(isequal(result,{'D'}));
 
