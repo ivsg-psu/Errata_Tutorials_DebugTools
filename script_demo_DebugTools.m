@@ -174,16 +174,15 @@
 %   %   % used fcn_DebugTools_debug+PrintStringToNCharacters as a starter
 % (new release)
 %
-
+% 2026_01_09 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_all_functions
+%   % * Updated ignore flags to prevent processing of .p and .asv files
 
 % TO-DO:
 % 
 % 2025_11_17 by Sean Brennan, sbrennan@psu.edu
 % - need tool to check for square matrices
 % - need to functionalize script_test_all_functions 
-% 
-% 2025_11_23 by Sean Brennan, sbrennan@psu.edu
-% - need to fix folder path and default search string in script_test_all
 
 
 %% Make sure we are running out of root directory
