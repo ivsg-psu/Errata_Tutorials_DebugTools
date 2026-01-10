@@ -177,6 +177,10 @@
 % 2026_01_09 by Sean Brennan, sbrennan@psu.edu
 % - In script_test_all_functions
 %   % * Updated ignore flags to prevent processing of .p and .asv files
+% - Added fcn_DebugTools_time2String
+%   % * Converts current time into a string format of YYYYMMDD_HHMMSS
+%   % * Useful for creating files based on current time
+% (new release)
 
 % TO-DO:
 % 
@@ -867,6 +871,23 @@ assert(isequal(indicies_cell_array{2},[5; 6]));
 %                   | |                                                                __/ |
 %                   |_|                                                               |___/ 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% fcn_DebugTools_time2String
+% Converts a time input into a string of the format YYYYMMDD_HHmmSS. Uses
+% the YYYYMMDD function to create the first part. Second part is created
+% from [H,M,S] = hms.
+
+% Call the function
+timeString = fcn_DebugTools_time2String(([]), (figNum));
+
+% sgtitle(titleString, 'Interpreter','none');
+ 
+% Check variable types
+assert(ischar(timeString));
+
+% Check variable sizes
+assert(size(timeString,1)==1);
+assert(size(timeString,2)==15);
 
 %% fcn_DebugTools_number2string.m 
 % % prints a "pretty" version of a string, e.g avoiding weirdly odd numbers
