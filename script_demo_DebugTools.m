@@ -181,6 +181,21 @@
 %   % * Converts current time into a string format of YYYYMMDD_HHMMSS
 %   % * Useful for creating files based on current time
 % (new release)
+%
+% 2026_01_11 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_cprintf
+%   % * Updated to new version to retain color printing into MATLAB v2025b 
+% - In fcn_DebugTools_debugPrintTableToNCharacters
+%   % * Updated the N_chars input to be numChars for better readability
+%   % * Allow negative values for numChars to auto-calculate spacing needed
+%   % * Allow autoalign at decimal points for floats, e.g. '%10.2fa' format
+%   % * Allow cell array inputs to allow printing of strings alongside numeric
+%   % * Fixed bug where fcn_DebugTools_cprintf was missing sprintf within,
+%   %   % causing it not to print when color specifiers given
+% - Added fcn_DebugTools_menuManageSelections
+%   % * A powerful menu tool that allows user to define menu options that
+%   %   % auto-execute code
+% (new release)
 
 % TO-DO:
 % 

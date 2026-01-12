@@ -1,5 +1,5 @@
 function fcn_DebugTools_debugPrintTableToNCharacters(...
-    table_data, header_strings, formatter_strings, N_chars,varargin)
+    table_data, header_strings, formatter_strings, numChars,varargin)
 % fcn_DebugTools_debugPrintTableToNCharacters
 % Given a matrix of data, prints the data in user-specified width to the
 % workspace.
@@ -7,7 +7,7 @@ function fcn_DebugTools_debugPrintTableToNCharacters(...
 % FORMAT:
 %
 %      fcn_DebugTools_debugPrintTableToNCharacters(...
-%         table_data, header_strings, formatter_strings, N_chars, (figNum))
+%         table_data, header_strings, formatter_strings, numChars, (figNum))
 %
 % INPUTS:
 %
@@ -19,11 +19,21 @@ function fcn_DebugTools_debugPrintTableToNCharacters(...
 %      printed.
 %
 %      formatter_strings: a cell array, M long, containing the print
-%      specification for each column
+%      specification for each column. NOTE: a special case for %X.Xf
+%      formatting, putting "a" at the end, aligns the data at the decimal
+%      point for this column. For example: %10.4fa as an alignment string
+%      will print 4 values after the decimal place, and 5 spaces minimum in
+%      front of the decimal point so that the total characters will be
+%      5+1+4 = 10, since the decimal point takes one character.
 %
-%      N_chars: an integeter saying how long the output string should be if
+%      numChars: an integeter saying how long the output string should be if
 %      columns have constant spacing, or an array of M integers with each
-%      integer corresponding to the print with of the respective column.
+%      integer corresponding to the print with of the respective column. If
+%      a non-positive value is given (0 or negative), the function
+%      calculates the integer for the respective column using 0 padding for
+%      0, 1 space padding for -1, 2 space padding for -2, etc. Note: this
+%      printing method can be slow as it needs to test print every value to
+%      find the necessary width
 %
 %      (OPTIONAL INPUTS)
 %
@@ -67,7 +77,14 @@ function fcn_DebugTools_debugPrintTableToNCharacters(...
 % - Fixed issue where extra line feeds were being added above table
 % - Allow empty headers and table data, causing these prints to be skipped
 % - Allow multi-type formatting, specified by row memberships
-
+%
+% 2026_01_11 by Sean Brennan, sbrennan@psu.edu
+% - Updated the N_chars input to be numChars for better readability
+% - Allow negative values for numChars to auto-calculate spacing needed
+% - Allow autoalign at decimal points for floats, e.g. '%10.2fa' format
+% - Allow cell array inputs to allow printing of strings alongside numeric
+% - Fixed bug where fcn_DebugTools_cprintf was missing sprintf within,
+%   % causing it not to print when color specifiers given
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
@@ -130,8 +147,8 @@ if 0 == flag_max_speed
         % Check the header_strings input
         %fcn_DebugTools_checkInputsToFunctions(header_strings, '_of_chars');
 
-        % Check the N_chars input
-        fcn_DebugTools_checkInputsToFunctions(N_chars, '_of_integers');
+        % Check the numChars input
+        fcn_DebugTools_checkInputsToFunctions(numChars, '_of_integers');
 
     end
 end
@@ -159,19 +176,110 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 N_header_strings = length(header_strings);
 N_data_rows = size(table_data,1);
+
+% Check to see if any of the formatting strings are "alignment strings"
+isAlignedThisFormatString = false(1,N_header_strings);
+for ith_header = 1:N_header_strings
+	thisFormat = formatter_strings{1,ith_header};
+	if length(thisFormat)>3 && strcmp(thisFormat(end-1:end),'fa')
+		isAlignedThisFormatString(ith_header) = true;
+	end
+end
+
+
+% Check the numChars input to see if we need to autocalculate column width
+% sizes. This occurs when the user gives a 0 or negative number as the
+% column width, as listed in the numChars array. 
+if any(numChars<1)
+	% If enter into here, the user is requesting auto-calculated column
+	% widths somewhere. To find what column width to use, first print a
+	% test string using the format specification.
+
+
+	% Find added padding for each column
+	addedPadding = nan(1,N_header_strings);
+	for ith_header = 1:N_header_strings
+		if numChars(ith_header)>0
+			addedPadding(ith_header) = 1; % Define padding for column widths - note: this is never used
+		else
+			addedPadding(ith_header) = -1*numChars(ith_header);
+		end
+	end
+
+	% Loop through each column, checking to see width required to print with
+	% each formatter_strings entry
+	N_charsData = nan(1,N_header_strings);
+	for jth_row = 1:N_data_rows
+		
+		% What is the data size of this row?
+		N_charsThisData = nan(1,N_header_strings);
+		for ith_header = 1:N_header_strings
+			if iscell(table_data)
+				thisData = table_data{jth_row, ith_header};
+			else
+				thisData = table_data(jth_row,ith_header);
+			end
+			testString = sprintf(formatter_strings{1,ith_header}, thisData);
+			N_charsThisData(ith_header) = length(testString) + addedPadding(ith_header); % Store the width required for the current column
+		end
+
+		% Keep the maximum value
+		N_charsData = max([N_charsData; N_charsThisData],[],1);
+	end
+
+	% Calculate the required width for each column based on the header strings
+	N_charsHeaderRaw = cellfun(@(x) size(x,2), header_strings); % Initialize with minimum width
+	N_charsHeader = N_charsHeaderRaw+addedPadding;
+
+	numCharsAutocalculated = max([N_charsHeader;N_charsData],[],1);
+
+	% Update the character counts ONLY for the requested columns
+	numChars(numChars<1) = numCharsAutocalculated(numChars<1);
+end
+
+
+%%%%% 
+% If aligning at decimal place, need to auto-update the print specification
+% so that the leading terms on fprint are correct length
+if any(isAlignedThisFormatString)
+	formatsToCheck = find(isAlignedThisFormatString);
+	for formatRows = 1:size(formatter_strings,1)
+		for ith_format = 1:length(formatsToCheck)
+			thisFormatIndex = formatsToCheck(ith_format);
+			thisFormat = formatter_strings{formatRows, thisFormatIndex};
+			prefixString = extractBefore(thisFormat,'%');
+			thisWidth  = extractBetween(thisFormat,'%','.');
+			remainderString = extractAfter(thisFormat,'.');
+			longestEntryThisColumn = N_charsData(thisFormatIndex) - addedPadding(thisFormatIndex);
+			if isempty(thisWidth{1})
+				newWidth = longestEntryThisColumn;
+			else
+				thisWidthNumber = str2double(thisWidth{1});
+				if thisWidthNumber<longestEntryThisColumn
+					newWidth = longestEntryThisColumn;
+				else
+					newWidth = thisWidthNumber;
+				end
+			end
+			formatter_strings{formatRows,thisFormatIndex} = sprintf('%s%%%.0f.%s', prefixString, newWidth, remainderString(1:end-1));
+		end
+	end
+end
+
 N_data_cols = size(table_data,2);
 N_formats = size(formatter_strings,1);
 
-% Fill in the formatting of numeric and color values
+% Create placeholder matrices to fill in the formatting of numeric and color values
 numericformatter_strings = cell(N_formats, N_data_cols); 
 colorformatter_strings   = cell(N_formats, N_data_cols);
+
+% Create placeholder for row memberships. This allows individual rows to be
+% formatted differently, given by different formatting specifiers. 
 row_memberships   = cell(N_formats, 1);
 
-% Fill in the formats as a cell array. Note that the last column is the
-% row membership
+% Fill in the formats as a cell array. 
 for jth_format = 1:N_formats
     for ith_format_string = 1:N_data_cols
         thisFormatString = formatter_strings{jth_format, ith_format_string};
@@ -197,10 +305,10 @@ if ~isempty(header_strings)
         header_str = header_strings{ith_header};
 
         % Do each of the columns have different widths?
-        if length(N_chars)==N_header_strings
-            fixed_header_str = fcn_DebugTools_debugPrintStringToNCharacters(header_str,N_chars(ith_header));
+        if length(numChars)==N_header_strings
+            fixed_header_str = fcn_DebugTools_debugPrintStringToNCharacters(header_str,numChars(ith_header));
         else
-            fixed_header_str = fcn_DebugTools_debugPrintStringToNCharacters(header_str,N_chars);
+            fixed_header_str = fcn_DebugTools_debugPrintStringToNCharacters(header_str,numChars);
         end
         
         fprintf(fid,'%s ', fixed_header_str);
@@ -227,17 +335,22 @@ if ~isempty(table_data)
         end
 
         for jth_col = 1:N_data_cols
-            data_str = sprintf(numericformatter_strings{membershipToUse, jth_col},table_data(ith_row,jth_col));
+			if iscell(table_data)
+				thisData = table_data{ith_row, jth_col};
+			else
+				thisData = table_data(ith_row,jth_col);
+			end
+            data_str = sprintf(numericformatter_strings{membershipToUse, jth_col},thisData);
 
             % Do each of the columns have different widths?
-            if length(N_chars)==N_data_cols
-                fixed_data_str = fcn_DebugTools_debugPrintStringToNCharacters(data_str,N_chars(jth_col));
+            if length(numChars)==N_data_cols
+                fixed_data_str = fcn_DebugTools_debugPrintStringToNCharacters(data_str,numChars(jth_col));
             else
-                fixed_data_str = fcn_DebugTools_debugPrintStringToNCharacters(data_str,N_chars);
+                fixed_data_str = fcn_DebugTools_debugPrintStringToNCharacters(data_str,numChars);
             end
 
             if 1==fid && ~isempty(colorformatter_strings{membershipToUse, jth_col})
-                fcn_DebugTools_cprintf(colorformatter_strings{membershipToUse, jth_col},'%s ',fixed_data_str)
+                fcn_DebugTools_cprintf(colorformatter_strings{membershipToUse, jth_col},sprintf('%s ',fixed_data_str));
             else
                 fprintf(fid,'%s ',fixed_data_str);
             end

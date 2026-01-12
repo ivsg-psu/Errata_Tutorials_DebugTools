@@ -81,25 +81,7 @@ fcn_DebugTools_cprintf('*Strings',                '\t ''Strings'' - default: pur
 fcn_DebugTools_cprintf('*UnterminatedStrings',    '\t ''UnterminatedStrings'' - default: dark red \n');
 fcn_DebugTools_cprintf('*SystemCommands',         '\t ''SystemCommands'' - default: orange \n');
 fcn_DebugTools_cprintf('*Errors',                 '\t ''Errors'' - default: light red \n');
-fcn_DebugTools_cprintf('Hyperlinks',             '\t ''Hyperlinks'' - DOES NOT WORK!\n')
-fcn_DebugTools_cprintf('*Black',                  '\t ''Black'' - default: black \n');
-fcn_DebugTools_cprintf('*Cyan',                   '\t ''Cyan'' - default: cyan \n');
-fcn_DebugTools_cprintf('*Magenta',                '\t ''Magenta'' - default: magenta \n');
-fcn_DebugTools_cprintf('*Blue',                   '\t ''Blue'' - default: blue \n');
-fcn_DebugTools_cprintf('*Green',                  '\t ''Green'' - default: green \n');
-fcn_DebugTools_cprintf('*Red',                    '\t ''Red'' - default: red \n');
-fcn_DebugTools_cprintf('*Yellow',                 '\t ''Yellow'' - default: yellow \n');
-fcn_DebugTools_cprintf('*White',                  '\t ''White'''); fcn_DebugTools_cprintf('Black',' - default: white \n');
-fprintf(1,'\n');
-fprintf(1,'Possible BOLD (*) names. NOTE: not case sensitive:\n')
-fcn_DebugTools_cprintf('*Text',                   '\t ''Text'' - default: black \n');
-fcn_DebugTools_cprintf('*Keywords',               '\t ''Keywords'' - default: blue \n');
-fcn_DebugTools_cprintf('*Comments',               '\t ''Comments'' - default: green \n');
-fcn_DebugTools_cprintf('*Strings',                '\t ''Strings'' - default: purple \n');
-fcn_DebugTools_cprintf('*UnterminatedStrings',    '\t ''UnterminatedStrings'' - default: dark red \n');
-fcn_DebugTools_cprintf('*SystemCommands',         '\t ''SystemCommands'' - default: orange \n');
-fcn_DebugTools_cprintf('*Errors',                 '\t ''Errors'' - default: light red \n');
-fcn_DebugTools_cprintf('Hyperlinks',             '\t ''Hyperlinks'' - DOES NOT WORK!\n')
+fcn_DebugTools_cprintf('Hyperlinks',              '\t ''Hyperlinks'' - DOES NOT WORK!\n')
 fcn_DebugTools_cprintf('*Black',                  '\t ''Black'' - default: black \n');
 fcn_DebugTools_cprintf('*Cyan',                   '\t ''Cyan'' - default: cyan \n');
 fcn_DebugTools_cprintf('*Magenta',                '\t ''Magenta'' - default: magenta \n');

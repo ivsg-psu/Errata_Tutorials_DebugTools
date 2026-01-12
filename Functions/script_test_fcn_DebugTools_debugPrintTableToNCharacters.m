@@ -58,8 +58,8 @@ table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_co
 
 header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}];
 formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}];
-N_chars = 15; % All columns have same number of characters
-fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+numChars = 15; % All columns have same number of characters
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
 
 
 %% DEMO case: each column has different widths
@@ -78,8 +78,8 @@ table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_co
 
 header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
 formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
-N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
-fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+numChars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
 
 %% DEMO case: no header will be printed, only the table
 figNum = 10003;
@@ -97,8 +97,8 @@ table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_co
 
 header_strings = []; % [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
 formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
-N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
-fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+numChars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
 
 %% DEMO case: no table will be printed, only the header
 figNum = 10004;
@@ -116,8 +116,8 @@ table_data = []; % [point_IDs, intersection_points, s_coordinates_in_traversal_1
 
 header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
 formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
-N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
-fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+numChars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
 
 %% DEMO case: dumb case where neither table data nor header are printed
 figNum = 10005;
@@ -135,8 +135,8 @@ table_data = []; % [point_IDs, intersection_points, s_coordinates_in_traversal_1
 
 header_strings = []; % [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
 formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
-N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
-fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+numChars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
 
 %% DEMO case: 2nd column is red, 3rd is bold blue
 figNum = 10006;
@@ -154,8 +154,8 @@ table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_co
 
 header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
 formatter_strings = [{'%.0d'},{'red %.12f'},{'*blue %.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
-N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
-fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+numChars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
 
 
 %% DEMO case: print rows 3 and 7 in red, column 3 in blue otherwise
@@ -175,14 +175,14 @@ rowsToFormat = [3 7];
 header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
 
 formatter_strings = [...
-    {'%.0d'},{'%.12f'},{'*blue %.12f'},{'%.12f'},{'%.12f'},{[]}; 
-    {'red %.0d'},{'red %.12f'},{'red %.12f'},{'red %.12f'},{'red %.12f'},{rowsToFormat}]; 
+    {'%.0d'},{'%.12fa'},{'*blue %.12fa'},{'%.12fa'},{'%.12fa'},{[]}; 
+    {'red %.0d'},{'red %.12fa'},{'red %.12fa'},{'red %.12fa'},{'red %.12fa'},{rowsToFormat}]; 
 
 
-N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+numChars = [-1, -1, -1, -1, -1]; % Specify spaces for each column
 
 rowToPrintInRed = 1;
-fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars);
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
 
 
 %% DEMO case: print to a file (defaults to black/white, even if print spec includes colors)
@@ -201,15 +201,167 @@ table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_co
 
 header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
 formatter_strings = [{'%.0d'},{'red %.12f'},{'*blue %.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
-N_chars = [4, 15, 15, 5, 5]; % Specify spaces for each column
+numChars = [4, 15, 15, 5, 5]; % Specify spaces for each column
 fid = fopen('test.txt','w');
-fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,N_chars, fid);
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars, fid);
 fclose(fid);
 
 fprintf(1,'Below are the contents of file text.txt, which will be deleted after showing this result:\n');
 type('test.txt');
 
 delete('test.txt');
+
+
+%% DEMO case: autocalculate column width for every entry with data limiting width
+figNum = 10009;
+titleString = sprintf('DEMO case: autocalculate column width for every entry with data limiting width');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+intersection_points = rand(Npoints,2);
+s_coordinates_in_traversal_1 = rand(Npoints,1);
+s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+
+header_strings = [{'X'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
+numChars = [0, -1, -2, -3, -4]; % Use zero or negative numbers to specify padding as 0, 1, 2, etc spaces between columns
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
+
+%% DEMO case: autocalculate column width for every entry with headers limiting width
+figNum = 10009;
+titleString = sprintf('DEMO case: autocalculate column width for every entry with headers limiting width');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+intersection_points = rand(Npoints,2);
+s_coordinates_in_traversal_1 = rand(Npoints,1);
+s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+
+header_strings = [{'Xdata'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.2f'},{'%.2f'},{'%.2f'},{'%.2f'}]; % How should each column be printed?
+numChars = [0, -1, -2, -3, -4]; % Use zero or negative numbers to specify padding as 0, 1, 2, etc spaces between columns
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
+
+
+%% DEMO case: fixed column width for some columns, autocalculated for others
+figNum = 10010;
+titleString = sprintf('DEMO case: fixed column width for some columns, autocalculated for others');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+intersection_points = rand(Npoints,2);
+s_coordinates_in_traversal_1 = rand(Npoints,1);
+s_coordinates_in_traversal_2 = 1000*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+
+header_strings = [{'Xdata'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-coord 2'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.12f'},{'%.12f'},{'%.12f'},{'%.12f'}]; % How should each column be printed?
+numChars = [0, 5, -1, 8, -4]; % Use zero or negative numbers to specify padding as 0, 1, 2, etc spaces between columns
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
+
+
+%% DEMO case: data overflow case, attempting prints of numbers bigger than formatting results in WRONG numbers
+figNum = 10011;
+titleString = sprintf('DEMO case: data overflow case, attempting prints of numbers bigger than formatting results in WRONG numbers');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+intersection_points = rand(Npoints,2);
+s_coordinates_in_traversal_1 = 100000*rand(Npoints,1);
+s_coordinates_in_traversal_2 = 100000*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+header_strings = [{'X'}, {'Y'},{'Z'},{'Aa'},{'Bb'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.2f'},{'%.2f'},{'%.2f'},{'%.2f'}]; % How should each column be printed?
+numChars = [4, 4, 4, 4, 4]; % Use zero or negative numbers to specify padding as 0, 1, 2, etc spaces between columns
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
+
+%% DEMO case: autoalign at decimal place
+figNum = 10012;
+titleString = sprintf('DEMO case: autoalign at decimal place');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+intersection_points = rand(Npoints,2);
+s_coordinates_in_traversal_1 = (10.^(randi([-2 6], 10, 1))).*rand(Npoints,1);
+s_coordinates_in_traversal_2 = (10.^(randi([-2 6], 10, 1))).*rand(Npoints,1);
+table_data = [point_IDs, intersection_points, s_coordinates_in_traversal_1, s_coordinates_in_traversal_2];
+
+% Show UNALIGNED data
+fprintf(1,'\nNOT aligned:\n')
+header_strings = [{'X'}, {'Y'},{'Z'},{'Aa'},{'Bb'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.2f'},{'%.2f'},{'%.2f'},{'%.2f'}]; % How should each column be printed?
+numChars = [4, 4, 4, 4, 4]; % Use zero or negative numbers to specify padding as 0, 1, 2, etc spaces between columns
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
+
+% Show aligned data with autoalignment at decimal place
+fprintf(1,'\nAligned:\n')
+formatter_strings = [{'%.0d'},{'%.2fa'},{'%10.2fa'},{'%.4fa'},{'%4.2fa'}]; % How should each column be printed?
+numChars = [-1, -1, -1, -1, -1]; % Use zero or negative numbers to specify padding as 0, 1, 2, etc spaces between columns
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
+
+
+
+%% DEMO case: pass in a cell array
+figNum = 10013;
+titleString = sprintf('DEMO case: data is a cell array');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+
+% Fill in test data
+Npoints = 10;
+point_IDs = (1:Npoints)';
+integer_points = randi([-2 6], Npoints, 1);
+
+minL = 3; maxL = 12;
+alphabet = 'abcdefghijklmnopqrstuvwxyz';
+randomStrings = strings(Npoints,1);
+for i=1:Npoints
+    L = randi([minL maxL]);
+    % randomStrings(i) = string(char(alphabet(randi(numel(alphabet),1,L))));
+    randomStrings(i) = char(alphabet(randi(numel(alphabet),1,L)));
+end
+randomStrings(6,1) = ""; % Make one string empty
+
+randomFloats = (10.^(randi([-2 6], 10, 1))).*rand(Npoints,1);
+
+cellArray = cell(Npoints,4);
+cellArray(:, 1) = num2cell(point_IDs);
+cellArray(:, 2) = num2cell(integer_points);
+cellArray(:, 3) = cellstr(randomStrings);
+cellArray(:, 4) = num2cell(randomFloats);
+
+table_data = cellArray;
+
+% Show UNALIGNED data
+fprintf(1,'\nNOT aligned:\n')
+header_strings = [{'X'}, {'Y'},{'Z'},{'Aa'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%d'},{'%s'},{'%.2f'}]; % How should each column be printed?
+numChars = [4, 4, 4, 4]; % Use zero or negative numbers to specify padding as 0, 1, 2, etc spaces between columns
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
+
+% Show aligned data with autoalignment at decimal place, including
+% negative values
+fprintf(1,'\nAligned:\n')
+header_strings = [{'X'}, {'  Y'},{'Z'},{'     Aa'}]; % Headers for each column
+formatter_strings = [{'%.0d'},{'%.0fa'},{'%s'},{'%.2fa'}]; % How should each column be printed?
+numChars = [-1, -1, -1, -1]; % Use zero or negative numbers to specify padding as 0, 1, 2, etc spaces between columns
+fcn_DebugTools_debugPrintTableToNCharacters(table_data, header_strings, formatter_strings,numChars);
+
 
 %% Test cases start here. These are very simple, usually trivial
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
