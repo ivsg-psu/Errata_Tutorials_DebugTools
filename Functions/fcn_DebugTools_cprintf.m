@@ -1,4 +1,4 @@
-function count = fcn_DebugTools_cprintf(style,format,varargin) %#ok<*JAPIMATHWORKS>
+function fcn_DebugTools_cprintf(style,format,varargin) %#ok<*JAPIMATHWORKS>
 
 %% Debugging and Input checks
 
@@ -206,4 +206,4 @@ end
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
 % - fill in to-do items here.
 
-cprintf(style,format);
+cprintf(style,format)

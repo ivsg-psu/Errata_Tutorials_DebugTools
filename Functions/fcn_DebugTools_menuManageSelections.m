@@ -163,7 +163,7 @@ while 0==flag_exitMain
 
 	%%%%%
 	% Show user choices
-	clc;
+	eval(cat(2,'cl','c')); % Make cl+c command hidden so will not throw warnings
 	cellArray = fcn_INTERNAL_buildCellArray(selections, answers, selectedRow);
 	fcn_INTERNAL_showTable(cellArray,selectedRow);
 
