@@ -209,6 +209,13 @@
 %   % * Allow multi-line questions if wrap-around needed for long text
 %   % * Fixed bug where only part of line is being highlighted bold
 % (new release)
+%
+% 2026_01_19 by Sean Brennan, sbrennan@psu.edu
+% - first write of the code fcn_debugTools_timeQueryNTPserver
+%   % * given a server location, gets UTC time from NTP server
+%   % * allos specificaiton of the server name
+%   % * allos specificaiton of the port to use
+%   % * allos specificaiton of the timeout in seconds
 
 % TO-DO:
 % 
