@@ -44,13 +44,17 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 %   % * Reset bad input counter if good input detected
 %   % * Allow multi-line questions if wrap-around needed for long text
 %   % * Fixed bug where only part of line is being highlighted bold
-
+% 
+% 2026_01_19 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Now checks for empty entries prior to submitting
+%   % * Now allows cell array of eval commands instead of one string
+%   % * Now saves answers thus far into a holding "answers" data file
+%   % * Saves the timeLog now
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
-% - check for empty submissions
-% - call submit library when submit
-% - save answers thus far into temp entry
+% - (add items here)
 
 %% Debugging and Input checks
 
@@ -138,15 +142,24 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-numQuestions = length(selections);
 
-% Initialize answers
-answers = cell(numQuestions,1);
+numQuestions = length(selections);
 numIntegerQuestions = (numQuestions-2);
 
 % Initialize count of bad inputs and loop flag
 numBadInputs = 0;
 numBadOptionInputs = 0; %#ok<NASGU>
+
+% Load prior answers, if any
+answersFileName = fullfile(pwd,'Data','answersSoFar.mat');
+if exist(answersFileName,'file')
+    load(answersFileName,'answers', 'timelog');
+else
+    % Initialize answers
+    answers = cell(numQuestions,1);
+    timelog = cell(1,1);
+    timelog{1,1} = datetime('now');
+end
 
 flag_exitMain = 0;
 while 0==flag_exitMain
@@ -199,15 +212,59 @@ while 0==flag_exitMain
 		end
 		fprintf(1,'Hit any key to continue.\n');
 		pause;
-	else
-		numBadInputs = 0;
-		matchedIndices = strcmpi(mainMenuChoice,allowableOptions);
-		firstMatch = find(matchedIndices,1);
-		actualIndex = associatedIndices(firstMatch,1);
-		selectedOptionCharacters = selections(actualIndex).MenuChar; %#ok<NASGU>
-		commandToRun = sprintf(selections(actualIndex).FunctionSubmission);
-		eval(commandToRun);
-	end
+    else
+
+        % Check if user is submitting. If so, make sure all answers are
+        % filled in OR that user accepts this.
+        flagKeepGoing = true;
+        if strcmpi(mainMenuChoice,'s')
+            % Check that all entries are filled in
+            answerIndex = find(cellfun(@isempty, answers), 1);
+            if ~isempty(answerIndex) && (answerIndex<=numIntegerQuestions)
+                flagKeepGoing = false;
+                fcn_DebugTools_cprintf('*Red',sprintf('WARNING: not all answers have been filled out (see, for example, question %.0f)!',answerIndex));
+                reallySureSubmitChoice = input(sprintf('Do you really want to submit this? [default = ''n'']:'),'s');
+                if isempty(reallySureSubmitChoice)
+                    reallySureSubmitChoice = 'n';
+                end
+                fprintf(1,'Selection chosen: -->  %s\n',reallySureSubmitChoice);
+                if ~any(strcmpi(reallySureSubmitChoice,{'n', 'y'}))
+                    fprintf(1,'Unrecognized user choice: %s. Assuming the choice is NO. \n ', reallySureSubmitChoice);
+                    fprintf(1,'Hit any key to continue.\n');
+                    pause;
+                end
+                if strcmpi(reallySureSubmitChoice,'y')
+                    flagKeepGoing = true;
+                end
+            end
+        end
+
+        % Should the submission or entry continue?
+        if flagKeepGoing
+    		numBadInputs = 0;
+    		matchedIndices = strcmpi(mainMenuChoice,allowableOptions);
+    		firstMatch = find(matchedIndices,1);
+    		actualIndex = associatedIndices(firstMatch,1);
+            selectedOptionCharacters = selections(actualIndex).MenuChar; %#ok<NASGU>
+            commandToEval = selections(actualIndex).FunctionSubmission;
+            if ischar(commandToEval)
+                commandToRun = sprintf(commandToEval);
+                eval(commandToRun);
+            elseif iscell(commandToEval)
+                for ith_cell = 1:length(commandToEval)
+                    commandToRun = sprintf(commandToEval{ith_cell});
+                    eval(commandToRun);
+                end
+            else
+                error('Unrecognized type found in selections(actualIndex).MenuChar');
+            end
+
+        end
+    end
+
+    % Save the answers
+    timelog{end+1,1} = datetime('now'); %#ok<AGROW>
+    save(answersFileName,'answers', 'timelog');
 
 end % Ends while loop for menu
 
@@ -427,7 +484,7 @@ if isempty(optionChoice) || strcmpi(optionChoice,'h')
 
 	if ~isempty(selections(selectedRow).FunctionMore)
 		fprintf(1,'Launching help function for this question:\n');
-		feval(selections(selectedRow).FunctionMore)
+		eval(selections(selectedRow).FunctionMore)
 	else
 		fprintf(1,'Unfortunately, there is no help function for this question.\n');
 	end
@@ -472,4 +529,3 @@ fprintf(1,'Hit any key to continue.\n');
 pause;
 answers{end-1} = 'SUBMITTED';
 end
-

@@ -232,6 +232,16 @@
 %   % * Updated cprintf formatting to be compatible with new version
 % - Deleted Releases folder as it is not used any longer
 % (new release)
+%
+% 2026_01_19 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_cprintf
+%   % * Made bold and underlined formats more clear in the examples
+% - In fcn_DebugTools_menuManageSelections
+%   % * Now checks for empty entries prior to submitting
+%   % * Now allows cell array of eval commands instead of one string
+%   % * Now saves answers thus far into a holding "answers" data file
+%   % * Saves the timeLog now
+% (new release)
 
 % TO-DO:
 % 
