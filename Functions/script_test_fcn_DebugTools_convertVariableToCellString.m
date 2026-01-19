@@ -10,6 +10,10 @@
 %
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
 % - Formatted revision lists to Markdown format
+%
+% 2026_01_19 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_convertVariableToCellString
+%   % * Fixed bad calls to AutoExam
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
@@ -19,16 +23,16 @@
 
 % Test cases
 %% Single character in cell array
-result = fcn_AutoExam_convertVariableToCellString({'A'});
+result = fcn_DebugTools_convertVariableToCellString({'A'});
 assert(isequal(result,{'A'}));
 
 %% Single number in cell array - should convert to "pretty" view
-result = fcn_AutoExam_convertVariableToCellString({[4]});
+result = fcn_DebugTools_convertVariableToCellString({4});
 assert(isequal(result,{'4'}));
 
 %% Two numbers in a cell array 
-input = [{[45]},{[9]}];
-result = fcn_AutoExam_convertVariableToCellString(input);
+input = [{45},{9}];
+result = fcn_DebugTools_convertVariableToCellString(input);
 assert(isequal(result,{'45, 9'}));
 
 %% Single character in cell array

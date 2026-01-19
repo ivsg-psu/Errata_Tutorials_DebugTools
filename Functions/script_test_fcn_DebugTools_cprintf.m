@@ -93,10 +93,10 @@ fcn_DebugTools_cprintf('*White',                  '\t ''White'''); fcn_DebugTool
 fprintf(1,'\n');
 fprintf(1,'Color range listing examples: G are rows, B are columns\n')
 for ith_R = 0:0.25:1
-    fcn_DebugTools_cprintf([ith_R,0,0],'RGB setting: [%.1f G B]\n',ith_R);
+    fcn_DebugTools_cprintf([ith_R,0,0],sprintf('RGB setting: [%.1f G B]\n',ith_R));
     for ith_G = 0:0.25:1
         for ith_B = 0:0.25:1
-            fcn_DebugTools_cprintf([ith_R,ith_G,ith_B],'[%.1f %.1f]',ith_G, ith_B);
+            fcn_DebugTools_cprintf([ith_R,ith_G,ith_B],sprintf('[%.1f %.1f %.1f]',ith_R, ith_G, ith_B));
         end
         fprintf(1,'\n');
     end

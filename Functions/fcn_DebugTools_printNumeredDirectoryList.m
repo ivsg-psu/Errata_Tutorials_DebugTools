@@ -56,6 +56,10 @@ function fcn_DebugTools_printNumeredDirectoryList(directory_filelist, cellArrayH
 % - Formatted revision lists to Markdown format
 % - Fixed variable naming for clarity:
 %   % * fig_+num to figNum
+%
+% 2026_01_19 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_printNumeredDirectoryList
+%   % * Updated cprintf formatting to be compatible with new version
 
 % TO-DO:
 % 
@@ -207,7 +211,7 @@ for ith_bagFile = 1:NfilesToSummarize
             fprintf(1,'%s\t',printString);
         elseif ischar(thisColumnData) && strcmp(thisColumnData,'no')
             printString = fcn_DebugTools_debugPrintStringToNCharacters('no',Ncharacters_eachColumn(ith_header,1));
-            fcn_DebugTools_cprintf('*Black','%s\t',printString);
+            fcn_DebugTools_cprintf('*Black',sprintf('%s\t',printString));
         elseif ischar(thisColumnData)
             printString = fcn_DebugTools_debugPrintStringToNCharacters(thisColumnData,Ncharacters_eachColumn(ith_header,1));
             fprintf(1,'%s\t',printString);

@@ -211,11 +211,27 @@
 % (new release)
 %
 % 2026_01_19 by Sean Brennan, sbrennan@psu.edu
-% - first write of the code fcn_debugTools_timeQueryNTPserver
+% - In main script, fixed missing figNum field that threw errors
+% - First write of the code fcn_debugTools_timeQueryNTPserver
 %   % * given a server location, gets UTC time from NTP server
 %   % * allos specificaiton of the server name
 %   % * allos specificaiton of the port to use
 %   % * allos specificaiton of the timeout in seconds
+% - In script_test_fcn_DebugTools_convertVariableToCellString
+%   % * Fixed bad calls to AutoExam
+% - In script_test_fcn_DebugTools_wrapLongText
+%   % * Renamed to standard form
+%   % * From script_test_fcn_debugTools_wrapLongText
+%   % * Fixed fastMode tests that were not yet updated
+% - In script_test_fcn_DebugTools_cprintf
+%   % * Fixed formatted print statements that were causing function to fail
+%   %   % near end
+% - In script_test_fcn_DebugTools_menuManageSelections
+%   % - Updated options so that the menu system works with recent edits
+% - In fcn_DebugTools_printNumeredDirectoryList
+%   % * Updated cprintf formatting to be compatible with new version
+% - Deleted Releases folder as it is not used any longer
+% (new release)
 
 % TO-DO:
 % 
@@ -895,6 +911,33 @@ assert(size(indicies_cell_array,2)==2);
 assert(isequal(indicies_cell_array{1},[1; 2; 3]));
 assert(isequal(indicies_cell_array{2},[5; 6]));
 
+%% Querying UTC time using fcn_debugTools_timeQueryNTPserver
+
+% Set input arguments
+server = 'time.nist.gov';
+port = [];
+timeoutSecs = [];
+
+%%%%%%%%%%
+% Call the function
+UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (1));
+
+% sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(isdatetime(UTCdatetime));
+
+% Check variable sizes
+assert(isequal(size(UTCdatetime),[1 1]));
+
+% Check variable values
+currentTime = datetime('now','TimeZone', 'UTC');
+differenceInTime = abs(currentTime-UTCdatetime);
+assert(differenceInTime<hours(24));
+
+% % Make sure plot opened up
+% assert(isequal(get(gcf,'Number'),figNum));
+
 %% Output formatting
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %    ____        _               _     ______                         _   _   _             
@@ -913,7 +956,7 @@ assert(isequal(indicies_cell_array{2},[5; 6]));
 % from [H,M,S] = hms.
 
 % Call the function
-timeString = fcn_DebugTools_time2String(([]), (figNum));
+timeString = fcn_DebugTools_time2String(([]), (-1));
 
 % sgtitle(titleString, 'Interpreter','none');
  

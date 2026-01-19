@@ -111,45 +111,24 @@ figNum = 80001;
 fprintf(1,'Figure: %.0f: FAST mode, empty figNum\n',figNum);
 figure(figNum); close(figNum);
 
-dataSetNumber = 9;
-
 % Load some test data 
-tempXYdata = fcn_INTERNAL_loadExampleData(dataSetNumber);
+originalText = 'This is a very long string that needs to be broken into something much, much smaller so that it is more readable';
+wrapLength = 40;
 
-start_definition = [10 3 0 0]; % Radius 10, 3 points must pass near [0,0]
-end_definition = [30 3 0 -60]; % Radius 30, 3 points must pass near [0,-60]
-excursion_definition = []; % empty
+% Call the function
+wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, ([]));
 
-[cell_array_of_lap_indices, ...
-    cell_array_of_entry_indices, cell_array_of_exit_indices] = ...
-    fcn_debugTools_wrapLongText(...
-    tempXYdata,...
-    start_definition,...
-    end_definition,...
-    excursion_definition,...
-    ([]));
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(iscell(cell_array_of_lap_indices));
-assert(iscell(cell_array_of_entry_indices));
-assert(iscell(cell_array_of_exit_indices));
+assert(ischar(wrappedText));
 
 % Check variable sizes
-Nlaps = 3;
-assert(isequal(Nlaps,length(cell_array_of_lap_indices))); 
-assert(isequal(Nlaps,length(cell_array_of_entry_indices))); 
-assert(isequal(Nlaps,length(cell_array_of_exit_indices))); 
+assert(size(wrappedText,1)==1); 
+assert(size(wrappedText,2)>=size(originalText,2)); 
 
 % Check variable values
-% Are the laps starting at expected points?
-assert(isequal(2,min(cell_array_of_lap_indices{1})));
-assert(isequal(102,min(cell_array_of_lap_indices{2})));
-assert(isequal(215,min(cell_array_of_lap_indices{3})));
-
-% Are the laps ending at expected points?
-assert(isequal(88,max(cell_array_of_lap_indices{1})));
-assert(isequal(199,max(cell_array_of_lap_indices{2})));
-assert(isequal(293,max(cell_array_of_lap_indices{3})));
+assert(contains(wrappedText,'\n'));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -161,45 +140,25 @@ figNum = 80002;
 fprintf(1,'Figure: %.0f: FAST mode, figNum=-1\n',figNum);
 figure(figNum); close(figNum);
 
-dataSetNumber = 9;
-
 % Load some test data 
-tempXYdata = fcn_INTERNAL_loadExampleData(dataSetNumber);
+originalText = 'This is a very long string that needs to be broken into something much, much smaller so that it is more readable';
+wrapLength = 40;
 
-start_definition = [10 3 0 0]; % Radius 10, 3 points must pass near [0,0]
-end_definition = [30 3 0 -60]; % Radius 30, 3 points must pass near [0,-60]
-excursion_definition = []; % empty
+% Call the function
+wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, (-1));
 
-[cell_array_of_lap_indices, ...
-    cell_array_of_entry_indices, cell_array_of_exit_indices] = ...
-    fcn_debugTools_wrapLongText(...
-    tempXYdata,...
-    start_definition,...
-    end_definition,...
-    excursion_definition,...
-    (-1));
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
-assert(iscell(cell_array_of_lap_indices));
-assert(iscell(cell_array_of_entry_indices));
-assert(iscell(cell_array_of_exit_indices));
+assert(ischar(wrappedText));
 
 % Check variable sizes
-Nlaps = 3;
-assert(isequal(Nlaps,length(cell_array_of_lap_indices))); 
-assert(isequal(Nlaps,length(cell_array_of_entry_indices))); 
-assert(isequal(Nlaps,length(cell_array_of_exit_indices))); 
+assert(size(wrappedText,1)==1); 
+assert(size(wrappedText,2)>=size(originalText,2)); 
 
 % Check variable values
-% Are the laps starting at expected points?
-assert(isequal(2,min(cell_array_of_lap_indices{1})));
-assert(isequal(102,min(cell_array_of_lap_indices{2})));
-assert(isequal(215,min(cell_array_of_lap_indices{3})));
+assert(contains(wrappedText,'\n'));
 
-% Are the laps ending at expected points?
-assert(isequal(88,max(cell_array_of_lap_indices{1})));
-assert(isequal(199,max(cell_array_of_lap_indices{2})));
-assert(isequal(293,max(cell_array_of_lap_indices{3})));
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -212,30 +171,17 @@ fprintf(1,'Figure: %.0f: FAST mode comparisons\n',figNum);
 figure(figNum);
 close(figNum);
 
-dataSetNumber = 9;
-
 % Load some test data 
-tempXYdata = fcn_INTERNAL_loadExampleData(dataSetNumber);
+originalText = 'This is a very long string that needs to be broken into something much, much smaller so that it is more readable';
+wrapLength = 40;
 
-start_definition = [10 3 0 0]; % Radius 10, 3 points must pass near [0,0]
-end_definition = [30 3 0 -60]; % Radius 30, 3 points must pass near [0,-60]
-excursion_definition = []; % empty
-
- 
 Niterations = 50;
 
 % Do calculation without pre-calculation
 tic;
 for ith_test = 1:Niterations
     % Call the function
-    [cell_array_of_lap_indices, ...
-        cell_array_of_entry_indices, cell_array_of_exit_indices] = ...
-        fcn_debugTools_wrapLongText(...
-        tempXYdata,...
-        start_definition,...
-        end_definition,...
-        excursion_definition,...
-        ([]));
+    wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, ([]));
 end
 slow_method = toc;
 
@@ -243,14 +189,7 @@ slow_method = toc;
 tic;
 for ith_test = 1:Niterations
     % Call the function
-    [cell_array_of_lap_indices, ...
-        cell_array_of_entry_indices, cell_array_of_exit_indices] = ...
-        fcn_debugTools_wrapLongText(...
-        tempXYdata,...
-        start_definition,...
-        end_definition,...
-        excursion_definition,...
-        (-1));
+    wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, (-1));
 end
 fast_method = toc;
 

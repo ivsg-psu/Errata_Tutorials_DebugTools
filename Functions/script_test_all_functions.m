@@ -311,6 +311,7 @@ for ith_testScript = 1:NtestScripts
     allResults{ith_testScript,1} = run(suite);
     telapsed = toc(tstart);
     testing_times(ith_testScript) = telapsed;
+    pause;
 end
 diary off
 

@@ -15,7 +15,7 @@ selections(numQuestions).AnswerTypeOptions = [1 1];
 selections(numQuestions).AnswerPrintFormat = '%.0f';
 selections(numQuestions).FunctionMore = 'why';
 selections(numQuestions).FunctionMoreInputs = {30};
-selections(numQuestions).FunctionSubmission = '[answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedRow, numBadOptionInputs)';
+selections(numQuestions).FunctionSubmission = '[answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedOptionCharacters, numBadOptionInputs)';
 selections(numQuestions).FunctionSubmissionOptions = {'.'};
 selections(numQuestions).isAllowableMenuOption = true;
 
@@ -30,7 +30,7 @@ selections(numQuestions).AnswerTypeOptions = [];
 selections(numQuestions).AnswerPrintFormat = '%s';
 selections(numQuestions).FunctionMore = 'why';
 selections(numQuestions).FunctionMoreInputs = {30};
-selections(numQuestions).FunctionSubmission = '[answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedRow, numBadOptionInputs)';
+selections(numQuestions).FunctionSubmission = '[answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedOptionCharacters, numBadOptionInputs)';
 selections(numQuestions).FunctionSubmissionOptions = {'.'};
 selections(numQuestions).isAllowableMenuOption = true;
 
@@ -45,7 +45,7 @@ selections(numQuestions).AnswerTypeOptions = [];
 selections(numQuestions).AnswerPrintFormat = '%s';
 selections(numQuestions).FunctionMore = 'why';
 selections(numQuestions).FunctionMoreInputs = {30};
-selections(numQuestions).FunctionSubmission = '[answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedRow, numBadOptionInputs)';
+selections(numQuestions).FunctionSubmission = '[answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedOptionCharacters, numBadOptionInputs)';
 selections(numQuestions).FunctionSubmissionOptions = {'.'};
 selections(numQuestions).isAllowableMenuOption = true;
 
@@ -60,7 +60,7 @@ selections(numQuestions).AnswerTypeOptions = [1 1];
 selections(numQuestions).AnswerPrintFormat = '%.0f';
 selections(numQuestions).FunctionMore = '';
 selections(numQuestions).FunctionMoreInputs = [];
-selections(numQuestions).FunctionSubmission = '[answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedRow, numBadOptionInputs)';
+selections(numQuestions).FunctionSubmission = '[answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedOptionCharacters, numBadOptionInputs)';
 selections(numQuestions).FunctionSubmissionOptions = {'.'};
 selections(numQuestions).isAllowableMenuOption = true;
 
