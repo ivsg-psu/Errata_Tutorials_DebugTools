@@ -48,7 +48,6 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
-% - wrap long questions
 % - check for empty submissions
 % - call submit library when submit
 % - save answers thus far into temp entry
