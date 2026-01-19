@@ -196,6 +196,19 @@
 %   % * A powerful menu tool that allows user to define menu options that
 %   %   % auto-execute code
 % (new release)
+%
+% 2026_01_18 by Sean Brennan, sbrennan@psu.edu
+% - first write of the code fcn_debugTools_wrapLongText
+%   % * given an input character array, originalText, and an allowable
+%   %   wrapLength, saves the original text as wrapped characters
+%   % * insertsg the '\n' to break the text up at the first space before 
+%   %   the wrapLength. 
+%   % * If there is no space, the text has a '...\n' added instead of '\n'
+% - In fcn_DebugTools_menuManageSelections
+%   % * Reset bad input counter if good input detected
+%   % * Allow multi-line questions if wrap-around needed for long text
+%   % * Fixed bug where only part of line is being highlighted bold
+% (new release)
 
 % TO-DO:
 % 

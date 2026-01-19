@@ -38,11 +38,20 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % 
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
 % - first write of the code
+% 
+% 2026_01_18 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Reset bad input counter if good input detected
+%   % * Allow multi-line questions if wrap-around needed for long text
+%   % * Fixed bug where only part of line is being highlighted bold
 
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
-% - fill in to-do items here.
+% - wrap long questions
+% - check for empty submissions
+% - call submit library when submit
+% - save answers thus far into temp entry
 
 %% Debugging and Input checks
 
@@ -159,13 +168,16 @@ while 0==flag_exitMain
 	end
 	matchedIndices = strcmpi(defaultMenuChoice,allowableOptions);
 	firstMatch = find(matchedIndices,1);
-	selectedRow = associatedIndices(firstMatch,1);
+	if isempty(firstMatch)
+		firstMatch = 1;
+	end
+	selectedOptionCharacters = allowableOptions{firstMatch};
 
 	%%%%%
 	% Show user choices
 	eval(cat(2,'cl','c')); % Make cl+c command hidden so will not throw warnings
-	cellArray = fcn_INTERNAL_buildCellArray(selections, answers, selectedRow);
-	fcn_INTERNAL_showTable(cellArray,selectedRow);
+	[cellArray, printStyle] = fcn_INTERNAL_buildCellArray(selections, answers, selectedOptionCharacters);
+	fcn_INTERNAL_showTable(cellArray, printStyle);
 
 
 	%%%%
@@ -189,9 +201,11 @@ while 0==flag_exitMain
 		fprintf(1,'Hit any key to continue.\n');
 		pause;
 	else
+		numBadInputs = 0;
 		matchedIndices = strcmpi(mainMenuChoice,allowableOptions);
 		firstMatch = find(matchedIndices,1);
 		actualIndex = associatedIndices(firstMatch,1);
+		selectedOptionCharacters = selections(actualIndex).MenuChar; %#ok<NASGU>
 		commandToRun = sprintf(selections(actualIndex).FunctionSubmission);
 		eval(commandToRun);
 	end
@@ -238,54 +252,96 @@ end % Ends the main function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
 %% fcn_INTERNAL_buildCellArray
-function cellArray = fcn_INTERNAL_buildCellArray(selections, answers, selectedRow)
+function [cellArray, printStyle] = fcn_INTERNAL_buildCellArray(selections, answers, selectedOptionCharacters)
+% cellArray is what is being printed, a list of strings
+% printStyle is which style to use:
+% 1 = default
+% 2 = bold
+
 numRows = length(selections);
 
 % Selection, Q#, Text, More, Answer
 numCols = 5;
 cellArray = cell(numRows, numCols);
+printStyleCell = cell(numRows,1);
+
+numActualRows = 0;
 for ith_row = 1:numRows
-	cellArray{ith_row, 1} = fcn_INTERNAL_isSelectedString(ith_row, selectedRow); % Selection arrow
-	cellArray{ith_row, 2} = selections(ith_row).MenuChar;      % Question Character
-	cellArray{ith_row, 3} = selections(ith_row).Text;  % Question Text
+	numActualRows = numActualRows+1;
+
+	flagIsSelected = strcmp(selectedOptionCharacters,selections(ith_row).MenuChar);
+	if flagIsSelected
+		printStyleCell{numActualRows,1} = 2;
+	else
+		printStyleCell{numActualRows,1} = 1;
+	end
+	
+	cellArray{numActualRows, 1} = fcn_INTERNAL_isSelectedString(flagIsSelected); % Selection arrow
+	cellArray{numActualRows, 2} = selections(ith_row).MenuChar;      % Question Character
+
+	originalText = selections(ith_row).Text;
+	wrappedText = fcn_debugTools_wrapLongText(originalText,50);
+	textCellArray= split(wrappedText,'\n');
+
+	cellArray{numActualRows, 3} = textCellArray{1};  % Question Text
+
 
 	if ~isempty(selections(ith_row).FunctionMore)
-		cellArray{ith_row, 4} = 'Yes'; % More Info Function
+		cellArray{numActualRows, 4} = 'Yes'; % More Info Function
 	else
-		cellArray{ith_row, 4} = ''; % No More Info Function
+		cellArray{numActualRows, 4} = ''; % No More Info Function
 	end
 
 	if isempty(answers{ith_row})
-		cellArray{ith_row, 5} = selections(ith_row).AnswerDefault; % Default Answer
+		cellArray{numActualRows, 5} = selections(ith_row).AnswerDefault; % Default Answer
 	else
-		cellArray{ith_row, 5} = answers{ith_row}; % User's Answer
+		cellArray{numActualRows, 5} = answers{ith_row}; % User's Answer
 	end
+
+	% Check for multi-line case
+	if size(textCellArray,1)>1
+		for ith_extraRow = 1:(size(textCellArray,1)-1)
+			numActualRows = numActualRows+1;
+			cellArray{numActualRows, 1} = ' ';
+			cellArray{numActualRows, 2} = ' ';
+			cellArray{numActualRows, 3} = cat(2,'  ',textCellArray{ith_extraRow+1});
+			cellArray{numActualRows, 4} = ' ';
+			cellArray{numActualRows, 5} = ' ';
+
+			printStyleCell{numActualRows,1} = printStyleCell{numActualRows-1,1};
+		end
+	end
+
 end
 
+printStyle = cell2mat(printStyleCell);
 end % Ends fcn_INTERNAL_buildCellArray
 
-%% stringIsSelected
-function stringIsSelected = fcn_INTERNAL_isSelectedString(ith_row, selectedRow)
+
+%% fcn_INTERNAL_isSelectedString
+function stringIsSelected = fcn_INTERNAL_isSelectedString(flagIsSelected)
 
 % Draws selection arrow
-if selectedRow == ith_row
+if flagIsSelected
 	stringIsSelected = '-->'; % Indicate selection with an arrow
 else
 	stringIsSelected = '   '; % No selection
 end
 
-end % Ends stringIsSelected
+end % Ends fcn_INTERNAL_isSelectedString
 
 
 %% fcn_INTERNAL_showTable
-function fcn_INTERNAL_showTable(cellArray, selectedRow)
+function fcn_INTERNAL_showTable(cellArray, printStyle)
 table_data = cellArray;
 
 header_strings = [{'Selection'}, {'#'},{'Question:'},{'More Help?'},{'Answer'}]; % Headers for each column
 
+boldedRows = find(printStyle==2);
+
 formatter_strings = [...
 	{'%s'},{'%s'},{'%s'},{'Green %s'},{'Red %s'},{[]};
-	{'*Black %s'},{'*Black %s'},{'*Black %s'},{'*Green %s'},{'*Red %s'},{selectedRow}];
+	{'*Black %s'},{'*Black %s'},{'*Black %s'},{'*Green %s'},{'*Red %s'},{boldedRows}];
 
 % fcn_INTERNAL_showSelection(parsingChoice,allOptions{ith_option});
 % if any(strcmp(thisOption,allowableOptions))
@@ -351,8 +407,21 @@ end
 end % Ends fcn_INTERNAL_verifyChoice
 
 %% fcn_INTERNAL_enterData
-function [answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedRow, numBadOptionInputs)
+function [answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedOptionCharacters, numBadOptionInputs)
 flag_exitMain = 0;
+
+
+selectedRow = [];
+for ith_selection = 1:length(selections)
+	if strcmp(selections(ith_selection).MenuChar,selectedOptionCharacters)
+		selectedRow = ith_selection;
+		break;
+	end
+end
+
+if isempty(selectedRow)
+	error('Unable to match selection: %s to list of selections', selectedOptionCharacters);
+end
 
 optionChoice = input(sprintf('What answer do you wish to give to this question? [default = (h) which opens help]:'),'s');
 if isempty(optionChoice) || strcmpi(optionChoice,'h')
@@ -404,3 +473,4 @@ fprintf(1,'Hit any key to continue.\n');
 pause;
 answers{end-1} = 'SUBMITTED';
 end
+
