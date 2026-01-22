@@ -1,11 +1,65 @@
-%% script_test_all_functions.m
-% This is a wrapper script to run all the test scripts in the 
-% library for the purpose of evaluating every assertion test in these
-% files.
+function fcn_DebugTools_testRepoForRelease(repoShortName, varargin)
+%% FCN_DEBUGTOOLS_TESTREPOFORRELEASE - repo verification tool
 %
-% NOTE: to view the output file with formatting, use the "type" command.
-% For example:
-% type('script_test_fcn_geometry_all_stdout.txt')
+% fcn_DebugTools_testRepoForRelease automatically checks repos to determine
+% if they are ready for release. This includes a number of tests including:
+%
+% * Makes sure there is only one .m file in main folder
+% * Checks that "script_demo_(reponame).m" exists
+% * Checks that "README.md" exists
+% * Checks existence of key folders 
+%   % {'Functions', 'Data', 'Documents', 'Installer', 'Images'}
+% * Checks that main file contains required strings 
+%   % {'REVISION HISTORY', 'TO-DO','FLAG_CHECK_INPUTS','FLAG_DO_DEBUG'}
+% * Checks that function folder does not contain forbiddenStrings: 
+%   % 'cl'+'c') and 'clear'+' all'
+% * Warns if poorly named variables or comments used in funtions
+%   % fig_+num
+%   % %-+- type comments
+% * Makes sure all functions are matched to test scripts
+% * Checks that all functions contain required strings 
+%   % {'REVISION HISTORY', 'TO-DO','FLAG_CHECK_INPUTS','FLAG_DO_DEBUG'}
+% * Checks that all functions do not contain forbiddenStrings: 
+%   % 'cl'+'c') and 'clear'+' all'
+% * Loops through all the test scripts to make sure they run
+% * OPTIONAL: search/replaces for key strings in all functions
+% 
+%
+% FORMAT:
+%
+%      fcn_DebugTools_testRepoForRelease(repoShortName, (figNum))
+%
+% INPUTS:
+%
+%      repoShortName: a character array denoting the repos root name,
+%      including the leading and trailing underscores. For example, in
+%      DebugTools, the short name is '_DebugTools_'
+%
+%      (OPTIONAL INPUTS)
+%
+%      figNum: a figure number to plot results. If set to -1, skips any
+%      input checking or debugging, no figures will be generated, and sets
+%      up code to maximize speed. As well, if given, this forces the
+%      variable types to be displayed as output and as well makes the input
+%      check process verbose
+%
+% OUTPUTS:
+%
+%      (none: saves results in an output file)
+%
+% DEPENDENCIES:
+%
+%      This code will automatically get dependent files from the internet,
+%      but of course this requires an internet connection. If the
+%      DebugTools are being installed, it does not require any other
+%      functions. But for other packages, it uses the following from the
+%      DebugTools library: fcn_DebugTools_addSubdirectoriesToPath
+%
+% EXAMPLES:
+%      See: script_test_fcn_DebugTools_testRepoForRelease
+% 
+% This function was written on 2026_01_22 by S. Brennan
+% Questions or comments? sbrennan@psu.edu
 
 % REVISION HISTORY:
 % 
@@ -35,19 +89,109 @@
 % 
 % 2026_01_09 by Sean Brennan, sbrennan@psu.edu
 % - Updated ignore flags to prevent processing of .p and .asv files
-
+%
+% As:fcn_DebugTools_testRepoForRelease
+% 
+% 2026_01_22 by Sean Brennan, sbrennan@psu.edu
+% - wrote the code originally by functionalizing script_test_all_functions
+% - updated the file logic for clarity and to avoid processing this script
 
 % TO-DO:
-% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
-% - fill in to-do items here.
+% - 2026_01_22 by Sean Brennan, sbrennan@psu.edu
+%    % * Add items here
 
-% clearvars; 
-close all; 
-clc;
+%% Debugging and Input checks
+
+% Check if flag_max_speed set. This occurs if the figNum variable input
+% argument (varargin) is given a number of -1, which is not a valid figure
+% number.
+MAX_NARGIN = 2; % The largest Number of argument inputs to the function
+flag_max_speed = 0;
+if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
+    flag_check_inputs = 0; % Flag to perform input checking
+    flag_max_speed = 1;
+else
+    % Check to see if we are externally setting debug mode to be "on"
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
+    flag_check_inputs = 1; % Flag to perform input checking
+    MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
+    MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
+    if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
+        flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG); 
+        flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
+    end
+end
+
+% flag_do_debug = 1;
+
+if flag_do_debug
+    st = dbstack; %#ok<*UNRCH>
+    fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
+    debug_figNum = 999978; %#ok<NASGU>
+else
+    debug_figNum = []; %#ok<NASGU>
+end
+%% check input arguments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
+%    | | | '_ \| '_ \| | | | __/ __|
+%   _| |_| | | | |_) | |_| | |_\__ \
+%  |_____|_| |_| .__/ \__,_|\__|___/
+%              | |
+%              |_|
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if 0 == flag_max_speed
+    if flag_check_inputs == 1
+        % Are there the right number of inputs?
+        narginchk(MAX_NARGIN-1,MAX_NARGIN);
+
+        % if nargin>=2
+        %     % Check the variableTypeString input, make sure it is characters
+        %     if ~ischar(variableTypeString)
+        %         error('The variableTypeString input must be a character type, for example: ''Path'' ');
+        %     end
+        % end
+
+    end
+end
+
+% % Does user want to specify the flagForceInstalls input?
+% flagForceInstalls = false; % Default is not to force installs
+% if 3 <= nargin
+%     temp = varargin{1};
+%     if ~isempty(temp)
+%         flagForceInstalls = temp;
+%     end
+% end
+
+% Check to see if user specifies figNum?
+flag_do_plots = 0; % Default is to NOT show plots
+if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
+    temp = varargin{end};
+    if ~isempty(temp)
+        figNum = temp;
+        flag_do_plots = 1;
+    end
+end
+
+%% Start of main code
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
+%  | |  | | (_| | | | | |
+%  |_|  |_|\__,_|_|_| |_|
+%
+%See: http://patorjk.com/software/taag/#p=display&f=Big&t=Main
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
 %% Define the repo name and output file
-% repoShortName = '_MapGen_';
-repoShortName = '_DebugTools_';
 
 % outputFile = cat(2,'script_test_fcn',repoShortName,'all_stdout.txt');
 % diary(fullfile(pwd,outputFile));
@@ -166,6 +310,17 @@ fileListFunctionsFolder = dir(functionsDirectoryQuery); %cat(2,'.',filesep,files
 % Filter out directories from the list
 fileListFunctionsFolderNoDirectories = fileListFunctionsFolder(~[fileListFunctionsFolder.isdir]);
 
+% Filter out key files from the list
+flagsFilesToKeep = true(length(fileListFunctionsFolderNoDirectories),1);
+flagsFilesToKeep = fcn_INTERNAL_removeFromList(flagsFilesToKeep, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+flagsFilesToKeep = fcn_INTERNAL_removeFromList(flagsFilesToKeep, fileListFunctionsFolderNoDirectories,'fcn_DebugTools_testRepoForRelease');
+flagsFilesToKeep = fcn_INTERNAL_removeFromList(flagsFilesToKeep, fileListFunctionsFolderNoDirectories,'script_test_fcn_DebugTools_testRepoForRelease');
+flagsFilesToKeep = fcn_INTERNAL_removeFromList(flagsFilesToKeep, fileListFunctionsFolderNoDirectories,'.p');
+flagsFilesToKeep = fcn_INTERNAL_removeFromList(flagsFilesToKeep, fileListFunctionsFolderNoDirectories,'.asv');
+
+fileListFunctionsFolderCleaned = fileListFunctionsFolderNoDirectories(flagsFilesToKeep);
+
+
 %% Make sure there's no forbidden strings
 forbiddenStrings = {
     cat(2,'cl','c');
@@ -174,10 +329,9 @@ forbiddenStrings = {
 
 for ith_forbidden = 1:length(forbiddenStrings)
     queryString = forbiddenStrings{ith_forbidden};
-    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, (-1));
-    flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+    flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderCleaned, queryString, (-1));
     if sum(flagsStringWasFoundInFiles)>0
-        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, 1);
+        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderCleaned, queryString, 1);
         error('A "%s" forbidden string was found in one of the functions or scripts - see listing above. This needs to be fixed before continuing the testing.',queryString);
     end
 end
@@ -190,10 +344,9 @@ warningStrings = {
 
 for ith_forbidden = 1:length(warningStrings)
     queryString = warningStrings{ith_forbidden};
-    flagsStringWasFoundInFilesRaw = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, (-1));
-    flagsStringWasFoundInFiles = fcn_INTERNAL_removeFromList(flagsStringWasFoundInFilesRaw, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
+    flagsStringWasFoundInFiles = fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderCleaned, queryString, (-1));
     if sum(flagsStringWasFoundInFiles)>0
-        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderNoDirectories, queryString, 1);
+        fcn_DebugTools_directoryStringQuery(fileListFunctionsFolderCleaned, queryString, 1);
         warning('A "%s" string was found in one of the functions or scripts - see listing above. This should be fixed to maintain compatibilty.',queryString);
     end
 end
@@ -208,7 +361,7 @@ end
     flags_isMfileTestingScript,...
     flags_isMfileTestingScriptWithMatchingFunction,...
     flags_isEitherTestScriptOrTestedFunction...
-    ] = fcn_INTERNAL_flagFiles(fileListFunctionsFolderNoDirectories);
+    ] = fcn_INTERNAL_flagFiles(fileListFunctionsFolderCleaned); %#ok<ASGLU>
 
 %% Summarize results
 fprintf(1,'\nSUMMARY OF FOUND FILES: \n');
@@ -218,36 +371,30 @@ if ~isempty(indicies_filesToTest)
     fcn_DebugTools_cprintf('*blue',sprintf('\tThere are %.0f total testable functions in this repo:\n',length(indicies_filesToTest)));
     for ith_file = 1:length(indicies_filesToTest)
         currentFileIndex = indicies_filesToTest(ith_file);
-        fprintf(1,'\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name)
+        fprintf(1,'\t%s\n',fileListFunctionsFolderCleaned(currentFileIndex).name)
     end    
 end
 
 % List missed files
-indicies_missedFiles_flags_RAW = flags_isFile.*(0==flags_isMfile);
-indicies_missedFiles_flags = fcn_INTERNAL_removeFromList(indicies_missedFiles_flags_RAW, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
-indicies_missedFiles_flags = fcn_INTERNAL_removeFromList(indicies_missedFiles_flags, fileListFunctionsFolderNoDirectories,'.p');
-indicies_missedFiles_flags = fcn_INTERNAL_removeFromList(indicies_missedFiles_flags, fileListFunctionsFolderNoDirectories,'.asv');
+indicies_missedFiles_flags = flags_isFile.*(0==flags_isMfile);
 indicies_missedFiles = find(indicies_missedFiles_flags);
 if ~isempty(indicies_missedFiles)
     fcn_DebugTools_cprintf('*red',sprintf('The following files were found, but do not seem to be repo functions or scripts:\n'));
     for ith_file = 1:length(indicies_missedFiles)
         currentFileIndex = indicies_missedFiles(ith_file);
-        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name))
+        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderCleaned(currentFileIndex).name))
     end    
 end
 
 % List mfiles that are not testing scripts or functions
-indicies_missedMfiles_flags_RAW = flags_isMfile.*(0==flags_isMfileFunction).*(0==flags_isMfileTestingScript);
-indicies_missedMfiles_flags = fcn_INTERNAL_removeFromList(indicies_missedMfiles_flags_RAW, fileListFunctionsFolderNoDirectories,'script_test_all_functions');
-indicies_missedMfiles_flags = fcn_INTERNAL_removeFromList(indicies_missedMfiles_flags, fileListFunctionsFolderNoDirectories,'.p');
-indicies_missedMfiles_flags = fcn_INTERNAL_removeFromList(indicies_missedMfiles_flags, fileListFunctionsFolderNoDirectories,'.asv');
+indicies_missedMfiles_flags = flags_isMfile.*(0==flags_isMfileFunction).*(0==flags_isMfileTestingScript);
 indicies_missedMfiles = find(indicies_missedMfiles_flags);
 
 if ~isempty(indicies_missedMfiles)
     fcn_DebugTools_cprintf('*red',sprintf('The following m-files were found, but do not seem to be test scripts or functions:\n'));
     for ith_file = 1:length(indicies_missedMfiles)
         currentFileIndex = indicies_missedMfiles(ith_file);
-        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name))
+        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderCleaned(currentFileIndex).name))
     end    
 end
 
@@ -257,7 +404,7 @@ if ~isempty(indicies_missedFunctions)
     fcn_DebugTools_cprintf('*red',sprintf('The following functions were found, but do not have a matching test scripts:\n'));
     for ith_file = 1:length(indicies_missedFunctions)
         currentFileIndex = indicies_missedFunctions(ith_file);
-        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name))
+        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderCleaned(currentFileIndex).name))
     end    
 end
 
@@ -267,7 +414,7 @@ if ~isempty(indicies_missedScripts)
     fcn_DebugTools_cprintf('*red',sprintf('The following test scripts were found, but do not have a matching function:\n'));
     for ith_file = 1:length(indicies_missedScripts)
         currentFileIndex = indicies_missedScripts(ith_file);
-        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name))
+        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderCleaned(currentFileIndex).name))
     end    
 end
 
@@ -277,12 +424,12 @@ if ~isempty(indicies_repeatedFiles)
     fcn_DebugTools_cprintf('*red',sprintf('The following files seem to be repeated:\n'));
     for ith_file = 1:length(indicies_repeatedFiles)
         currentFileIndex = indicies_repeatedFiles(ith_file);
-        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderNoDirectories(currentFileIndex).name))
+        fcn_DebugTools_cprintf('*red',sprintf('\t%s\n',fileListFunctionsFolderCleaned(currentFileIndex).name))
     end    
 end
 
 %% Make sure all functions have correct global variables
-temp = fileListFunctionsFolderNoDirectories(indicies_filesToTest);
+temp = fileListFunctionsFolderCleaned(indicies_filesToTest);
 for ith_file = 1:length(temp)
     temp(ith_file).name = extractAfter(temp(ith_file).name,'script_test_');
 end
@@ -302,7 +449,7 @@ allResults = cell(NtestScripts,1);
 testing_times = nan(NtestScripts,1);
 for ith_testScript = 1:NtestScripts
     currentFileIndex = indicies_filesToTest(ith_testScript);
-    file_name_extended = fileListFunctionsFolderNoDirectories(currentFileIndex).name;
+    file_name_extended = fileListFunctionsFolderCleaned(currentFileIndex).name;
     file_name = erase(file_name_extended,'.m');
     file_name_trunc = erase(file_name,'script_');
     fcn_DebugTools_cprintf('*blue',sprintf('%s\n','   '));
@@ -314,7 +461,7 @@ for ith_testScript = 1:NtestScripts
     allResults{ith_testScript,1} = run(suite);
     telapsed = toc(tstart);
     testing_times(ith_testScript) = telapsed;
-    pause;
+    % pause;
 end
 diary off
 
@@ -358,6 +505,51 @@ if 1==0
     end
 end
 
+
+%% Plot the results (for debugging)?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
+%  | |  | |/ _ \ '_ \| | | |/ _` |
+%  | |__| |  __/ |_) | |_| | (_| |
+%  |_____/ \___|_.__/ \__,_|\__, |
+%                            __/ |
+%                           |___/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if flag_do_plots
+	if ~isempty(figNum)
+		fprintf(1,'Done testing the repo for release!\n\n');
+	end
+    % % Extract and display release information
+    % disp(['Repository: ', owner, '/', repo]);
+    % if isfield(latestReleaseStruct, 'tag_name')
+    %     disp(['Latest release version: ', latestReleaseStruct.tag_name]);
+    % else
+    %     disp('Could not find tag_name in the release information.');
+    % end
+    % 
+    % if isfield(latestReleaseStruct, 'name')
+    %     disp(['Release Name: ', latestReleaseStruct.name]);
+    % end
+    % 
+    % if isfield(latestReleaseStruct, 'published_at')
+    %     disp(['Published At: ', latestReleaseStruct.published_at]);
+    % end
+    % 
+    % if isfield(latestReleaseStruct, 'body')
+    %     disp('Release Notes:');
+    %     disp(latestReleaseStruct.body);
+    % end
+end % Ends the flag_do_plot if statement
+
+if flag_do_debug
+    fprintf(1,'ENDING function: %s, in file: %s\n\n',st(1).name,st(1).file);
+end
+
+
+end % Ends the function
 
 %% Functions follow
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

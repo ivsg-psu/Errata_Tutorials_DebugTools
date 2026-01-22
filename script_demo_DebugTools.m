@@ -242,12 +242,49 @@
 %   % * Now saves answers thus far into a holding "answers" data file
 %   % * Saves the timeLog now
 % (new release)
+%
+% 2026_01_21 by Aneesh Batcu, abb6486@psu.edu
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Modified a few lines to make Installer compatible for MAC
+%   % * Main difference: Macs require * as query instead of *.* because the
+%   %   % finder keeps files that have only extensions but no name, like
+%   %   % ".something". Similarly, all rmdir commands require 's' for
+%   %   % sequential removes because MAC folders may contain subfolders
+%
+% 2026_01_21 by Sean Brennan, sbrennan@psu.edu
+% - Created fcn_DebugTools_testRepoForRelease 
+%   % Automatically checks repos to determine if they are ready for release. 
+%   % This includes a number of tests including:
+%   % * Makes sure there is only one .m file in main folder
+%   % * Checks that "script_demo_(reponame).m" exists
+%   % * Checks that "README.md" exists
+%   % * Checks existence of key folders 
+%   %   % {'Functions', 'Data', 'Documents', 'Installer', 'Images'}
+%   % * Checks that main file contains required strings 
+%   %   % {'REVISION HISTORY', 'TO-DO','FLAG_CHECK_INPUTS','FLAG_DO_DEBUG'}
+%   % * Checks that function folder does not contain forbiddenStrings: 
+%   %   % 'cl'+'c') and 'clear'+' all'
+%   % * Warns if poorly named variables or comments used in funtions
+%   %   % fig_+num
+%   %   % %-+- type comments
+%   % * Makes sure all functions are matched to test scripts
+%   % * Checks that all functions contain required strings 
+%   %   % {'REVISION HISTORY', 'TO-DO','FLAG_CHECK_INPUTS','FLAG_DO_DEBUG'}
+%   % * Checks that all functions do not contain forbiddenStrings: 
+%   %   % 'cl'+'c') and 'clear'+' all'
+%   % * Loops through all the test scripts to make sure they run
+%   % * OPTIONAL: search/replaces for key strings in all functions
+% (new release)
+
 
 % TO-DO:
 % 
 % 2025_11_17 by Sean Brennan, sbrennan@psu.edu
-% - need tool to check for square matrices
-% - need to functionalize script_test_all_functions 
+% - Need way to check for square matrices
+%
+% 2026_01_22 by Sean Brennan, sbrennan@psu.edu
+% - In auto-installer, need way to catch nested installs. See to-do list in
+%   % that function for details
 
 
 %% Make sure we are running out of root directory

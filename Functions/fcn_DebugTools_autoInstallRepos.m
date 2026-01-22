@@ -121,9 +121,14 @@ function fcn_DebugTools_autoInstallRepos(...
 % - Fixed variable naming for clarity:
 %   % * fig_+num to figNum
 % - Updated docstrings to point to test script
+%
 % 2026_01_21 by Aneesh Batcu, abb6486@psu.edu
-% - Modified a few lines to make Installer compatible for MAC as well
-
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Modified a few lines to make Installer compatible for MAC
+%   % * Main difference: Macs require * as query instead of *.* because the
+%   %   % finder keeps files that have only extensions but no name, like
+%   %   % ".something". Similarly, all rmdir commands require 's' for
+%   %   % sequential removes because MAC folders may contain subfolders
 
 % TO-DO:
 % - 2025_11_12 by Sean Brennan, sbrennan@psu.edu
@@ -791,9 +796,9 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
                     flag_is_nested_install = 1;
                     install_directory_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name);
                     if ispc
-                        install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*.*');
+                        install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*.*'); % For PCs
                     elseif ismac
-                        install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*');
+                        install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*'); % For Macs
                     end
                     install_location_to = fullfile(directory_contents(ith_entry).folder);
                 end
