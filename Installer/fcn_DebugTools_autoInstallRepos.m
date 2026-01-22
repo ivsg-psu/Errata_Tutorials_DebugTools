@@ -121,9 +121,6 @@ function fcn_DebugTools_autoInstallRepos(...
 % - Fixed variable naming for clarity:
 %   % * fig_+num to figNum
 % - Updated docstrings to point to test script
-% 
-% 2026_01_21 by Aneesh Batcu, abb6486@psu.edu
-% - Modified a few lines to make Installer compatible for MAC as well
 
 
 % TO-DO:
@@ -323,7 +320,7 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
 
             % Remove the folder from the path
             % Clear out any path directories under Utilities
-            path_dirs = regexp(path,pathsep,'split');
+            path_dirs = regexp(path,'[;]','split');
             for ith_dir = 1:length(path_dirs)
                 utility_flag = strfind(path_dirs{ith_dir},directoryPath);
                 if ~isempty(utility_flag)
@@ -791,11 +788,7 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
                 if directory_contents(ith_entry).isdir
                     flag_is_nested_install = 1;
                     install_directory_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name);
-                    if ispc
-                        install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*.*');
-                    elseif ismac
-                        install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*');
-                    end
+                    install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*.*');
                     install_location_to = fullfile(directory_contents(ith_entry).folder);
                 end
             end
@@ -811,7 +804,7 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
                     'Reason message: %s\n' ...
                     'And message_ID: %s\n'],install_files_from,install_location_to, message,message_ID);
             end
-            [status,message,message_ID] = rmdir(install_directory_from, 's');
+            [status,message,message_ID] = rmdir(install_directory_from);
             if 0==status
                 warning('backtrace','on');
                 warning('Error encountered in removing directory during install.');
