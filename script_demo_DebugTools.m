@@ -275,7 +275,13 @@
 %   % * Loops through all the test scripts to make sure they run
 %   % * OPTIONAL: search/replaces for key strings in all functions
 % (new release)
-
+%
+% 2026_01_25 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Fixed bug on line 343 where utilities_dir variable called but not
+%   %   % defined. Now directoryPath variable used
+%   % * Added input checking
+% (new release)
 
 % TO-DO:
 % 
