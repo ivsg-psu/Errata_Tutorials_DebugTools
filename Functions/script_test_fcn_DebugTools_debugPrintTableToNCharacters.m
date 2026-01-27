@@ -176,7 +176,7 @@ header_strings = [{'Data ID'}, {'Location X'},{'Location Y'},{'s-coord 1'},{'s-c
 
 formatter_strings = [...
     {'%.0d'},{'%.12fa'},{'*blue %.12fa'},{'%.12fa'},{'%.12fa'},{[]}; 
-    {'red %.0d'},{'red %.12fa'},{'red %.12fa'},{'red %.12fa'},{'red %.12fa'},{rowsToFormat}]; 
+    {'[0.8 0.8 0.8] %.0d'},{'red %.12fa'},{'red %.12fa'},{'red %.12fa'},{'red %.12fa'},{rowsToFormat}]; 
 
 
 numChars = [-1, -1, -1, -1, -1]; % Specify spaces for each column

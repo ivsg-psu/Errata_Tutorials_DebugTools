@@ -16,7 +16,7 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 %
 %      fid: a FID number to print results. If set to -1, skips any
 %      input checking or debugging, no prints will be generated, and sets
-%      up code to maximize speed. 
+%      up code to maximize speed.
 %
 % OUTPUTS:
 %
@@ -34,23 +34,27 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % This function was written on 2026_01_12 by S. Brennan.
 % Questions or comments? sbrennan@psu.edu
 
-% REVISION HISTORY: 
-% 
+% REVISION HISTORY:
+%
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
 % - first write of the code
-% 
+%
 % 2026_01_18 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Reset bad input counter if good input detected
 %   % * Allow multi-line questions if wrap-around needed for long text
 %   % * Fixed bug where only part of line is being highlighted bold
-% 
+%
 % 2026_01_19 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Now checks for empty entries prior to submitting
 %   % * Now allows cell array of eval commands instead of one string
 %   % * Now saves answers thus far into a holding "answers" data file
 %   % * Saves the timeLog now
+%
+% 2026_01_26 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Fixed bug where deactivated questions were still printing as active
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -64,29 +68,29 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 MAX_NARGIN = 2; % The largest Number of argument inputs to the function
 flag_max_speed = 0;
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
-    flag_do_debug = 0; %     % Flag to plot the results for debugging
-    flag_check_inputs = 0; % Flag to perform input checking
-    flag_max_speed = 1;
+	flag_do_debug = 0; %     % Flag to plot the results for debugging
+	flag_check_inputs = 0; % Flag to perform input checking
+	flag_max_speed = 1;
 else
-    % Check to see if we are externally setting debug mode to be "on"
-    flag_do_debug = 0; %     % Flag to plot the results for debugging
-    flag_check_inputs = 1; % Flag to perform input checking
-    MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
-    MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
-    if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
-        flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG); 
-        flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
-    end
+	% Check to see if we are externally setting debug mode to be "on"
+	flag_do_debug = 0; %     % Flag to plot the results for debugging
+	flag_check_inputs = 1; % Flag to perform input checking
+	MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
+	MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
+	if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
+		flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG);
+		flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
+	end
 end
 
 % flag_do_debug = 1;
 
 if flag_do_debug
-    st = dbstack; %#ok<*UNRCH>
-    fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-    debug_figNum = 999978; %#ok<NASGU>
+	st = dbstack; %#ok<*UNRCH>
+	fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
+	debug_figNum = 999978; %#ok<NASGU>
 else
-    debug_figNum = []; %#ok<NASGU>
+	debug_figNum = []; %#ok<NASGU>
 end
 
 %% check input arguments
@@ -103,32 +107,32 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if 0 == flag_max_speed
-    if flag_check_inputs == 1
-        % Are there the right number of inputs?
-        narginchk(1,MAX_NARGIN);
+	if flag_check_inputs == 1
+		% Are there the right number of inputs?
+		narginchk(1,MAX_NARGIN);
 
-        % Check the table_data input
-        % fcn_DebugTools_checkInputsToFunctions(table_data, '_of_chars');
+		% Check the table_data input
+		% fcn_DebugTools_checkInputsToFunctions(table_data, '_of_chars');
 
-        % Check the header_strings input
-        % fcn_DebugTools_checkInputsToFunctions(header_strings, '_of_chars');
+		% Check the header_strings input
+		% fcn_DebugTools_checkInputsToFunctions(header_strings, '_of_chars');
 
-        % Check the numChars input
-        % fcn_DebugTools_checkInputsToFunctions(numChars, '_of_integers');
+		% Check the numChars input
+		% fcn_DebugTools_checkInputsToFunctions(numChars, '_of_integers');
 
-    end
+	end
 end
 
 
 % Check to see if user specifies fid?
 flag_do_plots = 0; % Default is to NOT show plots
 fid = 1; %#ok<NASGU> % Default is to print to the console
-if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
-    temp = varargin{end};
-    if ~isempty(temp)
-        fid = temp; %#ok<NASGU>
-        flag_do_plots = 1;
-    end
+if (0==flag_max_speed) && (MAX_NARGIN == nargin)
+	temp = varargin{end};
+	if ~isempty(temp)
+		fid = temp; %#ok<NASGU>
+		flag_do_plots = 1;
+	end
 end
 
 
@@ -153,16 +157,25 @@ numBadOptionInputs = 0; %#ok<NASGU>
 % Load prior answers, if any
 answersFileName = fullfile(pwd,'Data','answersSoFar.mat');
 if exist(answersFileName,'file')
-    load(answersFileName,'answers', 'timelog');
+	load(answersFileName,'answers', 'timelog');
 else
-    % Initialize answers
-    answers = cell(numQuestions,1);
-    timelog = cell(1,1);
-    timelog{1,1} = datetime('now');
+	% Initialize answers
+	answers = cell(numQuestions,1);
+	timelog = cell(1,1);
+	timelog{1,1} = datetime('now');
 end
+
 
 flag_exitMain = 0;
 while 0==flag_exitMain
+
+	% If the first answer is non-empty, all menu options are allowed
+	if ~isempty(answers{1})
+		for ith_selection = 1:length(selections)
+			selections(ith_selection).isAllowableMenuOption = true;
+		end
+	end
+
 
 	%%%%%
 	% What are allowable actions right now?
@@ -212,59 +225,59 @@ while 0==flag_exitMain
 		end
 		fprintf(1,'Hit any key to continue.\n');
 		pause;
-    else
+	else
 
-        % Check if user is submitting. If so, make sure all answers are
-        % filled in OR that user accepts this.
-        flagKeepGoing = true;
-        if strcmpi(mainMenuChoice,'s')
-            % Check that all entries are filled in
-            answerIndex = find(cellfun(@isempty, answers), 1);
-            if ~isempty(answerIndex) && (answerIndex<=numIntegerQuestions)
-                flagKeepGoing = false;
-                fcn_DebugTools_cprintf('*Red',sprintf('WARNING: not all answers have been filled out (see, for example, question %.0f)!',answerIndex));
-                reallySureSubmitChoice = input(sprintf('Do you really want to submit this? [default = ''n'']:'),'s');
-                if isempty(reallySureSubmitChoice)
-                    reallySureSubmitChoice = 'n';
-                end
-                fprintf(1,'Selection chosen: -->  %s\n',reallySureSubmitChoice);
-                if ~any(strcmpi(reallySureSubmitChoice,{'n', 'y'}))
-                    fprintf(1,'Unrecognized user choice: %s. Assuming the choice is NO. \n ', reallySureSubmitChoice);
-                    fprintf(1,'Hit any key to continue.\n');
-                    pause;
-                end
-                if strcmpi(reallySureSubmitChoice,'y')
-                    flagKeepGoing = true;
-                end
-            end
-        end
+		% Check if user is submitting. If so, make sure all answers are
+		% filled in OR that user accepts this.
+		flagKeepGoing = true;
+		if strcmpi(mainMenuChoice,'s')
+			% Check that all entries are filled in
+			answerIndex = find(cellfun(@isempty, answers), 1);
+			if ~isempty(answerIndex) && (answerIndex<=numIntegerQuestions)
+				flagKeepGoing = false;
+				fcn_DebugTools_cprintf('*Red',sprintf('WARNING: not all answers have been filled out (see, for example, question %.0f)!',answerIndex));
+				reallySureSubmitChoice = input(sprintf('Do you really want to submit this? [default = ''n'']:'),'s');
+				if isempty(reallySureSubmitChoice)
+					reallySureSubmitChoice = 'n';
+				end
+				fprintf(1,'Selection chosen: -->  %s\n',reallySureSubmitChoice);
+				if ~any(strcmpi(reallySureSubmitChoice,{'n', 'y'}))
+					fprintf(1,'Unrecognized user choice: %s. Assuming the choice is NO. \n ', reallySureSubmitChoice);
+					fprintf(1,'Hit any key to continue.\n');
+					pause;
+				end
+				if strcmpi(reallySureSubmitChoice,'y')
+					flagKeepGoing = true;
+				end
+			end
+		end
 
-        % Should the submission or entry continue?
-        if flagKeepGoing
-    		numBadInputs = 0;
-    		matchedIndices = strcmpi(mainMenuChoice,allowableOptions);
-    		firstMatch = find(matchedIndices,1);
-    		actualIndex = associatedIndices(firstMatch,1);
-            selectedOptionCharacters = selections(actualIndex).MenuChar; %#ok<NASGU>
-            commandToEval = selections(actualIndex).FunctionSubmission;
-            if ischar(commandToEval)
-                commandToRun = sprintf(commandToEval);
-                eval(commandToRun);
-            elseif iscell(commandToEval)
-                for ith_cell = 1:length(commandToEval)
-                    commandToRun = sprintf(commandToEval{ith_cell});
-                    eval(commandToRun);
-                end
-            else
-                error('Unrecognized type found in selections(actualIndex).MenuChar');
-            end
+		% Should the submission or entry continue?
+		if flagKeepGoing
+			numBadInputs = 0;
+			matchedIndices = strcmpi(mainMenuChoice,allowableOptions);
+			firstMatch = find(matchedIndices,1);
+			actualIndex = associatedIndices(firstMatch,1);
+			selectedOptionCharacters = selections(actualIndex).MenuChar; %#ok<NASGU>
+			commandToEval = selections(actualIndex).FunctionSubmission;
+			if ischar(commandToEval)
+				commandToRun = sprintf(commandToEval);
+				eval(commandToRun);
+			elseif iscell(commandToEval)
+				for ith_cell = 1:length(commandToEval)
+					commandToRun = sprintf(commandToEval{ith_cell});
+					eval(commandToRun);
+				end
+			else
+				error('Unrecognized type found in selections(actualIndex).MenuChar');
+			end
 
-        end
-    end
+		end
+	end
 
-    % Save the answers
-    timelog{end+1,1} = datetime('now'); %#ok<AGROW>
-    save(answersFileName,'answers', 'timelog');
+	% Save the answers
+	timelog{end+1,1} = datetime('now'); %#ok<AGROW>
+	save(answersFileName,'answers', 'timelog');
 
 end % Ends while loop for menu
 
@@ -280,17 +293,17 @@ end % Ends while loop for menu
 %                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if 1 == flag_do_plots
-    %     figure(figNum);
-    %     clf;
-    %     hold on;
-    %     grid on;
-    %
-    %        
-    
+	%     figure(figNum);
+	%     clf;
+	%     hold on;
+	%     grid on;
+	%
+	%
+
 end % Ends the flag_do_plot if statement
 
 if flag_do_debug
-    fprintf(1,'ENDING function: %s, in file: %s\n\n',st(1).name,st(1).file); 
+	fprintf(1,'ENDING function: %s, in file: %s\n\n',st(1).name,st(1).file);
 end
 
 end % Ends the main function
@@ -331,7 +344,12 @@ for ith_row = 1:numRows
 	else
 		printStyleCell{numActualRows,1} = 1;
 	end
-	
+
+	flagIsAllowable = selections(ith_row).isAllowableMenuOption;
+	if ~flagIsAllowable
+		printStyleCell{numActualRows,1} = 3;
+	end
+
 	cellArray{numActualRows, 1} = fcn_INTERNAL_isSelectedString(flagIsSelected); % Selection arrow
 	cellArray{numActualRows, 2} = selections(ith_row).MenuChar;      % Question Character
 
@@ -394,10 +412,13 @@ table_data = cellArray;
 header_strings = [{'Selection'}, {'#'},{'Question:'},{'More Help?'},{'Answer'}]; % Headers for each column
 
 boldedRows = find(printStyle==2);
+greyRows = find(printStyle==3);
+
 
 formatter_strings = [...
 	{'%s'},{'%s'},{'%s'},{'Green %s'},{'Red %s'},{[]};
-	{'*Black %s'},{'*Black %s'},{'*Black %s'},{'*Green %s'},{'*Red %s'},{boldedRows}];
+	{'*Black %s'},{'*Black %s'},{'*Black %s'},{'*Green %s'},{'*Red %s'},{boldedRows};
+	{'[0.8 0.8 0.8] %s'},{'[0.8 0.8 0.8] %s'},{'[0.8 0.8 0.8] %s'},{'[0.8 0.8 0.8] %s'},{'[0.8 0.8 0.8] %s'},{greyRows}];
 
 % fcn_INTERNAL_showSelection(parsingChoice,allOptions{ith_option});
 % if any(strcmp(thisOption,allowableOptions))
@@ -422,7 +443,7 @@ for ith_selection = 1:length(selections)
 	if selections(ith_selection).isAllowableMenuOption
 		thisOption = selections(ith_selection).MenuChar;
 		numOptions = numOptions+1;
-		allowableOptions{numOptions,1} = thisOption; 
+		allowableOptions{numOptions,1} = thisOption;
 		associatedIndices(numOptions,1) = ith_selection; %#ok<AGROW>
 	end
 end
@@ -453,6 +474,11 @@ try
 
 	if ~isempty(allowableRange)
 		if inputToVerify<allowableRange(1) || inputToVerify>allowableRange(2)
+			if contains(typeTest,'integer')
+				fprintf(1,'The answer is outside the allowable range of: %.0f to %.0f.\n',allowableRange(1), allowableRange(2));
+			else
+				fprintf(1,'The answer is outside the allowable range of: %.2f to %.2f.\n',allowableRange(1), allowableRange(2));
+			end
 			flagVerified = false;
 		end
 	end
@@ -484,7 +510,18 @@ if isempty(optionChoice) || strcmpi(optionChoice,'h')
 
 	if ~isempty(selections(selectedRow).FunctionMore)
 		fprintf(1,'Launching help function for this question:\n');
-		eval(selections(selectedRow).FunctionMore)
+		commandToEval = selections(selectedRow).FunctionMore;
+		if ischar(commandToEval)
+			commandToRun = sprintf(commandToEval);
+			eval(commandToRun);
+		elseif iscell(commandToEval)
+			for ith_cell = 1:length(commandToEval)
+				commandToRun = sprintf(commandToEval{ith_cell});
+				eval(commandToRun);
+			end
+		else
+			error('Unrecognized type found in selections(actualIndex).MenuChar');
+		end
 	else
 		fprintf(1,'Unfortunately, there is no help function for this question.\n');
 	end
@@ -497,7 +534,14 @@ else
 	end
 
 	% Check if good
-	flagPassed = fcn_INTERNAL_menuVerifyChoice(optionChoice, selections(selectedRow).AnswerType, selections(selectedRow).AnswerTypeOptions,[]);
+	if isfield(selections, 'AnswerAllowableRange') && ~isempty(selections(selectedRow).AnswerAllowableRange)
+		flagPassed = fcn_INTERNAL_menuVerifyChoice(optionChoice, ...
+			selections(selectedRow).AnswerType, ...
+			selections(selectedRow).AnswerTypeOptions, ...
+			selections(selectedRow).AnswerAllowableRange);
+	else
+		flagPassed = fcn_INTERNAL_menuVerifyChoice(optionChoice, selections(selectedRow).AnswerType, selections(selectedRow).AnswerTypeOptions,[]);
+	end
 
 	if ~flagPassed
 		numBadOptionInputs = numBadOptionInputs + 1;
