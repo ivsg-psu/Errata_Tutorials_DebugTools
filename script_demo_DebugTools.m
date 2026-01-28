@@ -282,6 +282,12 @@
 %   %   % defined. Now directoryPath variable used
 %   % * Added input checking
 % (new release)
+%
+% 2026_01_27 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Updated the previous answers datafile naming to avoid prior
+%   %   % assignments putting data into future assignments.
+% (new release)
 
 % TO-DO:
 % 

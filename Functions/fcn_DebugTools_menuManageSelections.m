@@ -55,6 +55,11 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % 2026_01_26 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Fixed bug where deactivated questions were still printing as active
+%
+% 2026_01_27 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Updated the previous answers datafile naming to avoid prior
+%   %   % assignments putting data into future assignments.
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -155,7 +160,12 @@ numBadInputs = 0;
 numBadOptionInputs = 0; %#ok<NASGU>
 
 % Load prior answers, if any
-answersFileName = fullfile(pwd,'Data','answersSoFar.mat');
+if isfield(selections, 'AssignmentString') && ~isempty(selections(1).AssignmentString)
+	answersFileName = fullfile(pwd,'Data',cat(2,'answersSoFar_',selections(1).AssignmentString,'.mat'));
+else
+	answersFileName = fullfile(pwd,'Data','answersSoFar.mat');
+end
+
 if exist(answersFileName,'file')
 	load(answersFileName,'answers', 'timelog');
 else
