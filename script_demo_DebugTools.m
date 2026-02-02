@@ -301,6 +301,19 @@
 % - In script_test_all_functions and testRepoForRelease
 %   % * Removed fig+num and cl+c explicit calls
 % (new release)
+%
+% 2026_02_02 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_imagesAddLabelsInteractive
+%   % * Wrote the code originally, using breakDataIntoLaps as starter
+% - In script_test_fcn_DebugTools_imagesConvertToJPG
+%   % * Wrote the code originally, using breakDataIntoLaps as starter
+% - In fcn_DebugTools_imagesAddLabelsInteractive
+%   % * First write of the code. used Copilot as starter.
+% - In fcn_DebugTools_imagesConvertToJPG
+%   % * First write of the code. used Copilot as starter.
+% (new release)
+
+
 
 % TO-DO:
 % 
