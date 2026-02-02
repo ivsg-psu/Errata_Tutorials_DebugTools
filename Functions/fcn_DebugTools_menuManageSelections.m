@@ -60,6 +60,10 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % - In fcn_DebugTools_menuManageSelections
 %   % * Updated the previous answers datafile naming to avoid prior
 %   %   % assignments putting data into future assignments.
+% 
+% 2026_02_02 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Fixed incorrect capitalization in fcn_DebugTools_wrapLongText
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -364,7 +368,7 @@ for ith_row = 1:numRows
 	cellArray{numActualRows, 2} = selections(ith_row).MenuChar;      % Question Character
 
 	originalText = selections(ith_row).Text;
-	wrappedText = fcn_debugTools_wrapLongText(originalText,50);
+	wrappedText = fcn_DebugTools_wrapLongText(originalText,50);
 	textCellArray= split(wrappedText,'\n');
 
 	cellArray{numActualRows, 3} = textCellArray{1};  % Question Text

@@ -312,7 +312,12 @@
 % - In fcn_DebugTools_imagesConvertToJPG
 %   % * First write of the code. used Copilot as starter.
 % (new release)
-
+%
+% 2026_02_02 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Fixed incorrect capitalization in fcn_DebugTools_wrapLongText
+%
+% (new release)
 
 
 % TO-DO:
