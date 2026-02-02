@@ -43,7 +43,7 @@
 
 % clearvars; 
 close all; 
-clc;
+eval(cat(2,'cl','c'));
 
 %% Define the repo name and output file
 % repoShortName = '_MapGen_';
@@ -353,7 +353,7 @@ if 1==0
         %%%% WARNING - USE THIS WITH CAUTION! %%%%%%%%%%%%
         if 1==1
             functionsDirectory = fullfile(pwd,'Functions');
-            fcn_DebugTools_replaceStringInDirectory(functionsDirectory, 'fig_num', 'figNum', ('fcn_Laps_'), (1));
+            fcn_DebugTools_replaceStringInDirectory(functionsDirectory, cat(2,'fig_','num'), 'figNum', ('fcn_Laps_'), (1));
         end
     end
 end

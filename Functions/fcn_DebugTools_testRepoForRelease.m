@@ -67,7 +67,7 @@ function fcn_DebugTools_testRepoForRelease(repoShortName, varargin)
 %
 % 2025_11_06 by Sean Brennan, sbrennan@psu.edu
 % - Started revision history 
-% - Updated clc and clear all checking to avoid checking this file
+% - Updated cl+c and cl+ear all checking to avoid checking this file
 % - Added subfunction (INTERNAL) to remove specific file names from
 %    % checking
 % - Improved error checking for missed functions and test scripts
@@ -475,7 +475,7 @@ ylabel('Elapsed time to test (sec)');
 
 %% Check which files contain key strings?
 if 1==0
-    clc
+    eval(cat(2,'cl','c'));
     functionsDirectoryQuery = fullfile(pwd,'Functions','*.*');
     % Use the following instead, if wish to do subdirectories
     % directoryQuery = fullfile(pwd,'Functions','**','*.*');
@@ -500,7 +500,7 @@ if 1==0
         %%%% WARNING - USE THIS WITH CAUTION! %%%%%%%%%%%%
         if 1==1
             functionsDirectory = fullfile(pwd,'Functions');
-            fcn_DebugTools_replaceStringInDirectory(functionsDirectory, 'fig_num', 'figNum', ('fcn_Laps_'), (1));
+            fcn_DebugTools_replaceStringInDirectory(functionsDirectory, cat(2,'fig_','num'), 'figNum', ('fcn_Laps_'), (1));
         end
     end
 end

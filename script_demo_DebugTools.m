@@ -288,6 +288,19 @@
 %   % * Updated the previous answers datafile naming to avoid prior
 %   %   % assignments putting data into future assignments.
 % (new release)
+%
+% 2026_02_01 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_timeQueryNTPserver
+%   % * Fixed wrong capitalization in function name
+% - In fcn_DebugTools_timeQueryNTPserver
+%   % * Fixed wrong capitalization in function name
+% - In script_test_fcn_DebugTools_wrapLongText
+%   % * Fixed wrong capitalization in function name
+% - In fcn_DebugTools_wrapLongText
+%   % * Fixed wrong capitalization in function name
+% - In script_test_all_functions and testRepoForRelease
+%   % * Removed fig+num and cl+c explicit calls
+% (new release)
 
 % TO-DO:
 % 

@@ -1,5 +1,5 @@
-function wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, varargin)
-% fcn_debugTools_wrapLongText
+function wrappedText = fcn_DebugTools_wrapLongText(originalText, wrapLength, varargin)
+% fcn_DebugTools_wrapLongText
 % given an input character array, originalText, and an allowable
 % wrapLength, saves the original text as wrapped characters inserting the
 % \n to break the text up at the first space before the wrapLength. If
@@ -7,7 +7,7 @@ function wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, var
 %
 % FORMAT:
 %
-%      wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, (fid))
+%      wrappedText = fcn_DebugTools_wrapLongText(originalText, wrapLength, (fid))
 %
 % INPUTS:
 %
@@ -31,7 +31,7 @@ function wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, var
 %
 % EXAMPLES:
 %
-% See the script: script_test_fcn_debugTools_wrapLongText
+% See the script: script_test_fcn_DebugTools_wrapLongText
 % for a full test suite.
 %
 % This function was written on 2026_01_18 by S. Brennan.
@@ -40,13 +40,16 @@ function wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, var
 % REVISION HISTORY: 
 % 
 % 2026_01_18 by Sean Brennan, sbrennan@psu.edu
-% - first write of the code fcn_debugTools_wrapLongText
+% - first write of the code fcn_DebugTools_wrapLongText
 %   % * given an input character array, originalText, and an allowable
 %   %   wrapLength, saves the original text as wrapped characters
 %   % * insertsg the '\n' to break the text up at the first space before 
 %   %   the wrapLength. 
 %   % * If there is no space, the text has a '...\n' added instead of '\n'
-
+%
+% 2026_02_01 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_wrapLongText
+%   % * Fixed wrong capitalization in function name
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -163,7 +166,7 @@ else
 		afterSpaceText = cat(2,afterSpaceText,originalText(wrapLength+1:end));
 	end
 
-	wrappedText = cat(2,beforeSpaceText, insertionString, fcn_debugTools_wrapLongText(afterSpaceText, wrapLength));
+	wrappedText = cat(2,beforeSpaceText, insertionString, fcn_DebugTools_wrapLongText(afterSpaceText, wrapLength));
 
 end % Ends fcn_INTERNAL_wrapLongText
 

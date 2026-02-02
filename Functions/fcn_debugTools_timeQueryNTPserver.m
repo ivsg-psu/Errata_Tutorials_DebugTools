@@ -1,10 +1,10 @@
-function UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, varargin)
-%% fcn_debugTools_timeQueryNTPserver
+function UTCdatetime = fcn_DebugTools_timeQueryNTPserver(server, varargin)
+%% fcn_DebugTools_timeQueryNTPserver
 % Queries NTP server and returns the datetime in UTC
 %
 % FORMAT:
 %
-%      UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (figNum))
+%      UTCdatetime = fcn_DebugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (figNum))
 %
 % INPUTS:
 %
@@ -32,7 +32,7 @@ function UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, varargin)
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_debugTools_timeQueryNTPserver
+%     See the script: script_test_fcn_DebugTools_timeQueryNTPserver
 %     for a full test suite.
 %
 % This function was written on 2026_01_19 by S. Brennan
@@ -41,7 +41,11 @@ function UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, varargin)
 % REVISION HISTORY:
 % 
 % 2026_01_19 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally
+% - Wrote the code originally
+%
+% 2026_02_01 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_timeQueryNTPserver
+%   % * Fixed wrong capitalization in function name
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
@@ -159,7 +163,7 @@ try
     sock.send(outPacket);
 
     % receive response (48 bytes)
-    buffer = javaArray('java.lang.Byte', 48);
+    buffer = javaArray('java.lang.Byte', 48); %#ok<NASGU>
     recvBuf = zeros(48,1,'int8');
     respPacket = DatagramPacket(recvBuf, int32(48));
     sock.receive(respPacket);

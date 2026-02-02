@@ -1,10 +1,14 @@
-% script_test_fcn_debugTools_wrapLongText.m
-% tests fcn_debugTools_wrapLongText.m
+% script_test_fcn_DebugTools_wrapLongText.m
+% tests fcn_DebugTools_wrapLongText.m
 
 % REVISION HISTORY:
 %
 % 2026_01_18 by Sean Brennan, sbrennan@psu.edu
 % - wrote the code originally, using breakDataIntoLaps as starter
+%
+% 2026_02_01 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_wrapLongText
+%   % * Fixed wrong capitalization in function name
 
 % TO-DO:
 %
@@ -44,7 +48,7 @@ originalText = 'This is a very long string that needs to be broken into somethin
 wrapLength = 40;
 
 % Call the function
-wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, (figNum));
+wrappedText = fcn_DebugTools_wrapLongText(originalText, wrapLength, (figNum));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -116,7 +120,7 @@ originalText = 'This is a very long string that needs to be broken into somethin
 wrapLength = 40;
 
 % Call the function
-wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, ([]));
+wrappedText = fcn_DebugTools_wrapLongText(originalText, wrapLength, ([]));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -145,7 +149,7 @@ originalText = 'This is a very long string that needs to be broken into somethin
 wrapLength = 40;
 
 % Call the function
-wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, (-1));
+wrappedText = fcn_DebugTools_wrapLongText(originalText, wrapLength, (-1));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -181,7 +185,7 @@ Niterations = 50;
 tic;
 for ith_test = 1:Niterations
     % Call the function
-    wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, ([]));
+    wrappedText = fcn_DebugTools_wrapLongText(originalText, wrapLength, ([]));
 end
 slow_method = toc;
 
@@ -189,7 +193,7 @@ slow_method = toc;
 tic;
 for ith_test = 1:Niterations
     % Call the function
-    wrappedText = fcn_debugTools_wrapLongText(originalText, wrapLength, (-1));
+    wrappedText = fcn_DebugTools_wrapLongText(originalText, wrapLength, (-1));
 end
 fast_method = toc;
 
@@ -237,42 +241,42 @@ if 1==0
     %
         %% Fails because start_definition is not correct type
         start_definition = [1 2];
-        [lap_traversals, input_and_exit_traversals] = fcn_debugTools_wrapLongText(...
+        [lap_traversals, input_and_exit_traversals] = fcn_DebugTools_wrapLongText(...
             single_lap.traversal{1},...
             start_definition); %#ok<*ASGLU>
 
         %% Fails because start_definition is not correct type
         % Radius input is negative
         start_definition = [-1 2 3 4];
-        [lap_traversals, input_and_exit_traversals] = fcn_debugTools_wrapLongText(...
+        [lap_traversals, input_and_exit_traversals] = fcn_DebugTools_wrapLongText(...
             single_lap.traversal{1},...
             start_definition);
 
         %% Fails because start_definition is not correct type
         % Radius input is negative
         start_definition = [0 2 3 4];
-        [lap_traversals, input_and_exit_traversals] = fcn_debugTools_wrapLongText(...
+        [lap_traversals, input_and_exit_traversals] = fcn_DebugTools_wrapLongText(...
             single_lap.traversal{1},...
             start_definition);
 
         %% Fails because start_definition is not correct type
         % Num_inputs input is not positive
         start_definition = [1 0 3 4];
-        [lap_traversals, input_and_exit_traversals] = fcn_debugTools_wrapLongText(...
+        [lap_traversals, input_and_exit_traversals] = fcn_DebugTools_wrapLongText(...
             single_lap.traversal{1},...
             start_definition);
 
         %% Warning because start_definition is 3D not 2D
         % Start_zone definition is a 3D point [radius num_points X Y Z]
         start_definition = [1 2 3 4 5];
-        [lap_traversals, input_and_exit_traversals] = fcn_debugTools_wrapLongText(...
+        [lap_traversals, input_and_exit_traversals] = fcn_DebugTools_wrapLongText(...
             single_lap.traversal{1},...
             start_definition);
 
         %% Warning because start_definition is 3D not 2D
         % Start_zone definition is a 3D point [X Y Z; X Y Z]
         start_definition = [1 2 3; 4 5 6];
-        [lap_traversals, input_and_exit_traversals] = fcn_debugTools_wrapLongText(...
+        [lap_traversals, input_and_exit_traversals] = fcn_DebugTools_wrapLongText(...
             single_lap.traversal{1},...
             start_definition);
 
@@ -281,7 +285,7 @@ if 1==0
         start_definition = [1 2 3 4];
         end_definition = [1 2 3 4 5];
 
-        [lap_traversals, input_and_exit_traversals] = fcn_debugTools_wrapLongText(...
+        [lap_traversals, input_and_exit_traversals] = fcn_DebugTools_wrapLongText(...
             single_lap.traversal{1},...
             start_definition,...
             end_definition);
@@ -292,7 +296,7 @@ if 1==0
         end_definition = [1 2 3 4];
         excursion_definition = [1 2 3 4 5];
 
-        [lap_traversals, input_and_exit_traversals] = fcn_debugTools_wrapLongText(...
+        [lap_traversals, input_and_exit_traversals] = fcn_DebugTools_wrapLongText(...
             single_lap.traversal{1},...
             start_definition,...
             end_definition,...

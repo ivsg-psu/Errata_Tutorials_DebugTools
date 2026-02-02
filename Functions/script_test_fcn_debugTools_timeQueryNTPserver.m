@@ -1,10 +1,15 @@
-% script_test_fcn_debugTools_timeQueryNTPserver.m
-% tests fcn_debugTools_timeQueryNTPserver.m
+% script_test_fcn_DebugTools_timeQueryNTPserver.m
+% tests fcn_DebugTools_timeQueryNTPserver.m
 
 % REVISION HISTORY:
 %
 % 2026_01_19 by Sean Brennan, sbrennan@psu.edu
-% - wrote the code originally, using breakDataIntoLaps as starter
+% - Wrote the code originally, using breakDataIntoLaps as starter
+%
+% 2026_02_01 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_timeQueryNTPserver
+%   % * Fixed wrong capitalization in function name
+
 
 % TO-DO:
 %
@@ -46,7 +51,7 @@ timeoutSecs = [];
 
 %%%%%%%%%%
 % Call the function
-UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (figNum));
+UTCdatetime = fcn_DebugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (figNum));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -78,7 +83,7 @@ timeoutSecs = [];
 
 %%%%%%%%%%
 % Call the function
-UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (figNum));
+UTCdatetime = fcn_DebugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (figNum));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -153,7 +158,7 @@ timeoutSecs = [];
 
 %%%%%%%%%%
 % Call the function
-UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, (port), (timeoutSecs), ([]));
+UTCdatetime = fcn_DebugTools_timeQueryNTPserver(server, (port), (timeoutSecs), ([]));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -185,7 +190,7 @@ timeoutSecs = [];
 
 %%%%%%%%%%
 % Call the function
-UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (-1));
+UTCdatetime = fcn_DebugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (-1));
 
 % sgtitle(titleString, 'Interpreter','none');
 
@@ -223,7 +228,7 @@ tic;
 for ith_test = 1:Niterations
     %%%%%%%%%%
     % Call the function
-    UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, (port), (timeoutSecs), ([]));
+    UTCdatetime = fcn_DebugTools_timeQueryNTPserver(server, (port), (timeoutSecs), ([]));
 end
 slow_method = toc;
 
@@ -232,7 +237,7 @@ tic;
 for ith_test = 1:Niterations
     %%%%%%%%%%
     % Call the function
-    UTCdatetime = fcn_debugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (-1));
+    UTCdatetime = fcn_DebugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (-1));
 end
 fast_method = toc;
 
