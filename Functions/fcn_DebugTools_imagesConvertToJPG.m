@@ -228,7 +228,7 @@ for k = 1:numel(files)
 		title('Image 2');
 
 	end % Ends the flag_do_plot if statement
-
+	pause(0.5);
 end
 
 %% Plot the results (for debugging)?

@@ -46,7 +46,7 @@ destinationDirectory = fullfile(pwd,'Data','imagesConvertToJPG_destination');
 imageSize = [256 256];
 
 % Call the function
-fcn_DebugTools_imagesConvertToJPG(sourceDirectory, destinationDirectory, imageSize, (fid))
+fcn_DebugTools_imagesConvertToJPG(sourceDirectory, destinationDirectory, imageSize, (figNum))
 
 sgtitle(titleString, 'Interpreter','none');
 
@@ -75,6 +75,45 @@ sgtitle(titleString, 'Interpreter','none');
 % Make sure plot opened up
 % assert(isequal(get(gcf,'Number'),figNum));
 
+%% DEMO case: DEMO case: converting all of Amandas additions'
+figNum = 10002;
+titleString = sprintf('DEMO case: converting all of Amandas additions');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); clf;
+
+sourceDirectory = fullfile(pwd,'Data','imagesConvertToJPG_source','New');
+destinationDirectory = fullfile(pwd,'Data','imagesConvertToJPG_destination','New');
+imageSize = [256 256];
+
+% Call the function
+fcn_DebugTools_imagesConvertToJPG(sourceDirectory, destinationDirectory, imageSize, (figNum))
+
+sgtitle(titleString, 'Interpreter','none');
+
+% % Check variable types
+% assert(iscell(cell_array_of_lap_indices));
+% assert(iscell(cell_array_of_entry_indices));
+% assert(iscell(cell_array_of_exit_indices));
+% 
+% % Check variable sizes
+% Nlaps = 3;
+% assert(isequal(Nlaps,length(cell_array_of_lap_indices))); 
+% assert(isequal(Nlaps,length(cell_array_of_entry_indices))); 
+% assert(isequal(Nlaps,length(cell_array_of_exit_indices))); 
+% 
+% % Check variable values
+% % Are the laps starting at expected points?
+% assert(isequal(2,min(cell_array_of_lap_indices{1})));
+% assert(isequal(102,min(cell_array_of_lap_indices{2})));
+% assert(isequal(215,min(cell_array_of_lap_indices{3})));
+% 
+% % Are the laps ending at expected points?
+% assert(isequal(88,max(cell_array_of_lap_indices{1})));
+% assert(isequal(199,max(cell_array_of_lap_indices{2})));
+% assert(isequal(293,max(cell_array_of_lap_indices{3})));
+
+% Make sure plot opened up
+% assert(isequal(get(gcf,'Number'),figNum));
 
 
 %% Test cases start here. These are very simple, usually trivial

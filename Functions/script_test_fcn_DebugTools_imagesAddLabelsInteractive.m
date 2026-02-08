@@ -81,6 +81,50 @@ save(resultsFile,'labels','-v7.3');
 
 
 
+%% DEMO case: labeling new Amanda's images
+figNum = 10002;
+titleString = sprintf('DEMO case: labeling new Amandas images');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); clf;
+
+sourceDirectory = fullfile(pwd,'Data','imagesConvertToJPG_destination','New');
+resultsFile = fullfile(pwd,'Data','slipImages.mat');
+if exist(resultsFile,'file')
+	load(resultsFile,'labels');
+	oldLabels = labels;
+else
+	oldLabels = [];
+end
+
+% Call the function
+labelsNew = fcn_DebugTools_imagesAddLabelsInteractive(sourceDirectory, oldLabels, (figNum));
+save(resultsFile,'labelsNew','-v7.3');
+
+% % Check variable types
+% assert(iscell(cell_array_of_lap_indices));
+% assert(iscell(cell_array_of_entry_indices));
+% assert(iscell(cell_array_of_exit_indices));
+% 
+% % Check variable sizes
+% Nlaps = 3;
+% assert(isequal(Nlaps,length(cell_array_of_lap_indices))); 
+% assert(isequal(Nlaps,length(cell_array_of_entry_indices))); 
+% assert(isequal(Nlaps,length(cell_array_of_exit_indices))); 
+% 
+% % Check variable values
+% % Are the laps starting at expected points?
+% assert(isequal(2,min(cell_array_of_lap_indices{1})));
+% assert(isequal(102,min(cell_array_of_lap_indices{2})));
+% assert(isequal(215,min(cell_array_of_lap_indices{3})));
+% 
+% % Are the laps ending at expected points?
+% assert(isequal(88,max(cell_array_of_lap_indices{1})));
+% assert(isequal(199,max(cell_array_of_lap_indices{2})));
+% assert(isequal(293,max(cell_array_of_lap_indices{3})));
+
+% Make sure plot opened up
+% assert(isequal(get(gcf,'Number'),figNum));
+
 
 
 %% Test cases start here. These are very simple, usually trivial
