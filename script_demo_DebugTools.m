@@ -318,7 +318,12 @@
 %   % * Fixed incorrect capitalization in fcn_DebugTools_wrapLongText
 %
 % (new release)
-
+%
+% 2026_03_24 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Updated version of DebugTools so it will auto-install correctly
+%
+% (new release)
 
 % TO-DO:
 % 
