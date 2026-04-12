@@ -324,6 +324,17 @@
 %   % * Updated version of DebugTools so it will auto-install correctly
 %
 % (new release)
+%
+% 2026_04_11 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_printTimeStringFromSeconds
+%   % * wrote the code originally, using fcn_DebugTools_parseStringIntoCells as
+%   %   % a starter
+% - In fcn_DebugTools_printTimeStringFromSeconds
+%   % * wrote the code originally, using fcn_DebugTools_parseStringIntoCells as
+%   %   % a starter
+%
+% (new release)
+
 
 % TO-DO:
 % 
@@ -1061,6 +1072,26 @@ assert(ischar(timeString));
 % Check variable sizes
 assert(size(timeString,1)==1);
 assert(size(timeString,2)==15);
+
+%% fcn_DebugTools_printTimeStringFromSeconds
+% Prints a seconds value into a format of either seconds, minutes, hours,
+% or days as appropriate
+
+%%% Seconds
+result = fcn_DebugTools_printTimeStringFromSeconds(45, -1);
+assert(strcmp(result,'45.0 seconds'));
+
+%%% Minutes
+result = fcn_DebugTools_printTimeStringFromSeconds(90, -1);
+assert(strcmp(result,'1.5 minutes'));
+
+%%% Hours
+result = fcn_DebugTools_printTimeStringFromSeconds(4000, -1);
+assert(strcmp(result,'1.1 hours'));
+
+%%% Days
+result = fcn_DebugTools_printTimeStringFromSeconds(500000, -1);
+assert(strcmp(result,'5.8 days'));
 
 %% fcn_DebugTools_number2string.m 
 % % prints a "pretty" version of a string, e.g avoiding weirdly odd numbers
