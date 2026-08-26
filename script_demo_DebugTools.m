@@ -342,6 +342,24 @@
 %   % * Wrote the code originally copying out of PennDOTSHP library
 %
 % (new release)
+%
+% 2026_08_25 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_hashStrings
+%   % * Wrote the code originally 
+% - In fcn_DebugTools_hashStrings
+%   % * Wrote the code originally 
+% - In script_test_fcn_DebugTools_md5ForStrings
+%   % * Wrote the code originally 
+% - In fcn_DebugTools_md5ForStrings
+%   % * Wrote the code originally 
+% - In script_test_fcn_DebugTools_gradeAnswers
+%   % * Wrote the code originally 
+% - In fcn_DebugTools_gradeAnswers
+%   % * Wrote the code originally 
+
+%
+% (new release)
+
 
 % TO-DO:
 % 
@@ -1050,6 +1068,55 @@ assert(differenceInTime<hours(24));
 
 % % Make sure plot opened up
 % assert(isequal(get(gcf,'Number'),figNum));
+
+%% Performing the MD5 hash on a string
+
+% Fill in inputs
+inStrings = "Example";
+flagOutputs = [];
+
+
+% Call function
+outHashes = fcn_DebugTools_md5ForStrings(inStrings, (flagOutputs));
+
+% sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(isstring(outHashes));
+
+% Check variable sizes
+assert(size(outHashes,1)==size(inStrings,1));
+assert(size(outHashes,2)==size(inStrings,2)); 
+
+% Check variable values
+assert(strcmp(outHashes,"0a52730597fb4ffa01fc117d9e71e3a9"));
+
+
+%% Hashing strings
+
+% Fill in inputs
+seedString = "Quiz01";
+inStrings = 'Example';
+flagOutputs = [];
+
+% Call function
+outHashes = fcn_DebugTools_hashStrings(seedString, inStrings, (flagOutputs));
+
+% Reverse it to check
+reversed = fcn_DebugTools_hashStrings(seedString, outHashes, (1));
+
+% sgtitle(titleString, 'Interpreter','none');
+
+% Check variable types
+assert(ischar(outHashes));
+
+% Check variable sizes
+assert(size(outHashes,1)==1);
+assert(size(outHashes,2)==2*size(inStrings,2));
+
+% Check variable values
+assert(strcmp(inStrings,reversed));
+
 
 %% Output formatting
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,15 +1,38 @@
-function fcn_DebugTools_menuManageSelections(selections, varargin)
-% fcn_DebugTools_menuManageSelections
-% A powerful menu tool that allows user to define menu options that auto-execute code.
-% The settings in "selections" structure define how menu operates.
+function overallScore = fcn_DebugTools_gradeAnswers(selections, answers, varargin)
+% fcn_DebugTools_gradeAnswers A tool to grade student answers by comparing
+% them to correct values in "selections" structure. 
+%
+% Specifically, it looks for the fields:
+%
+% For example, to check to see if an answer exists and assign no credit,
+% the following format is used:
+%
+% selections(numQuestions).AnswerGradingCorrect = 900000000;
+% selections(numQuestions).AnswerGradingPoints = 0;
+% selections(numQuestions).AnswerGradingType = 'not empty';
+% selections(numQuestions).AnswerGradingOptions = {[]};
+% 
+% Grading options include:
+%
+%   'not empty': full points are assigned to any answer that isn't empty
+%
+%   'exact match': full points are assigned if the lowercase answer
+%   exactly matches the correct answer
+%
+%   'contains word': full points are assigned if the lowercase answer
+%   contains the correct answer.
+%        Options: thisGradingOptions{1},'IgnoreCase' - ignores case
 %
 % FORMAT:
 %
-%      fcn_DebugTools_menuManageSelections(selections, (fid))
+%      fcn_DebugTools_gradeAnswers(selections, (fid))
 %
 % INPUTS:
 %
 %      selections: a structure defining inputs and function calls to the
+%      menu system
+%
+%      answers: a structure defining inputs and function calls to the
 %      menu system
 %
 %      (OPTIONAL INPUTS)
@@ -28,7 +51,7 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 %
 % EXAMPLES:
 %
-% See the script: script_test_fcn_DebugTools_menuManageSelections
+% See the script: script_test_fcn_DebugTools_gradeAnswers
 % for a full test suite.
 %
 % This function was written on 2026_01_12 by S. Brennan.
@@ -40,29 +63,29 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % - first write of the code
 %
 % 2026_01_18 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_DebugTools_menuManageSelections
+% - In fcn_DebugTools_gradeAnswers
 %   % * Reset bad input counter if good input detected
 %   % * Allow multi-line questions if wrap-around needed for long text
 %   % * Fixed bug where only part of line is being highlighted bold
 %
 % 2026_01_19 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_DebugTools_menuManageSelections
+% - In fcn_DebugTools_gradeAnswers
 %   % * Now checks for empty entries prior to submitting
 %   % * Now allows cell array of eval commands instead of one string
 %   % * Now saves answers thus far into a holding "answers" data file
 %   % * Saves the timeLog now
 %
 % 2026_01_26 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_DebugTools_menuManageSelections
+% - In fcn_DebugTools_gradeAnswers
 %   % * Fixed bug where deactivated questions were still printing as active
 %
 % 2026_01_27 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_DebugTools_menuManageSelections
+% - In fcn_DebugTools_gradeAnswers
 %   % * Updated the previous answers datafile naming to avoid prior
 %   %   % assignments putting data into future assignments.
 % 
 % 2026_02_02 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_DebugTools_menuManageSelections
+% - In fcn_DebugTools_gradeAnswers
 %   % * Fixed incorrect capitalization in fcn_DebugTools_wrapLongText
 
 % TO-DO:
@@ -74,7 +97,7 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % Check if flag_max_speed set. This occurs if the fid variable input
 % argument (varargin) is given a number of -1, which is not a valid figure
 % number.
-MAX_NARGIN = 2; % The largest Number of argument inputs to the function
+MAX_NARGIN = 3; % The largest Number of argument inputs to the function
 flag_max_speed = 0;
 if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
 	flag_do_debug = 0; %     % Flag to plot the results for debugging
@@ -156,154 +179,67 @@ end
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Initialize variables 
 numQuestions = length(selections);
 
 % Count the number of integer questions
 numIntegerQuestions = 0;
-for ith_question = 1:length(selections)
+for ith_question = 1:numQuestions
     if ~isnan(str2double(selections(ith_question).MenuChar))
         numIntegerQuestions = ith_question;
     else
         break
     end
 end
-%numIntegerQuestions = (numQuestions-2);
 
-% Initialize count of bad inputs and loop flag
-numBadInputs = 0;
-numBadOptionInputs = 0; %#ok<NASGU>
+actualScoresEachQuestion = zeros(numIntegerQuestions,1);
+possibleScoresEachQuestion = zeros(numIntegerQuestions,1);
 
-% Load prior answers, if any
-if isfield(selections, 'AssignmentString') && ~isempty(selections(1).AssignmentString)
-	answersFileName = fullfile(pwd,'Data',cat(2,'answersSoFar_',selections(1).AssignmentString,'.mat'));
-else
-	answersFileName = fullfile(pwd,'Data','answersSoFar.mat');
+% Grade each problem
+for ith_problem = 1:numIntegerQuestions
+    thisAnswer = answers{ith_problem};
+    thisCorrectAnswer  = selections(ith_problem).AnswerGradingCorrect;
+    thisPossibleScore  = selections(ith_problem).AnswerGradingPoints;
+    thisGradingType    = selections(ith_problem).AnswerGradingType;
+    thisGradingOptions = selections(ith_problem).AnswerGradingOptions;
+
+    % EXAMPLE:
+    % selections(numQuestions).AnswerGradingCorrect = 900000000;
+    % selections(numQuestions).AnswerGradingPoints = 0;
+    % selections(numQuestions).AnswerGradingType = 'exist';
+    % selections(numQuestions).AnswerGradingOptions = {[]};
+
+    switch lower(thisGradingType)
+        case 'not empty'
+            if ~isempty(thisAnswer)
+                actualScoresEachQuestion(ith_problem) = thisPossibleScore;
+            end
+        case 'exact match'
+            if ~isempty(thisAnswer)
+                actualScoresEachQuestion(ith_problem) = thisPossibleScore * strcmpi(thisAnswer, thisCorrectAnswer);
+            end
+        case 'contains word'
+            if ~isempty(thisAnswer)
+                if strcmp(thisGradingOptions{1},'IgnoreCase')
+                    actualScoresEachQuestion(ith_problem) = thisPossibleScore * contains(thisAnswer, thisCorrectAnswer,'IgnoreCase',true);
+                else
+                    actualScoresEachQuestion(ith_problem) = thisPossibleScore * contains(thisAnswer, thisCorrectAnswer);
+                end
+            end            
+        otherwise
+            warning('Unable to find grading type: %s\n',thisGradingType);
+    end
+
+    % Fill in the possible points
+    possibleScoresEachQuestion(ith_problem) = thisPossibleScore;
 end
 
-if exist(answersFileName,'file')
-	load(answersFileName,'answers', 'timelog');
-else
-	% Initialize answers
-	answers = cell(numQuestions,1);
-	timelog = cell(1,1);
-	timelog{1,1} = datetime('now');
-end
+% Add up results
+totalPointsEarned = sum(actualScoresEachQuestion);
+totalPointsPossible = sum(possibleScoresEachQuestion);
 
+overallScore = totalPointsEarned/totalPointsPossible;
 
-flag_exitMain = 0;
-while 0==flag_exitMain
-
-	% If the first answer is non-empty, all menu options are allowed
-	if ~isempty(answers{1})
-		for ith_selection = 1:length(selections)
-			selections(ith_selection).isAllowableMenuOption = true;
-		end
-	end
-
-
-	%%%%%
-	% What are allowable actions right now?
-	[allowableOptions, associatedIndices] = fcn_INTERNAL_setAllowableMenuOptions(selections);
-
-	%%%%%
-	%  Define default menu choice
-
-	% Find first answer index that is not answered
-	answerIndex = find(cellfun(@isempty, answers), 1);
-	if ~isempty(answerIndex) && (answerIndex<=numIntegerQuestions)
-		defaultMenuChoice = sprintf('%.0f',answerIndex);
-	else
-		defaultMenuChoice = 's';
-	end
-	matchedIndices = strcmpi(defaultMenuChoice,allowableOptions);
-	firstMatch = find(matchedIndices,1);
-	if isempty(firstMatch)
-		firstMatch = 1;
-	end
-	selectedOptionCharacters = allowableOptions{firstMatch};
-
-	%%%%%
-	% Show user choices
-	eval(cat(2,'cl','c')); % Make cl+c command hidden so will not throw warnings
-	[cellArray, printStyle] = fcn_INTERNAL_buildCellArray(selections, answers, selectedOptionCharacters);
-	fcn_INTERNAL_showTable(cellArray, printStyle);
-
-
-	%%%%
-	% Get user choice
-	mainMenuChoice = input(sprintf('What option do you want to choose? [default = %s]:',defaultMenuChoice),'s');
-	if isempty(mainMenuChoice)
-		mainMenuChoice = defaultMenuChoice;
-	end
-	fprintf(1,'Selection chosen: -->  %s\n',mainMenuChoice);
-
-	%%%%
-	% Catch any bad inputs
-	if ~any(strcmpi(mainMenuChoice,allowableOptions))
-		numBadInputs = numBadInputs + 1;
-		if numBadInputs>3
-			fprintf(1,'Too many failed inputs: %.0f of 3 allowed. Exiting.\n',numBadInputs);
-			flag_exitMain = 1;
-		else
-			fprintf(1,'Unrecognized or unallowed option: %s. Try again (try %.0f of 3) \n ', mainMenuChoice, numBadInputs);
-		end
-		fprintf(1,'Hit any key to continue.\n');
-		pause;
-	else
-
-		% Check if user is submitting. If so, make sure all answers are
-		% filled in OR that user accepts this.
-		flagKeepGoing = true;
-		if strcmpi(mainMenuChoice,'s')
-			% Check that all entries are filled in
-			answerIndex = find(cellfun(@isempty, answers), 1);
-			if ~isempty(answerIndex) && (answerIndex<=numIntegerQuestions)
-				flagKeepGoing = false;
-				fcn_DebugTools_cprintf('*Red',sprintf('WARNING: not all answers have been filled out (see, for example, question %.0f)!',answerIndex));
-				reallySureSubmitChoice = input(sprintf('Do you really want to submit this? [default = ''n'']:'),'s');
-				if isempty(reallySureSubmitChoice)
-					reallySureSubmitChoice = 'n';
-				end
-				fprintf(1,'Selection chosen: -->  %s\n',reallySureSubmitChoice);
-				if ~any(strcmpi(reallySureSubmitChoice,{'n', 'y'}))
-					fprintf(1,'Unrecognized user choice: %s. Assuming the choice is NO. \n ', reallySureSubmitChoice);
-					fprintf(1,'Hit any key to continue.\n');
-					pause;
-				end
-				if strcmpi(reallySureSubmitChoice,'y')
-					flagKeepGoing = true;
-				end
-			end
-		end
-
-		% Should the submission or entry continue?
-		if flagKeepGoing
-			numBadInputs = 0;
-			matchedIndices = strcmpi(mainMenuChoice,allowableOptions);
-			firstMatch = find(matchedIndices,1);
-			actualIndex = associatedIndices(firstMatch,1);
-			selectedOptionCharacters = selections(actualIndex).MenuChar; %#ok<NASGU>
-			commandToEval = selections(actualIndex).FunctionSubmission;
-			if ischar(commandToEval)
-				commandToRun = sprintf(commandToEval);
-				eval(commandToRun);
-			elseif iscell(commandToEval)
-				for ith_cell = 1:length(commandToEval)
-					commandToRun = sprintf(commandToEval{ith_cell});
-					eval(commandToRun);
-				end
-			else
-				error('Unrecognized type found in selections(actualIndex).MenuChar');
-			end
-
-		end
-	end
-
-	% Save the answers
-	timelog{end+1,1} = datetime('now'); %#ok<AGROW>
-	save(answersFileName,'answers', 'timelog');
-
-end % Ends while loop for menu
 
 %% Plot the results (for debugging)?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -585,87 +521,3 @@ end
 
 end % Ends fcn_INTERNAL_enterData
 
-%% fcn_INTERNAL_gradeAnswers
-function percentCorrectHash = fcn_INTERNAL_gradeAnswers(answers, selections)
-
-
-totalGrade = 0;
-for ith_selection = 1:length(selections)
-	if strcmp(selections(ith_selection).MenuChar,selectedOptionCharacters)
-		selectedRow = ith_selection;
-		break;
-	end
-end
-
-if isempty(selectedRow)
-	error('Unable to match selection: %s to list of selections', selectedOptionCharacters);
-end
-
-optionChoice = input(sprintf('What answer do you wish to give to this question? [default = (h) which opens help]:'),'s');
-if isempty(optionChoice) || strcmpi(optionChoice,'h')
-
-	if ~isempty(selections(selectedRow).FunctionMore)
-		fprintf(1,'Launching help function for this question:\n');
-		commandToEval = selections(selectedRow).FunctionMore;
-		if ischar(commandToEval)
-			commandToRun = sprintf(commandToEval);
-			eval(commandToRun);
-		elseif iscell(commandToEval)
-			for ith_cell = 1:length(commandToEval)
-				commandToRun = sprintf(commandToEval{ith_cell});
-				eval(commandToRun);
-			end
-		else
-			error('Unrecognized type found in selections(actualIndex).MenuChar');
-		end
-	else
-		fprintf(1,'Unfortunately, there is no help function for this question.\n');
-	end
-	fprintf(1,'Hit any key to continue.\n');
-	pause;
-else
-	% Convert data
-	if ~isempty(selections(selectedRow).AnswerConversionFunction)
-		optionChoice = feval(selections(selectedRow).AnswerConversionFunction, optionChoice);
-	end
-
-	% Check if good
-	if isfield(selections, 'AnswerAllowableRange') && ~isempty(selections(selectedRow).AnswerAllowableRange)
-		flagPassed = fcn_INTERNAL_menuVerifyChoice(optionChoice, ...
-			selections(selectedRow).AnswerType, ...
-			selections(selectedRow).AnswerTypeOptions, ...
-			selections(selectedRow).AnswerAllowableRange);
-	else
-		flagPassed = fcn_INTERNAL_menuVerifyChoice(optionChoice, selections(selectedRow).AnswerType, selections(selectedRow).AnswerTypeOptions,[]);
-	end
-
-	if ~flagPassed
-		numBadOptionInputs = numBadOptionInputs + 1;
-		if numBadOptionInputs>3
-			fprintf(1,'Too many failed inputs: %.0f of 3 allowed. Exiting.\n',numBadOptionInputs);
-			flag_exitMain = 1;
-		else
-			fprintf(1,'Unrecognized or unallowed option: %0.f. Try again (try %.0f of 3) \n ', optionChoice, numBadOptionInputs);
-		end
-		fprintf(1,'Hit any key to continue.\n');
-		pause;
-	else
-		answers{selectedRow} = sprintf(selections(selectedRow).AnswerPrintFormat,optionChoice);
-	end
-end
-
-
-end % Ends fcn_INTERNAL_gradeAnswers
-
-%% fcn_INTERNAL_prepDataForSave
-function answers = fcn_INTERNAL_prepDataForSave(answers)
-fileName = sprintf('Week1_HW1Answers_%s.mat',answers{1});
-save(fileName,'answers');
-fprintf(1,['\nThe file: \n' ...
-	'\t%s\n' ...
-	'was just created.\n'],fileName);
-fprintf(1,'You must manually copy this file into the OneDrive folder shared with you.\nThis is to force the user to check that files were created and uploaded, before exiting.\n');
-fprintf(1,'Hit any key to continue.\n');
-pause;
-answers{end-1} = 'SUBMITTED';
-end
