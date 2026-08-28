@@ -358,7 +358,13 @@
 %   % * Wrote the code originally 
 %
 % (new release)
-
+%
+% 2026_08_28 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Updated outputs, especially help, to allow selection grading via "help"
+%   %   % option
+%
+% (new release)
 
 % TO-DO:
 % 

@@ -513,7 +513,7 @@ end
 end % Ends fcn_INTERNAL_verifyChoice
 
 %% fcn_INTERNAL_enterData
-function [answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedOptionCharacters, numBadOptionInputs)
+function [answers, numBadOptionInputs, flag_exitMain, selections] = fcn_INTERNAL_enterData(answers, selections, selectedOptionCharacters, numBadOptionInputs)
 flag_exitMain = 0;
 
 
