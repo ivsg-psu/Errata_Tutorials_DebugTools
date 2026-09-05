@@ -365,6 +365,16 @@
 %   %   % option
 %
 % (new release)
+%
+% 2026_09_04 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_gradeAnswers
+%   % * Added 'within range' grading option
+%   % * Added outputs to allow individual problem scores to be seen
+% - In fcn_DebugTools_gradeAnswers
+%   % * Added 'within range' grading option
+%   % * Added outputs to allow individual problem scores to be seen
+%
+% (new release)
 
 % TO-DO:
 % 

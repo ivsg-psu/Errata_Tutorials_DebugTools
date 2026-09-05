@@ -1,4 +1,4 @@
-function overallScore = fcn_DebugTools_gradeAnswers(selections, answers, varargin)
+function [overallScore, actualScoresEachQuestion, possibleScoresEachQuestion]  = fcn_DebugTools_gradeAnswers(selections, answers, varargin)
 % fcn_DebugTools_gradeAnswers A tool to grade student answers by comparing
 % them to correct values in "selections" structure. 
 %
@@ -23,6 +23,9 @@ function overallScore = fcn_DebugTools_gradeAnswers(selections, answers, varargi
 %   contains the correct answer.
 %        Options: thisGradingOptions{1},'IgnoreCase' - ignores case
 %
+%   'within range': full points are assigned if the answer is within the
+%   range given by thisGradingOptions{1}
+%
 % FORMAT:
 %
 %      fcn_DebugTools_gradeAnswers(selections, (fid))
@@ -43,7 +46,9 @@ function overallScore = fcn_DebugTools_gradeAnswers(selections, answers, varargi
 %
 % OUTPUTS:
 %
-%      (none)
+%      overallScore: the graded value for the submission
+%
+%      actualScoresEachQuestion, possibleScoresEachQuestion: the grades for each part
 %
 % DEPENDENCIES:
 %
@@ -87,6 +92,11 @@ function overallScore = fcn_DebugTools_gradeAnswers(selections, answers, varargi
 % 2026_02_02 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_gradeAnswers
 %   % * Fixed incorrect capitalization in fcn_DebugTools_wrapLongText
+% 
+% 2026_09_04 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_gradeAnswers
+%   % * Added 'within range' grading option
+%   % * Added outputs to allow individual problem scores to be seen
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -225,7 +235,17 @@ for ith_problem = 1:numIntegerQuestions
                 else
                     actualScoresEachQuestion(ith_problem) = thisPossibleScore * contains(thisAnswer, thisCorrectAnswer);
                 end
-            end            
+			end 
+		case 'within range'
+			if ~isempty(thisAnswer)
+                if ~isempty(thisGradingOptions{1})
+					expectedRange = thisGradingOptions{1};
+					numericThisAnswer = str2double(thisAnswer);
+					actualScoresEachQuestion(ith_problem) = thisPossibleScore * (numericThisAnswer>=expectedRange(1) && numericThisAnswer<=expectedRange(2));					
+                else
+                    warning('Range option not given during a within-range test. Unable to grade.');
+                end
+			end 
         otherwise
             warning('Unable to find grading type: %s\n',thisGradingType);
     end

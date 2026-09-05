@@ -1,5 +1,45 @@
 % script_test_fcn_DebugTools_gradeAnswers
 
+% REVISION HISTORY:
+%
+% 2026_01_12 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_gradeAnswers
+%   % * First write of the code
+%
+% 2026_01_18 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_gradeAnswers
+%   % * Reset bad input counter if good input detected
+%   % * Allow multi-line questions if wrap-around needed for long text
+%   % * Fixed bug where only part of line is being highlighted bold
+%
+% 2026_01_19 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_gradeAnswers
+%   % * Now checks for empty entries prior to submitting
+%   % * Now allows cell array of eval commands instead of one string
+%   % * Now saves answers thus far into a holding "answers" data file
+%   % * Saves the timeLog now
+%
+% 2026_01_26 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_gradeAnswers
+%   % * Fixed bug where deactivated questions were still printing as active
+%
+% 2026_01_27 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_gradeAnswers
+%   % * Updated the previous answers datafile naming to avoid prior
+%   %   % assignments putting data into future assignments.
+% 
+% 2026_02_02 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_gradeAnswers
+%   % * Fixed incorrect capitalization in fcn_DebugTools_wrapLongText
+% 
+% 2026_09_04 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_gradeAnswers
+%   % * Added 'within range' grading option
+%   % * Added outputs to allow individual problem scores to be seen
+
+% TO-DO:
+% 2026_01_12 by Sean Brennan, sbrennan@psu.edu
+% - (add items here)
 
 %% Fill in the Canvas IDs
 CanvasIDs = [
@@ -106,7 +146,6 @@ selections(numQuestions).AnswerGradingType = 'exact match';
 selections(numQuestions).AnswerGradingOptions = {[]};
 
 numQuestions = numQuestions+1;
-selections(numQuestions).MenuChar = '3';
 selections(numQuestions).MenuChar = sprintf('%.0d',numQuestions);
 selections(numQuestions).Text = ') What is your quest?';
 selections(numQuestions).AnswerDefault = '-missing-';
@@ -124,6 +163,27 @@ selections(numQuestions).AnswerGradingCorrect = 'grail';
 selections(numQuestions).AnswerGradingPoints = 1;
 selections(numQuestions).AnswerGradingType = 'contains word';
 selections(numQuestions).AnswerGradingOptions = {[]};
+
+
+numQuestions = numQuestions+1;
+selections(numQuestions).MenuChar = sprintf('%.0d',numQuestions);
+selections(numQuestions).Text = ') What is a number between 2 and 5?';
+selections(numQuestions).AnswerDefault = '-missing-';
+selections(numQuestions).AnswerType = '1column_of_numbers';
+selections(numQuestions).AnswerConversionFunction = 'str2double';
+selections(numQuestions).AnswerTypeOptions = [1 1];
+selections(numQuestions).AnswerPrintFormat = '%.3f';
+selections(numQuestions).FunctionMore = 'why';
+selections(numQuestions).FunctionMoreInputs = {30};
+selections(numQuestions).FunctionSubmission = '[answers, numBadOptionInputs, flag_exitMain] = fcn_INTERNAL_enterData(answers, selections, selectedOptionCharacters, numBadOptionInputs)';
+selections(numQuestions).FunctionSubmissionOptions = {'.'};
+selections(numQuestions).isAllowableMenuOption = true;
+
+selections(numQuestions).AnswerGradingCorrect = 'grail';
+selections(numQuestions).AnswerGradingPoints = 1;
+selections(numQuestions).AnswerGradingType = 'within range';
+selections(numQuestions).AnswerGradingOptions = {[2 5]};
+
 
 %%%
 
@@ -194,12 +254,13 @@ answers{1}= '900000000';
 answers{2}= '2';
 answers{3}= 'B';
 answers{4}= 'Grail';
+answers{5}= '2.5';
 
 % Grade assignment - one will be wrong
-overallScore = fcn_DebugTools_gradeAnswers(selections,answers);
-assert(isequal(round(overallScore,2),0.67))
+[overallScore, actualScoresEachQuestion, possibleScoresEachQuestion] = fcn_DebugTools_gradeAnswers(selections,answers);
+assert(isequal(round(overallScore,2),0.75))
 
-% Now change the last answer type
+% Now change the 4th answer type
 selections(4).AnswerGradingOptions = {'IgnoreCase'};
 overallScore = fcn_DebugTools_gradeAnswers(selections,answers);
 assert(isequal(round(overallScore,2),1.00))
@@ -211,7 +272,7 @@ overallScoreString = sprintf('%.2f',overallScore);
 
 studentNumberString = answers{1}; %  Grab the student number - it is always the first answer
 resultString = cat(2,studentNumberString,overallScoreString);
-gradeHash = fcn_DebugTools_hashStrings(assignmentString, resultString, (flagOutputs));
+gradeHash = fcn_DebugTools_hashStrings(assignmentString, resultString);
 
 
 fcn_DebugTools_cprintf('*Green','Grading completed.');
