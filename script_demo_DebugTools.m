@@ -375,6 +375,14 @@
 %   % * Added outputs to allow individual problem scores to be seen
 %
 % (new release)
+%
+% 2026_09_17 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_currentSectionName
+%   % * First write of the function
+%   % * Used script_test_fcn_DebugTools_addStringToEnd as starter
+% - In fcn_DebugTools_currentSectionName
+%   % * First write of the function
+%   % * Used fcn_DebugTools_addStringToEnd as starter
 
 % TO-DO:
 % 

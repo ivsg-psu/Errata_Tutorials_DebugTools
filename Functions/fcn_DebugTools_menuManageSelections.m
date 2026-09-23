@@ -200,10 +200,29 @@ while 0==flag_exitMain
 		end
 	end
 
+	%%%
+	% Run the pre-menu functions
+	for ith_selection = 1:length(selections)
+		if isfield(selections, 'FunctionPreMenu') && ~isempty(selections(ith_selection).FunctionPreMenu)
+			commandToEval = selections(ith_selection).FunctionPreMenu;
+			if ischar(commandToEval)
+				commandToRun = sprintf(commandToEval);
+				eval(commandToRun);
+			elseif iscell(commandToEval)
+				for ith_cell = 1:length(commandToEval)
+					commandToRun = sprintf(commandToEval{ith_cell});
+					eval(commandToRun);
+				end
+			else
+				error('Unrecognized type found in selections(actualIndex).MenuChar');
+			end
+		end
+	end
 
 	%%%%%
 	% What are allowable actions right now?
-	[allowableOptions, associatedIndices] = fcn_INTERNAL_setAllowableMenuOptions(selections);
+	[allowableOptions, associatedIndices] = fcn_INTERNAL_setAllowableMenuOptions(selections);	
+
 
 	%%%%%
 	%  Define default menu choice
