@@ -410,10 +410,19 @@ for ith_row = 1:numRows
 	cellArray{numActualRows, 2} = selections(ith_row).MenuChar;      % Question Character
 
 	originalText = selections(ith_row).Text;
-	wrappedText = fcn_DebugTools_wrapLongText(originalText,50);
-	textCellArray= split(wrappedText,'\n');
 
-	cellArray{numActualRows, 3} = textCellArray{1};  % Question Text
+	% Split by \n values	
+	textCellArray= split(originalText,'\n');
+
+	% Check for wrapping
+	finalText = [];
+	for ith_text = 1:size(textCellArray,1)
+		thisWrappedText = fcn_DebugTools_wrapLongText(textCellArray{ith_text},50);
+		thisSplitWrappedText = split(thisWrappedText,'\n');
+		finalText = [finalText; thisSplitWrappedText]; %#ok<AGROW>
+	end
+
+	cellArray{numActualRows, 3} = finalText{1};  % Question Text
 
 
 	if ~isempty(selections(ith_row).FunctionMore)
@@ -429,12 +438,12 @@ for ith_row = 1:numRows
 	end
 
 	% Check for multi-line case
-	if size(textCellArray,1)>1
-		for ith_extraRow = 1:(size(textCellArray,1)-1)
+	if size(finalText,1)>1
+		for ith_extraRow = 1:(size(finalText,1)-1)
 			numActualRows = numActualRows+1;
 			cellArray{numActualRows, 1} = ' ';
 			cellArray{numActualRows, 2} = ' ';
-			cellArray{numActualRows, 3} = cat(2,'  ',textCellArray{ith_extraRow+1});
+			cellArray{numActualRows, 3} = cat(2,'  ',finalText{ith_extraRow+1});
 			cellArray{numActualRows, 4} = ' ';
 			cellArray{numActualRows, 5} = ' ';
 
