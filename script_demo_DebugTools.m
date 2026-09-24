@@ -387,9 +387,22 @@
 % 2026_09_24 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Added pre-menu options
+%
+% (new release)
+%
+% 2026_09_24b by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
 %   % * Minor bug fixes
 %
 % (new release)
+%
+% 2026_09_24c by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added ability to check which directory we are working out of, and
+%   %   % switch to this
+%
+% (new release)
+
 
 % TO-DO:
 % 

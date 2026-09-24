@@ -68,7 +68,15 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % 2026_09_24 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Added pre-menu options
+%
+% 2026_09_24b by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
 %   % * Minor bug fixes
+%
+% 2026_09_24c by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added ability to check which directory we are working out of, and
+%   %   % switch to this
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -177,6 +185,29 @@ end
 % Initialize count of bad inputs and loop flag
 numBadInputs = 0;
 numBadOptionInputs = 0; %#ok<NASGU>
+
+% Make sure we are in the right directory
+st = dbstack;
+callingScriptName = st(end).name;
+callingScriptAndPathName = which(callingScriptName);
+callingPath = fileparts(callingScriptAndPathName);
+if contains(callingPath,'Assignments')
+	actualPathDirty = extractBefore(callingPath,'Assignments');
+
+	% Clean up any file separators
+	actualPath = fileparts(actualPathDirty);
+else
+	actualPath = callingPath;
+end
+if ~strcmp(actualPath,pwd)
+	warning('It appears that the code is not working out of the root folder. Changing automatically into folder: \n%s.', actualPath);
+	fprintf('Hit any key to perform directory change.');
+	pause;
+	cd(actualPath);
+
+end
+
+
 
 % Load prior answers, if any
 if isfield(selections, 'AssignmentString') && ~isempty(selections(1).AssignmentString)
