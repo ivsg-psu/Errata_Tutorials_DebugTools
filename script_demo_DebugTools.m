@@ -383,6 +383,13 @@
 % - In fcn_DebugTools_currentSectionName
 %   % * First write of the function
 %   % * Used fcn_DebugTools_addStringToEnd as starter
+%
+% 2026_09_24 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added pre-menu options
+%   % * Minor bug fixes
+%
+% (new release)
 
 % TO-DO:
 % 

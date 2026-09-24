@@ -64,6 +64,11 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % 2026_02_02 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Fixed incorrect capitalization in fcn_DebugTools_wrapLongText
+% 
+% 2026_09_24 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added pre-menu options
+%   % * Minor bug fixes
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -305,11 +310,19 @@ while 0==flag_exitMain
 			commandToEval = selections(actualIndex).FunctionSubmission;
 			if ischar(commandToEval)
 				commandToRun = sprintf(commandToEval);
-				eval(commandToRun);
+				try
+					eval(commandToRun);
+				catch
+					error('Command failed: %s',commandToRun);
+				end
 			elseif iscell(commandToEval)
 				for ith_cell = 1:length(commandToEval)
 					commandToRun = sprintf(commandToEval{ith_cell});
-					eval(commandToRun);
+					try
+						eval(commandToRun);
+					catch
+						error('Command failed: %s',commandToRun);
+					end
 				end
 			else
 				error('Unrecognized type found in selections(actualIndex).MenuChar');
@@ -605,10 +618,10 @@ end
 end % Ends fcn_INTERNAL_enterData
 
 %% fcn_INTERNAL_gradeAnswers
-function percentCorrectHash = fcn_INTERNAL_gradeAnswers(answers, selections)
+function percentCorrectHash = fcn_INTERNAL_gradeAnswers(answers, selections) %#ok<STOUT>
 
 
-totalGrade = 0;
+totalGrade = 0; %#ok<NASGU>
 for ith_selection = 1:length(selections)
 	if strcmp(selections(ith_selection).MenuChar,selectedOptionCharacters)
 		selectedRow = ith_selection;
@@ -619,6 +632,8 @@ end
 if isempty(selectedRow)
 	error('Unable to match selection: %s to list of selections', selectedOptionCharacters);
 end
+
+numBadOptionInputs = 0;
 
 optionChoice = input(sprintf('What answer do you wish to give to this question? [default = (h) which opens help]:'),'s');
 if isempty(optionChoice) || strcmpi(optionChoice,'h')
@@ -658,18 +673,19 @@ else
 		flagPassed = fcn_INTERNAL_menuVerifyChoice(optionChoice, selections(selectedRow).AnswerType, selections(selectedRow).AnswerTypeOptions,[]);
 	end
 
+
 	if ~flagPassed
-		numBadOptionInputs = numBadOptionInputs + 1;
+		numBadOptionInputs = numBadOptionInputs + 1; 
 		if numBadOptionInputs>3
 			fprintf(1,'Too many failed inputs: %.0f of 3 allowed. Exiting.\n',numBadOptionInputs);
-			flag_exitMain = 1;
+			flag_exitMain = 1; %#ok<NASGU>
 		else
 			fprintf(1,'Unrecognized or unallowed option: %0.f. Try again (try %.0f of 3) \n ', optionChoice, numBadOptionInputs);
 		end
 		fprintf(1,'Hit any key to continue.\n');
 		pause;
 	else
-		answers{selectedRow} = sprintf(selections(selectedRow).AnswerPrintFormat,optionChoice);
+		answers{selectedRow} = sprintf(selections(selectedRow).AnswerPrintFormat,optionChoice); %#ok<NASGU>
 	end
 end
 
