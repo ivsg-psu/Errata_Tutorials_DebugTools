@@ -77,6 +77,10 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % - In fcn_DebugTools_menuManageSelections
 %   % * Added ability to check which directory we are working out of, and
 %   %   % switch to this
+%
+% 2026_09_25 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Fixed bug where command to eval being empty causes crashed code
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -242,12 +246,25 @@ while 0==flag_exitMain
 		if isfield(selections, 'FunctionPreMenu') && ~isempty(selections(ith_selection).FunctionPreMenu)
 			commandToEval = selections(ith_selection).FunctionPreMenu;
 			if ischar(commandToEval)
-				commandToRun = sprintf(commandToEval);
-				eval(commandToRun);
+				if ~isempty(commandToEval)
+					commandToRun = sprintf(commandToEval);
+					try
+						eval(commandToRun);
+					catch
+						error('Command failed: %s',commandToRun);
+					end
+				end
 			elseif iscell(commandToEval)
 				for ith_cell = 1:length(commandToEval)
-					commandToRun = sprintf(commandToEval{ith_cell});
-					eval(commandToRun);
+					if ~isempty(commandToEval{ith_cell})
+						stringToPrint = commandToEval{ith_cell};
+						commandToRun = sprintf(stringToPrint);
+						try
+							eval(commandToRun);
+						catch
+							error('Command failed: %s',commandToRun);
+						end
+					end
 				end
 			else
 				error('Unrecognized type found in selections(actualIndex).MenuChar');
@@ -340,19 +357,23 @@ while 0==flag_exitMain
 			selectedOptionCharacters = selections(actualIndex).MenuChar; %#ok<NASGU>
 			commandToEval = selections(actualIndex).FunctionSubmission;
 			if ischar(commandToEval)
-				commandToRun = sprintf(commandToEval);
-				try
-					eval(commandToRun);
-				catch
-					error('Command failed: %s',commandToRun);
-				end
-			elseif iscell(commandToEval)
-				for ith_cell = 1:length(commandToEval)
-					commandToRun = sprintf(commandToEval{ith_cell});
+				if ~isempty(commandToEval)
+					commandToRun = sprintf(commandToEval);
 					try
 						eval(commandToRun);
 					catch
 						error('Command failed: %s',commandToRun);
+					end
+				end
+			elseif iscell(commandToEval)
+				for ith_cell = 1:length(commandToEval)
+					if ~isempty(commandToEval{ith_cell})
+						commandToRun = sprintf(commandToEval{ith_cell});
+						try
+							eval(commandToRun);
+						catch
+							error('Command failed: %s',commandToRun);
+						end
 					end
 				end
 			else

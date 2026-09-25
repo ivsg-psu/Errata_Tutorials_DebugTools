@@ -322,7 +322,6 @@
 % 2026_03_24 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_autoInstallRepos
 %   % * Updated version of DebugTools so it will auto-install correctly
-%
 % (new release)
 %
 % 2026_04_11 by Sean Brennan, sbrennan@psu.edu
@@ -401,6 +400,12 @@
 %   % * Added ability to check which directory we are working out of, and
 %   %   % switch to this
 %
+% (new release)
+% 
+% 2026_09_25 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Fixed bug where command to eval being empty causes crashed code
+% 
 % (new release)
 
 
