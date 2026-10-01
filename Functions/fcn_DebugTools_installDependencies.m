@@ -103,6 +103,13 @@ function fcn_DebugTools_installDependencies(...
 % - Formatted revision lists to Markdown format
 % - Fixed variable naming for clarity:
 %   % * fig_+num to figNum
+%
+% 2026_10_01 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_installDependencies
+%   % * Copied edits from autoInstall subfunction (installDependencies)
+%   %   % back into this function - they were out of sync
+%   % * Updated flags to allow Linux/Unix usage
+
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
@@ -136,9 +143,9 @@ end
 if flag_do_debug
     st = dbstack; %#ok<*UNRCH>
     fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-    debug_figNum = 999978;
+    debug_figNum = 999978; %#ok<NASGU>
 else
-    debug_figNum = [];
+    debug_figNum = []; %#ok<NASGU>
 end
 %% check input arguments
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,7 +180,7 @@ flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
     temp = varargin{end};
     if ~isempty(temp)
-        figNum = temp;
+        figNum = temp; %#ok<NASGU>
         flag_do_plots = 1;
     end
 end
@@ -204,7 +211,6 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
 if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
     % Save the root directory, so we can get back to it after some of the
     % operations below. We use the Print Working Directory command (pwd) to
@@ -221,8 +227,11 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
         % Did it work?
         if ~success_flag
+            warning('backtrace','on');
+            warning('Error encountered in creating Utilities directory.');
             error('Unable to make the Utilities directory. Reason: %s with message ID: %s\n',error_message,message_ID);
         elseif ~isempty(error_message)
+            warning('backtrace','on');
             warning('The Utilities directory was created, but with a warning: %s\n and message ID: %s\n(continuing)\n',error_message, message_ID);
         end
 
@@ -237,8 +246,11 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
         % Did it work?
         if ~success_flag
+            warning('backtrace','on');
+            warning('Error encountered in creating dependency folder in Utilities directory.');
             error('Unable to make the dependency directory: %s. Reason: %s with message ID: %s\n',dependency_name, error_message,message_ID);
         elseif ~isempty(error_message)
+            warning('backtrace','on');
             warning('The %s directory was created, but with a warning: %s\n and message ID: %s\n(continuing)\n',dependency_name, error_message, message_ID);
         end
 
@@ -251,10 +263,10 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
     else
         for ith_folder = 1:length(dependency_subfolders)
             subfolder_name = dependency_subfolders{ith_folder};
-            
+
             % Create the entire path
             subfunction_folder = fullfile(root_directory_name, 'Utilities', dependency_name,subfolder_name);
-            
+
             % Check if the folder and file exists that is typically created when
             % unzipping.
             if ~exist(subfunction_folder,'dir')
@@ -272,6 +284,8 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 
         % Is the file there?
         if ~exist(zip_file_name,'file')
+            warning('backtrace','on');
+            warning('Error encountered in downloading zip install.');
             error(['The zip file: %s for dependency: %s did not download correctly.\n' ...
                 'This is usually because permissions are restricted on ' ...
                 'the current directory. Check the code install ' ...
@@ -284,6 +298,8 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
         % Did this work? If so, directory should not be empty
         directory_contents = dir(dependency_folder_name);
         if isempty(directory_contents)
+            warning('backtrace','on');
+            warning('Error encountered during unzip operation.');
             error(['The necessary dependency: %s has an error in install ' ...
                 'where the zip file downloaded correctly, ' ...
                 'but the unzip operation did not put any content ' ...
@@ -301,8 +317,16 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
                 if directory_contents(ith_entry).isdir
                     flag_is_nested_install = 1;
                     install_directory_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name);
-                    install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*.*');
-                    install_location_to = fullfile(directory_contents(ith_entry).folder);
+					if ispc
+						install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*.*'); % For PCs
+					elseif ismac
+						install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*'); % For Macs
+					elseif isunix
+						install_files_from = fullfile(directory_contents(ith_entry).folder,directory_contents(ith_entry).name,'*'); % For Unix/Linux
+					else
+						error('Unrecognized OS encountered?!');
+					end
+					install_location_to = fullfile(directory_contents(ith_entry).folder);
                 end
             end
         end
@@ -310,13 +334,17 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
         if flag_is_nested_install
             [status,message,message_ID] = movefile(install_files_from,install_location_to);
             if 0==status
+                warning('backtrace','on');
+                warning('Error encountered in moving files during install.');
                 error(['Unable to move files from directory: %s\n ' ...
                     'To: %s \n' ...
                     'Reason message: %s\n' ...
                     'And message_ID: %s\n'],install_files_from,install_location_to, message,message_ID);
             end
-            [status,message,message_ID] = rmdir(install_directory_from);
+            [status,message,message_ID] = rmdir(install_directory_from, 's');
             if 0==status
+                warning('backtrace','on');
+                warning('Error encountered in removing directory during install.');
                 error(['Unable remove directory: %s \n' ...
                     'Reason message: %s \n' ...
                     'And message_ID: %s\n'],install_directory_from,message,message_ID);
@@ -328,10 +356,10 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
         if ~isempty(dependency_subfolders{1})
             for ith_folder = 1:length(dependency_subfolders)
                 subfolder_name = dependency_subfolders{ith_folder};
-                
+
                 % Create the entire path
                 subfunction_folder = fullfile(root_directory_name, 'Utilities', dependency_name,subfolder_name);
-                
+
                 % Check if the folder and file exists that is typically created when
                 % unzipping.
                 if ~exist(subfunction_folder,'dir')
@@ -339,8 +367,10 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
                 end
             end
         end
-         % If any are not there, then throw an error
+        % If any are not there, then throw an error
         if flag_allFoldersThere==0
+            warning('backtrace','on');
+            warning('Error encountered in confirming dependency install.');
             error(['The necessary dependency: %s has an error in install, ' ...
                 'or error performing an unzip operation. The subfolders ' ...
                 'requested by the code were not found after the unzip ' ...
@@ -375,6 +405,8 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
         try
             fcn_DebugTools_addSubdirectoriesToPath(dependency_folder_name,dependency_subfolders);
         catch
+            warning('backtrace','on');
+            warning('Error encountered where DebugTools requested but not yet installed.');
             error(['Package installer requires DebugTools package to be ' ...
                 'installed first. Please install that before ' ...
                 'installing this package']);

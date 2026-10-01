@@ -407,6 +407,22 @@
 %   % * Fixed bug where command to eval being empty causes crashed code
 % 
 % (new release)
+%
+% 2026_10_01 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_installDependencies
+%   % * Copied edits from autoInstall subfunction (installDependencies)
+%   %   % back into this function - they were out of sync
+%   % * Updated flags to allow Linux/Unix usage
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Updated flags to allow Linux/Unix usage
+%   % * Updated default installer to current version
+% - In script_test_fcn_DebugTools_installDependencies
+%   % * Updated URLs to match recent versions. Old versions no longer exist
+%   % * Updated global flag settings to more clearly enter/exit test cases
+% - In script_test_fcn_DebugTools_autoInstallRepos
+%   % * Verified that the script still works with edits to function
+%
+% (new release)
 
 
 % TO-DO:

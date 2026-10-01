@@ -10,6 +10,10 @@
 %
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
 % - Formatted revision lists to Markdown format
+% 
+% 2026_10_01 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_autoInstallRepos
+%   % * Verified that the script still works with edits to function
 
 % TO-DO:
 % 

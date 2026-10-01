@@ -9,6 +9,11 @@
 % 
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
 % - Formatted revision lists to Markdown format
+% 
+% 2026_10_01 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_installDependencies
+%   % * Updated URLs to match recent versions. Old versions no longer exist
+%   % * Updated global flag settings to more clearly enter/exit test cases
 
 % TO-DO:
 % 2025_11_20 by Sean Brennan, sbrennan@psu.edu
@@ -22,7 +27,11 @@ flag_show_warnings = 0; % Set to 1 to see the warnings go by. Should keep off fo
 %% Basic test case
 % NOTE: this installs under the current directory!
 % Define the name of subfolder to be created in "Utilities" subfolder
-dependency_name = 'DebugTools_v2023_01_25';
+dependency_name = 'DebugTools_2026_09_25';
+
+% Clear prior global variable flags so that this function works in
+% situations where the install was done previously
+clear global FLAG_*
 
 % Define sub-subfolders that are in the code package that also need to be
 % added to the MATLAB path after install. Leave empty ({}) to only add
@@ -32,7 +41,8 @@ dependency_subfolders = {'Functions','Data'};
 % Define a universal resource locator (URL) pointing to the zip file to
 % install. For example, here is the zip file location to the Debugtools
 % package on GitHub:
-dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
+dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/archive/refs/tags/DebugTools_2026_09_25.zip';
+% dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
 
 % Call the function to do the install
 fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url)
@@ -42,9 +52,9 @@ disp('Paused. Hit any key to continue...');
 pause;
 
 % Remove the folders from path, to avoid deletion warnings
-temp_path = fullfile(pwd,'Utilities','DebugTools_v2023_01_25','Functions');
+temp_path = fullfile(pwd,'Utilities','DebugTools_2026_09_25','Functions');
 rmpath(temp_path);
-temp_path = fullfile(pwd,'Utilities','DebugTools_v2023_01_25','Data');
+temp_path = fullfile(pwd,'Utilities','DebugTools_2026_09_25','Data');
 rmpath(temp_path);
 
 % Remove the example Utilities folder and all subfolders
@@ -62,7 +72,13 @@ end
 %% Call the function again, to show that global flag blocks directory creation
 
 % Define the name of subfolder to be created in "Utilities" subfolder
-dependency_name = 'DebugTools_v2023_01_25';
+dependency_name = 'DebugTools_2026_09_25';
+
+% Clear prior global variable flags so that this function works in
+% situations where the install was done previously
+clear global FLAG_*
+global FLAG_DEBUGTOOLS_2026_09_25_FOLDERS_INITIALIZED
+FLAG_DEBUGTOOLS_2026_09_25_FOLDERS_INITIALIZED = 1;
 
 % Define sub-subfolders that are in the code package that also need to be
 % added to the MATLAB path after install. Leave empty ({}) to only add
@@ -72,7 +88,7 @@ dependency_subfolders = {'Functions','Data'};
 % Define a universal resource locator (URL) pointing to the zip file to
 % install. For example, here is the zip file location to the Debugtools
 % package on GitHub:
-dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
+dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/archive/refs/tags/DebugTools_2026_09_25.zip';
 
 
 % Call the function to do the install
@@ -96,7 +112,7 @@ end
 %% Call the function again, with override flag
 
 % Define the name of subfolder to be created in "Utilities" subfolder
-dependency_name = 'DebugTools_v2023_01_25';
+dependency_name = 'DebugTools_2026_09_25';
 
 % Define sub-subfolders that are in the code package that also need to be
 % added to the MATLAB path after install. Leave empty ({}) to only add
@@ -106,7 +122,7 @@ dependency_subfolders = {'Functions','Data'};
 % Define a universal resource locator (URL) pointing to the zip file to
 % install. For example, here is the zip file location to the Debugtools
 % package on GitHub:
-dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_25.zip?raw=true';
+dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/archive/refs/tags/DebugTools_2026_09_25.zip';
 
 
 % Call the function to do the install, with override
@@ -118,9 +134,9 @@ disp('Paused. Hit any key to continue...');
 pause;
 
 % Remove the folders from path, to avoid deletion warnings
-temp_path = fullfile(pwd,'Utilities','DebugTools_v2023_01_25','Functions');
+temp_path = fullfile(pwd,'Utilities','DebugTools_2026_09_25','Functions');
 rmpath(temp_path);
-temp_path = fullfile(pwd,'Utilities','DebugTools_v2023_01_25','Data');
+temp_path = fullfile(pwd,'Utilities','DebugTools_2026_09_25','Data');
 rmpath(temp_path);
 
 % Remove the example Utilities folder and all subfolders
