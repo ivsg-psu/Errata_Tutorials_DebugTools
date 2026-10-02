@@ -423,7 +423,12 @@
 %   % * Verified that the script still works with edits to function
 %
 % (new release)
-
+%
+% 2026_10_02 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added print of calling function to top
+%
+% (new release)
 
 % TO-DO:
 % 

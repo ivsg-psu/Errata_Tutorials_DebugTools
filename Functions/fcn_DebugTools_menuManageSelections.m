@@ -81,6 +81,10 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % 2026_09_25 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Fixed bug where command to eval being empty causes crashed code
+%
+% 2026_10_02 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added print of calling function to top
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -172,6 +176,12 @@ end
 %  |_|  |_|\__,_|_|_| |_|
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Determine the calling function
+callStack = dbstack;
+callingFunctionName = callStack(2).name;
+
 
 numQuestions = length(selections);
 
@@ -297,6 +307,8 @@ while 0==flag_exitMain
 	%%%%%
 	% Show user choices
 	eval(cat(2,'cl','c')); % Make cl+c command hidden so will not throw warnings
+	fcn_DebugTools_cprintf('*blue',sprintf('%s \n',callingFunctionName));
+	
 	[cellArray, printStyle] = fcn_INTERNAL_buildCellArray(selections, answers, selectedOptionCharacters);
 	fcn_INTERNAL_showTable(cellArray, printStyle);
 
