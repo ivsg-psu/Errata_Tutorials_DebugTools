@@ -429,6 +429,22 @@
 %   % * Added print of calling function to top
 %
 % (new release)
+% 
+% 2026_10_07 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_seedFromThisComputerAndUser
+%   * Wrote the code originally
+%   * Used script_test_fcn_VD_derivativesKinematicBicycleModel as starter
+% - In fcn_DebugTools_seedFromThisComputerAndUser
+%   * Wrote the code originally
+%   * Used fcn_DebugTools_doStringsMatch as starter
+% - In script_test_fcn_DebugTools_isThisComputerOnline
+%   * Wrote the code originally
+%   * Used script_test_fcn_DebugTools_is+OnlineFromThisComputerAndUser as starter
+% - In fcn_DebugTools_isThisComputerOnline
+%   * Wrote the code originally
+%   * Used fcn_DebugTools_is+OnlineFromThisComputerAndUser as starter
+% 
+% (new release)
 
 % TO-DO:
 % 
