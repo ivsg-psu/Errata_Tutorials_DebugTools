@@ -452,6 +452,11 @@
 % 
 % (new release)
 %
+% 2026_10_09b by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added flag_initializeAnswers to check if starting correctly
+% 
+% (new release)
 
 % TO-DO:
 % 

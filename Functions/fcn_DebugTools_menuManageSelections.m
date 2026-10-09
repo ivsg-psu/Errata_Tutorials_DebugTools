@@ -89,6 +89,10 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % 2026_10_09 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Improved the try-catch statements to increase verbosity
+%
+% 2026_10_09b by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added flag_initializeAnswers to check if starting correctly
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -234,15 +238,20 @@ else
 	answersFileName = fullfile(pwd,'Data','answersSoFar.mat');
 end
 
+flag_initializeAnswers = true;
 if exist(answersFileName,'file')
-	load(answersFileName,'answers', 'timelog');
-else
+	load(answersFileName,'answers', 'timelog');    
+    flag_initializeAnswers = false;
+    if length(answers)~=numQuestions
+        flag_initializeAnswers = true;
+    end
+end
+if flag_initializeAnswers
 	% Initialize answers
 	answers = cell(numQuestions,1);
 	timelog = cell(1,1);
 	timelog{1,1} = datetime('now');
 end
-
 
 flag_exitMain = 0;
 while 0==flag_exitMain
