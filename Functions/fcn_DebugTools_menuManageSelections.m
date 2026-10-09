@@ -1,4 +1,4 @@
-function fcn_DebugTools_menuManageSelections(selections, varargin)
+function [answers, timelog] = fcn_DebugTools_menuManageSelections(selections, varargin)
 % fcn_DebugTools_menuManageSelections
 % A powerful menu tool that allows user to define menu options that auto-execute code.
 % The settings in "selections" structure define how menu operates.
@@ -93,6 +93,10 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % 2026_10_09b by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Added flag_initializeAnswers to check if starting correctly
+%
+% 2026_10_09c by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added answers and timelog as outputs
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu

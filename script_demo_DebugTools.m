@@ -466,7 +466,10 @@
 % 2026_01_22 by Sean Brennan, sbrennan@psu.edu
 % - In auto-installer, need way to catch nested installs. See to-do list in
 %   % that function for details
-
+%
+% 2026_10_09c by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added answers and timelog as outputs
 
 %% Make sure we are running out of root directory
 st = dbstack; 
