@@ -445,6 +445,13 @@
 %   * Used fcn_DebugTools_is+OnlineFromThisComputerAndUser as starter
 % 
 % (new release)
+%
+% 2026_10_09 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Improved the try-catch statements to increase verbosity
+% 
+% (new release)
+%
 
 % TO-DO:
 % 

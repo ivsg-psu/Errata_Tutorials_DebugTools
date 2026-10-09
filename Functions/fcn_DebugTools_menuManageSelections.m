@@ -85,6 +85,10 @@ function fcn_DebugTools_menuManageSelections(selections, varargin)
 % 2026_10_02 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Added print of calling function to top
+%
+% 2026_10_09 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Improved the try-catch statements to increase verbosity
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -260,8 +264,9 @@ while 0==flag_exitMain
 					commandToRun = sprintf(commandToEval);
 					try
 						eval(commandToRun);
-					catch
-						error('Command failed: %s',commandToRun);
+					catch ME
+						warning('Command failed: %s',commandToRun);
+						rethrow(ME)
 					end
 				end
 			elseif iscell(commandToEval)
@@ -271,8 +276,9 @@ while 0==flag_exitMain
 						commandToRun = sprintf(stringToPrint);
 						try
 							eval(commandToRun);
-						catch
-							error('Command failed: %s',commandToRun);
+						catch ME
+							warning('Command failed: %s',commandToRun);
+							rethrow(ME)
 						end
 					end
 				end
@@ -373,8 +379,9 @@ while 0==flag_exitMain
 					commandToRun = sprintf(commandToEval);
 					try
 						eval(commandToRun);
-					catch
-						error('Command failed: %s',commandToRun);
+					catch ME
+						warning('Command failed: %s',commandToRun);
+						rethrow(ME)
 					end
 				end
 			elseif iscell(commandToEval)
@@ -383,8 +390,9 @@ while 0==flag_exitMain
 						commandToRun = sprintf(commandToEval{ith_cell});
 						try
 							eval(commandToRun);
-						catch
-							error('Command failed: %s',commandToRun);
+						catch ME
+							warning('Command failed: %s',commandToRun);
+							rethrow(ME)
 						end
 					end
 				end
