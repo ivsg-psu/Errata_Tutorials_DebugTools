@@ -9,7 +9,10 @@
 % 2026_02_01 by Sean Brennan, sbrennan@psu.edu
 % - In script_test_fcn_DebugTools_timeQueryNTPserver
 %   % * Fixed wrong capitalization in function name
-
+%
+% 2026_10_12 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_timeQueryNTPserver
+%   % * Updated test case to check for internet off condition
 
 % TO-DO:
 %
@@ -120,13 +123,38 @@ assert(differenceInTime<hours(24));
 close all;
 fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
 
-% %% TEST case: This one returns nothing since there is no portion of the path in criteria
-% figNum = 20001;
-% titleString = sprintf('TEST case: This one returns nothing since there is no portion of the path in criteria');
-% fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
-% figure(figNum); clf;
-% 
+%% DEMO case: No internet result
+if 1==0
+	figNum = 20001;
+	titleString = sprintf('TEST case: no internet (make sure internet is off)');
+	fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+	% figure(figNum); clf;
 
+	% Set input arguments
+	server = 'pool.ntp.org';
+	port = [];
+	timeoutSecs = [];
+
+	%%%%%%%%%%
+	% Call the function
+	UTCdatetime = fcn_DebugTools_timeQueryNTPserver(server, (port), (timeoutSecs), (figNum));
+
+	% sgtitle(titleString, 'Interpreter','none');
+
+	% Check variable types
+	assert(isnan(UTCdatetime));
+
+	% Check variable sizes
+	assert(isequal(size(UTCdatetime),[1 1]));
+
+	% % Check variable values
+	% currentTime = datetime('now','TimeZone', 'UTC');
+	% differenceInTime = abs(currentTime-UTCdatetime);
+	% assert(differenceInTime<hours(24));
+
+	% % Make sure plot opened up
+	% assert(isequal(get(gcf,'Number'),figNum));
+end
 
 %% Fast Mode Tests
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

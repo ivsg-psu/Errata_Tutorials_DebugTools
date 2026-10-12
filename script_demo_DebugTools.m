@@ -457,6 +457,12 @@
 %   % * Added flag_initializeAnswers to check if starting correctly
 % 
 % (new release)
+% - In fcn_DebugTools_timeQueryNTPserver
+%   % * Added test to see if computer is connected to internet
+%   % * Avoids crashes if no connection
+% - In script_test_fcn_DebugTools_timeQueryNTPserver
+%   % * Updated test case to check for internet off condition
+
 
 % TO-DO:
 % 
