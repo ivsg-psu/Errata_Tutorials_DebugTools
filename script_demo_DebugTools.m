@@ -457,13 +457,15 @@
 %   % * Added flag_initializeAnswers to check if starting correctly
 % 
 % (new release)
+%
 % 2026_10_12 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_timeQueryNTPserver
 %   % * Added test to see if computer is connected to internet
 %   % * Avoids crashes if no connection
 % - In script_test_fcn_DebugTools_timeQueryNTPserver
 %   % * Updated test case to check for internet off condition
-
+% 
+% (new release)
 
 % TO-DO:
 % 
