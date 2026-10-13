@@ -466,6 +466,14 @@
 %   % * Updated test case to check for internet off condition
 % 
 % (new release)
+%
+% 2026_10_13 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_gradeAnswers
+%   % * Cleaned up grading structure for clarity
+%   % * Added outputs for debugging
+% 
+% (new release)
+
 
 % TO-DO:
 % 

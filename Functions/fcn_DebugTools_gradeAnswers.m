@@ -1,6 +1,6 @@
-function [overallScore, actualScoresEachQuestion, possibleScoresEachQuestion]  = fcn_DebugTools_gradeAnswers(selections, answers, varargin)
+function [overallScore, actualScoresEachQuestion, possibleScoresEachQuestion, correctAnswers]  = fcn_DebugTools_gradeAnswers(selections, answers, varargin)
 % fcn_DebugTools_gradeAnswers A tool to grade student answers by comparing
-% them to correct values in "selections" structure. 
+% them to correct values in "selections" structure.
 %
 % Specifically, it looks for the fields:
 %
@@ -11,7 +11,7 @@ function [overallScore, actualScoresEachQuestion, possibleScoresEachQuestion]  =
 % selections(numQuestions).AnswerGradingPoints = 0;
 % selections(numQuestions).AnswerGradingType = 'not empty';
 % selections(numQuestions).AnswerGradingOptions = {[]};
-% 
+%
 % Grading options include:
 %
 %   'not empty': full points are assigned to any answer that isn't empty
@@ -28,7 +28,7 @@ function [overallScore, actualScoresEachQuestion, possibleScoresEachQuestion]  =
 %
 % FORMAT:
 %
-%      fcn_DebugTools_gradeAnswers(selections, (fid))
+%      fcn_DebugTools_gradeAnswers(selections, answers, (fid))
 %
 % INPUTS:
 %
@@ -49,6 +49,8 @@ function [overallScore, actualScoresEachQuestion, possibleScoresEachQuestion]  =
 %      overallScore: the graded value for the submission
 %
 %      actualScoresEachQuestion, possibleScoresEachQuestion: the grades for each part
+%
+%     correctAnswers: the correct answers
 %
 % DEPENDENCIES:
 %
@@ -88,15 +90,20 @@ function [overallScore, actualScoresEachQuestion, possibleScoresEachQuestion]  =
 % - In fcn_DebugTools_gradeAnswers
 %   % * Updated the previous answers datafile naming to avoid prior
 %   %   % assignments putting data into future assignments.
-% 
+%
 % 2026_02_02 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_gradeAnswers
 %   % * Fixed incorrect capitalization in fcn_DebugTools_wrapLongText
-% 
+%
 % 2026_09_04 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_gradeAnswers
 %   % * Added 'within range' grading option
 %   % * Added outputs to allow individual problem scores to be seen
+%
+% 2026_10_13 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_gradeAnswers
+%   % * Cleaned up grading structure for clarity
+%   % * Added outputs for debugging
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -168,11 +175,11 @@ end
 
 % Check to see if user specifies fid?
 flag_do_plots = 0; % Default is to NOT show plots
-fid = 1; %#ok<NASGU> % Default is to print to the console
+fid = 1; % % Default is to print to the console
 if (0==flag_max_speed) && (MAX_NARGIN == nargin)
 	temp = varargin{end};
 	if ~isempty(temp)
-		fid = temp; %#ok<NASGU>
+		fid = temp; 
 		flag_do_plots = 1;
 	end
 end
@@ -189,69 +196,94 @@ end
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Initialize variables 
+% Initialize variables
 numQuestions = length(selections);
 
 % Count the number of integer questions
 numIntegerQuestions = 0;
 for ith_question = 1:numQuestions
-    if ~isnan(str2double(selections(ith_question).MenuChar))
-        numIntegerQuestions = ith_question;
-    else
-        break
-    end
+	if ~isnan(str2double(selections(ith_question).MenuChar))
+		numIntegerQuestions = ith_question;
+	else
+		break
+	end
 end
 
 actualScoresEachQuestion = zeros(numIntegerQuestions,1);
 possibleScoresEachQuestion = zeros(numIntegerQuestions,1);
 
 % Grade each problem
+correctAnswers = cell(size(answers));
+correctAnswerStrings = cell(size(answers));
+studentAnswerStrings = cell(size(answers));
+
 for ith_problem = 1:numIntegerQuestions
-    thisAnswer = answers{ith_problem};
-    thisCorrectAnswer  = selections(ith_problem).AnswerGradingCorrect;
-    thisPossibleScore  = selections(ith_problem).AnswerGradingPoints;
-    thisGradingType    = selections(ith_problem).AnswerGradingType;
-    thisGradingOptions = selections(ith_problem).AnswerGradingOptions;
 
-    % EXAMPLE:
-    % selections(numQuestions).AnswerGradingCorrect = 900000000;
-    % selections(numQuestions).AnswerGradingPoints = 0;
-    % selections(numQuestions).AnswerGradingType = 'exist';
-    % selections(numQuestions).AnswerGradingOptions = {[]};
+	thisAnswer = answers{ith_problem};
+	thisCorrectAnswer  = selections(ith_problem).AnswerGradingCorrect;
+	correctAnswers{ith_problem} = thisCorrectAnswer;
+	thisPossibleScore  = selections(ith_problem).AnswerGradingPoints;
+	thisGradingType    = selections(ith_problem).AnswerGradingType;
+	thisGradingOptions = selections(ith_problem).AnswerGradingOptions;
 
-    switch lower(thisGradingType)
-        case 'not empty'
-            if ~isempty(thisAnswer)
-                actualScoresEachQuestion(ith_problem) = thisPossibleScore;
-            end
-        case 'exact match'
-            if ~isempty(thisAnswer)
-                actualScoresEachQuestion(ith_problem) = thisPossibleScore * strcmpi(thisAnswer, thisCorrectAnswer);
-            end
-        case 'contains word'
-            if ~isempty(thisAnswer)
-                if strcmp(thisGradingOptions{1},'IgnoreCase')
-                    actualScoresEachQuestion(ith_problem) = thisPossibleScore * contains(thisAnswer, thisCorrectAnswer,'IgnoreCase',true);
-                else
-                    actualScoresEachQuestion(ith_problem) = thisPossibleScore * contains(thisAnswer, thisCorrectAnswer);
-                end
-			end 
+	% EXAMPLE:
+	% selections(numQuestions).AnswerGradingCorrect = 900000000;
+	% selections(numQuestions).AnswerGradingPoints = 0;
+	% selections(numQuestions).AnswerGradingType = 'exist';
+	% selections(numQuestions).AnswerGradingOptions = {[]};
+
+	percentageRight = 0;
+	studentAnswerString = '(empty)';
+	correctAnswerString = '(empty)';
+	switch lower(thisGradingType)
+		case 'not empty'
+			correctAnswerString = 'Not empty';
+			if ~isempty(thisAnswer)
+				percentageRight = 1;
+				studentAnswerString = thisAnswer;
+			end
+		case 'exact match'
+			correctAnswerString = thisCorrectAnswer;
+			studentAnswerString = thisAnswer;
+			if ~isempty(thisAnswer)
+				percentageRight = 1.00 * strcmpi(thisAnswer, thisCorrectAnswer);
+			end
+		case 'contains word'
+			correctAnswerString = sprintf('Contains:%s',thisCorrectAnswer);
+			studentAnswerString = thisAnswer;
+
+			if ~isempty(thisAnswer)
+				if strcmp(thisGradingOptions{1},'IgnoreCase')
+					percentageRight = 1.00 * contains(thisAnswer, thisCorrectAnswer,'IgnoreCase',true);
+				else
+					percentageRight = 1.00 * contains(thisAnswer, thisCorrectAnswer);
+				end
+			end
 		case 'within range'
 			if ~isempty(thisAnswer)
-                if ~isempty(thisGradingOptions{1})
+				if ~isempty(thisGradingOptions{1})
 					expectedRange = thisGradingOptions{1};
 					numericThisAnswer = str2double(thisAnswer);
-					actualScoresEachQuestion(ith_problem) = thisPossibleScore * (numericThisAnswer>=expectedRange(1) && numericThisAnswer<=expectedRange(2));					
-                else
-                    warning('Range option not given during a within-range test. Unable to grade.');
-                end
-			end 
-        otherwise
-            warning('Unable to find grading type: %s\n',thisGradingType);
-    end
+					percentageRight = 1.00 * (numericThisAnswer>=expectedRange(1) && numericThisAnswer<=expectedRange(2));
+					
+					correctAnswerString = sprintf('Between_%.5f_and_%.5f',expectedRange(1),expectedRange(2));
+					studentAnswerString = thisAnswer;
+				else
+					warning('Range option not given during a within-range test. Unable to grade.');
+				end
+			end
+		otherwise
+			warning('Unable to find grading type: %s\n',thisGradingType);
+	end
+	actualScoresEachQuestion(ith_problem) = thisPossibleScore * percentageRight;
 
-    % Fill in the possible points
-    possibleScoresEachQuestion(ith_problem) = thisPossibleScore;
+	% FOR DEBUGGING
+	studentAnswerStrings{ith_problem} = studentAnswerString;
+	correctAnswerStrings{ith_problem} = correctAnswerString;
+
+
+	% Fill in the possible points
+	possibleScoresEachQuestion(ith_problem) = thisPossibleScore;
 end
 
 % Add up results
@@ -273,12 +305,29 @@ overallScore = totalPointsEarned/totalPointsPossible;
 %                           |___/
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if 1 == flag_do_plots
-	%     figure(figNum);
-	%     clf;
-	%     hold on;
-	%     grid on;
-	%
-	%
+
+	for ith_problem = 1:numIntegerQuestions
+
+		fprintf(fid,'Problem %.0d: %s: ',ith_problem, selections(ith_problem).Text);
+
+		% If printing to console, print in color
+		if 1==fid
+			fcn_DebugTools_cprintf('Blue',sprintf('Correct Answer: %s ',correctAnswerStrings{ith_problem}));
+			if actualScoresEachQuestion(ith_problem)>0
+				fcn_DebugTools_cprintf('Green',sprintf('Student Answer: %s \n',studentAnswerStrings{ith_problem}));
+			else
+				fcn_DebugTools_cprintf('Red',sprintf('Student Answer: %s \n',studentAnswerStrings{ith_problem}));
+			end
+		else
+			fprintf(fid,'Correct Answer: %s ',correctAnswerStrings{ith_problem});
+			fprintf(fid,'Student Answer: %s \n',studentAnswerStrings{ith_problem});			
+		end
+	end
+	fprintf(fid,'Total Points Earned: %.4f\n',totalPointsEarned);
+	fprintf(fid,'Total Points Possible: %.4f\n',totalPointsPossible);
+	fprintf(fid,'Overall score: %.4f\n',overallScore);
+	fprintf(fid,'\n');
+
 
 end % Ends the flag_do_plot if statement
 
