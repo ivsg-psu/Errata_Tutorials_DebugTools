@@ -458,6 +458,12 @@
 % 
 % (new release)
 %
+% 2026_10_09c by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Added answers and timelog as outputs
+% 
+% (new release)
+%
 % 2026_10_12 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_timeQueryNTPserver
 %   % * Added test to see if computer is connected to internet
@@ -486,6 +492,12 @@
 %   % * Used fcn_DebugTools_addStringToEnd as starter
 % 
 % (new release)
+%
+% 2026_10_19b by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Another bug fix to avoid situation where editor is included in path
+% 
+% (new release)
 
 % TO-DO:
 % 
@@ -495,10 +507,7 @@
 % 2026_01_22 by Sean Brennan, sbrennan@psu.edu
 % - In auto-installer, need way to catch nested installs. See to-do list in
 %   % that function for details
-%
-% 2026_10_09c by Sean Brennan, sbrennan@psu.edu
-% - In fcn_DebugTools_menuManageSelections
-%   % * Added answers and timelog as outputs
+
 
 %% Make sure we are running out of root directory
 st = dbstack; 

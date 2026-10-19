@@ -102,6 +102,10 @@ function [answers, timelog] = fcn_DebugTools_menuManageSelections(selections, va
 % - In fcn_DebugTools_menuManageSelections
 %   % * Fixed bug where calling path might be from Functions folder 
 %   % * Do not want to shift into this subfolder
+%
+% 2026_10_19b by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Another bug fix to avoid situation where editor is included in path
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -219,11 +223,20 @@ numBadOptionInputs = 0; %#ok<NASGU>
 
 % Make sure we are in the right directory
 st = dbstack;
+if contains(st(end).name,'LiveEditor')
+    st = st(1:end-1);
+end
 callingScriptName = st(end).name;
 callingScriptAndPathName = which(callingScriptName);
 callingPath = fileparts(callingScriptAndPathName);
 if contains(callingPath,{'Assignments','Functions'}) 
-	actualPathDirty = extractBefore(callingPath,'Assignments');
+    if contains(callingPath,{'Assignments'})
+    	actualPathDirty = extractBefore(callingPath,'Assignments');
+    elseif contains(callingPath,{'Functions'})
+        actualPathDirty = extractBefore(callingPath,'Functions');
+    else
+        error('Unknown option encountered?')
+    end
 
 	% Clean up any file separators
 	actualPath = fileparts(actualPathDirty);
