@@ -97,6 +97,11 @@ function [answers, timelog] = fcn_DebugTools_menuManageSelections(selections, va
 % 2026_10_09c by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Added answers and timelog as outputs
+%
+% 2026_10_19 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Fixed bug where calling path might be from Functions folder 
+%   % * Do not want to shift into this subfolder
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -217,7 +222,7 @@ st = dbstack;
 callingScriptName = st(end).name;
 callingScriptAndPathName = which(callingScriptName);
 callingPath = fileparts(callingScriptAndPathName);
-if contains(callingPath,'Assignments')
+if contains(callingPath,{'Assignments','Functions'}) 
 	actualPathDirty = extractBefore(callingPath,'Assignments');
 
 	% Clean up any file separators

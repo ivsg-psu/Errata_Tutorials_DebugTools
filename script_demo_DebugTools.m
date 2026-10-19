@@ -473,7 +473,19 @@
 %   % * Added outputs for debugging
 % 
 % (new release)
-
+%
+% 2026_10_19 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Fixed bug where calling path might be from Functions folder 
+%   % * Do not want to shift into this subfolder
+% - In script_test_fcn_DebugTools_copyStructureSelections
+%   % * First write of the script
+%   % * Used script_test_fcn_DebugTools_timeQu+eryNTPserver as starter
+% - In fcn_DebugTools_copyStructureSelections
+%   % * First write of the script
+%   % * Used fcn_DebugTools_addStringToEnd as starter
+% 
+% (new release)
 
 % TO-DO:
 % 
