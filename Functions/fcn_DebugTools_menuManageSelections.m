@@ -106,6 +106,12 @@ function [answers, timelog] = fcn_DebugTools_menuManageSelections(selections, va
 % 2026_10_19b by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Another bug fix to avoid situation where editor is included in path
+%
+% 2026_11_03 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_menuManageSelections
+%   % * Fixed bug where answers were not initializing to defaults in menu
+%   % * Fixed issue where missing or blank answers were not counted as
+%   %   % empty
 
 % TO-DO:
 % 2026_01_12 by Sean Brennan, sbrennan@psu.edu
@@ -271,6 +277,16 @@ end
 if flag_initializeAnswers
 	% Initialize answers
 	answers = cell(numQuestions,1);
+	for ith_question = 1:numQuestions
+		answers{ith_question} = selections(ith_question).AnswerDefault;
+	end
+	missingData = [find(contains(answers,'missing')); find(strcmp(answers,' '))];
+	for ith_data = 1:length(missingData)
+		thisIndex = missingData(ith_data);
+		answers{thisIndex} = [];
+	end
+
+	% Initialize timelog
 	timelog = cell(1,1);
 	timelog{1,1} = datetime('now');
 end
