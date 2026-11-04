@@ -498,11 +498,14 @@
 %   % * Another bug fix to avoid situation where editor is included in path
 % 
 % (new release)
+%
 % 2026_11_03 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_menuManageSelections
 %   % * Fixed bug where answers were not initializing to defaults in menu
 %   % * Fixed issue where missing or blank answers were not counted as
 %   %   % empty
+% 
+% (new release)
 
 
 % TO-DO:
