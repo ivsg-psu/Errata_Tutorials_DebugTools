@@ -152,6 +152,10 @@ function fcn_DebugTools_autoInstallRepos(...
 %   % * Automatically recovers previously installed packages if no internet
 %   % * Confirms current packages are up-to-date if there is internet
 %   % * If current package is up-to-date, does not install
+%
+% 2026_11_14 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Fixed bug where dependency_name was not updated correctly
 
 % TO-DO:
 % - Would like to have the following functionality:
@@ -420,7 +424,7 @@ if flag_debugInstallNeeded
 		fprintf(1,'\tAdding library: %s ...',latestDebugReleaseName);
 
 		% Install DebugTools using internal function and trusted repo
-		dependency_name      = 'DebugTools_2026_10_01';
+		dependency_name      = latestDebugReleaseName;
 		dependency_subfolders = {'Functions','Data'};
 		dependency_url        = cat(2,'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/archive/refs/tags/',...
 			latestDebugReleaseName,'.zip');

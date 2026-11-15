@@ -513,9 +513,13 @@
 %   % * Automatically recovers previously installed packages if no internet
 %   % * Confirms current packages are up-to-date if there is internet
 %   % * If current package is up-to-date, does not install
-
 % 
 % (new release)
+%
+%
+% 2026_11_14b by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Fixed bug where dependency_name was not updated correctly
 
 % TO-DO:
 % 
