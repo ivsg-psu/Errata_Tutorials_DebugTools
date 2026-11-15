@@ -506,7 +506,16 @@
 %   %   % empty
 % 
 % (new release)
+%
+% 2026_11_14 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Major restructuring and rewrite to avoid internet usage
+%   % * Automatically recovers previously installed packages if no internet
+%   % * Confirms current packages are up-to-date if there is internet
+%   % * If current package is up-to-date, does not install
 
+% 
+% (new release)
 
 % TO-DO:
 % 
