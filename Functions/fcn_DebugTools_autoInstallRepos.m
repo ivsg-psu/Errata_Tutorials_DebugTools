@@ -82,7 +82,7 @@ function fcn_DebugTools_autoInstallRepos(...
 %      but of course this requires an internet connection. If the
 %      DebugTools are being installed, it does not require any other
 %      functions. But for other packages, it uses the following from the
-%      DebugTools library: fcn_DebugTools_addSubdirectoriesToPath
+%      DebugTools library: fcn_INTERNAL_addSubdirectoriesToPath
 %
 % EXAMPLES:
 %      See: script_test_fcn_DebugTools_autoInstallRepos
@@ -153,9 +153,15 @@ function fcn_DebugTools_autoInstallRepos(...
 %   % * Confirms current packages are up-to-date if there is internet
 %   % * If current package is up-to-date, does not install
 %
-% 2026_11_14 by Sean Brennan, sbrennan@psu.edu
+% 2026_11_14b by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_autoInstallRepos
 %   % * Fixed bug where dependency_name was not updated correctly
+%
+% 2026_11_14c by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Moved fcn_INTERNAL_addSubdirectoriesToPath internally to avoid
+%   %   % issues with unrecognized function calls
+%   % * Fixed several other exposed DebugTool calls with INTERNAL copies
 
 % TO-DO:
 % - Would like to have the following functionality:
@@ -341,7 +347,7 @@ root_directory_name = pwd;
 
 latestDebugReleaseName = [];
 % Check if previous DebugTool installs exist?
-[flag_previousDebugFound, func_handle_addSubdirectoriesToPath] = fcn_INTERNAL_checkForPriorDebugInstall;
+flag_previousDebugFound = fcn_INTERNAL_checkForPriorDebugInstall;
 
 % Check if online using internal tool
 flag_isOnline = fcn_INTERNAL_isThisComputerOnline;
@@ -428,7 +434,7 @@ if flag_debugInstallNeeded
 		dependency_subfolders = {'Functions','Data'};
 		dependency_url        = cat(2,'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/archive/refs/tags/',...
 			latestDebugReleaseName,'.zip');
-		fcn_INTERNAL_DebugTools_installDependencies(latestDebugReleaseName, dependency_subfolders, dependency_url);
+		fcn_INTERNAL_installDependencies(latestDebugReleaseName, dependency_subfolders, dependency_url);
 
 		% Make sure it worked
 		expectedDirectory = fullfile(pwd,'Utilities',dependency_name);
@@ -445,7 +451,7 @@ if flag_debugInstallNeeded
 	else
 		% Add latest release to the path
 		debugDirectory = fullfile(pwd,'Utilities',latestDebugReleaseName);
-		func_handle_addSubdirectoriesToPath(debugDirectory,{'Functions','Data'});
+		fcn_INTERNAL_addSubdirectoriesToPath(debugDirectory,{'Functions','Data'});
 
 	end %
 else
@@ -462,7 +468,7 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
 	[owner, repoName] = fcn_INTERNAL_extractOwnerAndRepoFromURL(thisURL);
 
 	% Check latest release
-	latestReleaseStruct = fcn_DebugTools_findLatestGitHubRelease(owner, repoName, (-1));
+	latestReleaseStruct = fcn_INTERNAL_findLatestGitHubRelease(owner, repoName, (-1));
 
 	dependency_name      = latestReleaseStruct.tag_name;
 	dependency_subfolders = orderedListOfSubfolders{ith_repo,1};
@@ -512,7 +518,7 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
 	% install or link.
 	if ~exist(expectedDirectory,'dir') 
 		fprintf(1,'\tAdding library: %s ...',dependency_name);
-		fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url);
+		fcn_INTERNAL_installDependencies(dependency_name, dependency_subfolders, dependency_url);
 
 		% Make sure it worked
 		if ~exist(expectedDirectory,'dir')
@@ -524,7 +530,7 @@ for ith_repo = 1:length(orderedListOfRequestedInstalls)
 		end
 	else
 		fprintf(1,'\tSkipping already installed library: %s\n',dependency_name);
-		fcn_DebugTools_addSubdirectoriesToPath(expectedDirectory,dependency_subfolders);
+		fcn_INTERNAL_addSubdirectoriesToPath(expectedDirectory,dependency_subfolders);
 	end
 
 	% If Debug install, copy this file into Installer folder UNLESS debugging within
@@ -635,10 +641,10 @@ end % Ends the function
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
 
-function fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url, varargin)
-%% FCN_DEBUGTOOLS_INSTALLDEPENDENCIES - MATLAB package installer from URL
+function fcn_INTERNAL_installDependencies(dependency_name, dependency_subfolders, dependency_url, varargin)
+%% fcn_INTERNAL_installDependencies - MATLAB package installer from URL
 %
-% FCN_DEBUGTOOLS_INSTALLDEPENDENCIES installs code packages that are
+% fcn_INTERNAL_installDependencies installs code packages that are
 % specified by a URL pointing to a zip file into a default local subfolder,
 % "Utilities", under the root folder. It also adds either the package
 % subfoder or any specified sub-subfolders to the MATLAB path.
@@ -666,7 +672,7 @@ function fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency
 %
 % FORMAT:
 %
-%      fcn_DebugTools_installDependencies(...
+%      fcn_INTERNAL_installDependencies(...
 %           dependency_name, ...
 %           dependency_subfolders, ...
 %           dependency_url, (flag_force_creation))
@@ -696,7 +702,7 @@ function fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency
 %      but of course this requires an internet connection. If the
 %      DebugTools are being installed, it does not require any other
 %      functions. But for other packages, it uses the following from the
-%      DebugTools library: fcn_DebugTools_addSubdirectoriesToPath
+%      DebugTools library: fcn_INTERNAL_addSubdirectoriesToPath
 %
 % EXAMPLES:
 %
@@ -715,7 +721,7 @@ function fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency
 % dependency_url = 'https://github.com/ivsg-psu/Errata_Tutorials_DebugTools/blob/main/Releases/DebugTools_v2023_01_18.zip?raw=true';
 %
 % % Call the function to do the install
-% fcn_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url)
+% fcn_INTERNAL_installDependencies(dependency_name, dependency_subfolders, dependency_url)
 %
 %
 % See also: script_test_fcn_DebugTools_autoInstallRepos
@@ -1030,22 +1036,27 @@ if ~exist(flag_varname,'var') || isempty(eval(flag_varname))
 	%
 	% In other words: DebugTools is a special case because folders not
 	% added yet, and we use DebugTools for adding the other directories
-	if strcmp(dependency_name(1:10),'DebugTools')
-		debugTools_function_folder = fullfile(root_directory_name, 'Utilities', dependency_name,'Functions');
-
-		% Move into the folder, run the function, and move back
-		cd(debugTools_function_folder);
-		fcn_DebugTools_addSubdirectoriesToPath(dependency_folder_name,dependency_subfolders);
-		cd(root_directory_name);
+	if 1==1
+		fcn_INTERNAL_addSubdirectoriesToPath(dependency_folder_name,dependency_subfolders);
 	else
-		try
-			fcn_DebugTools_addSubdirectoriesToPath(dependency_folder_name,dependency_subfolders);
-		catch
-			warning('backtrace','on');
-			warning('Error encountered where DebugTools requested but not yet installed.');
-			error(['Package installer requires DebugTools package to be ' ...
-				'installed first. Please install that before ' ...
-				'installing this package']);
+		% BELOW IS OLD METHOD THAT USED TO USE DebugTools
+		if strcmp(dependency_name(1:10),'DebugTools')
+			debugTools_function_folder = fullfile(root_directory_name, 'Utilities', dependency_name,'Functions');
+
+			% Move into the folder, run the function, and move back
+			cd(debugTools_function_folder);
+			fcn_INTERNAL_addSubdirectoriesToPath(dependency_folder_name,dependency_subfolders);
+			cd(root_directory_name);
+		else
+			try
+				fcn_INTERNAL_addSubdirectoriesToPath(dependency_folder_name,dependency_subfolders);
+			catch
+				warning('backtrace','on');
+				warning('Error encountered where DebugTools requested but not yet installed.');
+				error(['Package installer requires DebugTools package to be ' ...
+					'installed first. Please install that before ' ...
+					'installing this package']);
+			end
 		end
 	end
 
@@ -1088,7 +1099,7 @@ if flag_do_debug
 	fprintf(1,'ENDING function: %s, in file: %s\n\n',st(1).name,st(1).file);
 end
 
-end % Ends function fcn_DebugTools_installDependencies
+end % Ends function fcn_INTERNAL_installDependencies
 
 
 %% fcn_INTERNAL_confirmDebugToolsIsFirstOnInstallList
@@ -1163,13 +1174,13 @@ for ith_library = 1:length(library_name)
 	dependency_url = library_url{ith_library};
 
 	fprintf(1,'\tAdding library: %s ...',dependency_name);
-	fcn_INTERNAL_DebugTools_installDependencies(dependency_name, dependency_subfolders, dependency_url);
+	fcn_INTERNAL_installDependencies(dependency_name, dependency_subfolders, dependency_url);
 	clear dependency_name dependency_subfolders dependency_url
 	fprintf(1,'Done.\n');
 end
 
 % Set dependencies for this project specifically
-fcn_DebugTools_addSubdirectoriesToPath(pwd,this_project_folders);
+fcn_INTERNAL_addSubdirectoriesToPath(pwd,this_project_folders);
 
 disp('Done setting up libraries, adding each to MATLAB path, and adding current repo folders to path.');
 end % Ends fcn_INTERNAL_initializeUtilities
@@ -1188,11 +1199,10 @@ end
 end % Ends fcn_INTERNAL_extractOwnerAndRepoFromURL
 
 %% function fcn_INTERNAL_checkForPriorDebugInstall
-function [flag_previousInstallFound, func_handle_addSubdirectoriesToPath] = fcn_INTERNAL_checkForPriorDebugInstall
+function flag_previousInstallFound = fcn_INTERNAL_checkForPriorDebugInstall
 
 % Initialize default outputs
 flag_previousInstallFound = false;
-func_handle_addSubdirectoriesToPath = [];
 
 
 % Navigate to the Utilities directory
@@ -1204,21 +1214,6 @@ if exist(utilitiesFolderSearch,'dir')
 	% Were any DebugTools installs found?
 	if ~isempty(debugsInstalled)
 		flag_previousInstallFound = true; % Mark flag that it was found
-		mostRecentDebugInstall = fullfile(debugsInstalled(end).folder,debugsInstalled(end).name);
-
-		currentFolder = pwd; % Save the current folder
-
-		cd(mostRecentDebugInstall); % Move into the utilities folder
-
-		% Create a function handles
-		func_handle_addSubdirectoriesToPath = @fcn_DebugTools_addSubdirectoriesToPath;
-
-		% Return to the root directory
-		cd(currentFolder);
-
-		if isempty(func_handle_addSubdirectoriesToPath)
-			flag_previousInstallFound = false;
-		end
 	end
 end
 
@@ -1229,13 +1224,13 @@ end % Ends fcn_INTERNAL_checkForPriorDebugInstall
 %% fcn_INTERNAL_isThisComputerOnline
 function [isOnline] = fcn_INTERNAL_isThisComputerOnline(varargin)
 
-% fcn_DebugTools_isThisComputerOnline
+% fcn_INTERNAL_isThisComputerOnline
 % returns true if this computer is online, false if not. Checks using java
 % "isreachable" command to URL.
 %
 % FORMAT:
 %
-%     [isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), (figNum))
+%     [isOnline] = fcn_INTERNAL_isThisComputerOnline((url), (timeout), (figNum))
 %
 % INPUTS:
 %
@@ -1262,7 +1257,7 @@ function [isOnline] = fcn_INTERNAL_isThisComputerOnline(varargin)
 %
 % EXAMPLES:
 %
-%     See the script: script_test_fcn_DebugTools_isThisComputerOnline
+%     See the script: script_test_fcn_INTERNAL_isThisComputerOnline
 %     for a full test suite.
 %
 % This function was written on 2026_10_07 by S. Brennan
@@ -1271,7 +1266,7 @@ function [isOnline] = fcn_INTERNAL_isThisComputerOnline(varargin)
 % REVISION HISTORY:
 %
 % 2026_10_07 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_DebugTools_isThisComputerOnline
+% - In fcn_INTERNAL_isThisComputerOnline
 %   * Wrote the code originally
 %   * Used fcn_DebugTools_is+OnlineFromThisComputerAndUser as starter
 
@@ -1308,9 +1303,9 @@ end
 if flag_do_debug
 	st = dbstack; %#ok<*UNRCH>
 	fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
-	debug_figNum = 999978; %#ok<NASGU>
+	debug_figNum = 999978; 
 else
-	debug_figNum = []; %#ok<NASGU>
+	debug_figNum = []; 
 end
 
 %% check input arguments
@@ -1365,7 +1360,7 @@ flag_do_plots = 0; % Default is to NOT show plots
 if (0==flag_max_speed) && (MAX_NARGIN == nargin)
 	temp = varargin{end};
 	if ~isempty(temp)
-		figNum = temp; %#ok<NASGU>
+		figNum = temp; 
 		flag_do_plots = 1;
 	end
 end
@@ -1422,13 +1417,13 @@ end % Ends fcn_INTERNAL_isThisComputerOnline
 function latestReleaseStruct = fcn_INTERNAL_findLatestGitHubRelease(owner, repo, varargin) 
 % FCN_DEBUGTOOLS_FINDLATESTGITHUBRELEASE Finds and displays the latest release of a GitHub repository.
 %
-%   fcn_DebugTools_findLatestGitHubRelease(owner, repo) takes the GitHub repository owner
+%   fcn_INTERNAL_findLatestGitHubRelease(owner, repo) takes the GitHub repository owner
 %   (username or organization) and the repository name as input and
 %   displays information about the latest release.
 % 
 % FORMAT:
 % 
-%    latestReleaseStruct = fcn_DebugTools_findLatestGitHubRelease(owner, repo, varargin) 
+%    latestReleaseStruct = fcn_INTERNAL_findLatestGitHubRelease(owner, repo, varargin) 
 % 
 % INPUTS:
 % 
@@ -1479,7 +1474,7 @@ function latestReleaseStruct = fcn_INTERNAL_findLatestGitHubRelease(owner, repo,
 % 
 %     owner = 'ivsg-psu';
 %     repo = 'FieldDataCollection_VisualizingFieldData_PlotRoad';
-%     latestRelease = fcn_DebugTools_findLatestGitHubRelease(owner, repo)
+%     latestRelease = fcn_INTERNAL_findLatestGitHubRelease(owner, repo)
 % 
 % This function was written on 2021_12_12 by S. Brennan by modifying the
 % similar function from the MapGen class.
@@ -1497,7 +1492,7 @@ function latestReleaseStruct = fcn_INTERNAL_findLatestGitHubRelease(owner, repo,
 %   % * fig_+num to figNum
 %
 % 2025_11_22 by Sean Brennan, sbrennan@psu.edu
-% - In fcn_DebugTools_findLatestGitHubRelease
+% - In fcn_INTERNAL_findLatestGitHubRelease
 %   % * Made error handling more verbose
 %   % * Added warn+ings with 'backtrace' option on
 
@@ -1650,3 +1645,201 @@ end
 
 
 end % Ends the function fcn_INTERNAL_findLatestGitHubRelease
+
+
+%% fcn_INTERNAL_addSubdirectoriesToPath
+function fcn_INTERNAL_addSubdirectoriesToPath(root_path, subdirectories, varargin)
+% fcn_INTERNAL_addSubdirectoriesToPath
+% Given a path, and a cell array of subdirectories, adds the subdirectories
+% to the path, if they exist under the given path. It throws an error if
+% the subdirectories do not exist
+%
+% FORMAT:
+%
+%      fcn_INTERNAL_addSubdirectoriesToPath(root_path,subdirectories, (figNum))
+%
+% INPUTS:
+%
+%      root_path: a string of the path location
+% 
+%      subdirectories: a cell array of strings containing subdirectories,
+%      for example {'Functions','Data','Utilities'}
+%
+%      (OPTIONAL INPUTS)
+%
+%      figNum: a figure number to plot results. If set to -1, skips any
+%      input checking or debugging, no figures will be generated, and sets
+%      up code to maximize speed. 
+%
+% OUTPUTS:
+%
+%      (none)
+%
+% DEPENDENCIES:
+%
+%      (none)
+%
+% EXAMPLES:
+%
+% See the script: script_test_fcn_INTERNAL_addSubdirectoriesToPath
+% for a full test suite.
+%
+% This function was written on 2022_03_27 by S. Brennan 
+% Questions or comments? sbrennan@psu.edu
+
+% REVISION HISTORY:
+% 
+% 2022_03_27 by Sean Brennan, sbrennan@psu.edu
+% - first write of the code
+% 
+% 2025_11_12 by Sean Brennan, sbrennan@psu.edu
+% - Updated debug flags
+% - Added figNum input
+% - Fixed variable naming for clarity:
+%   % * input_variable to inputVariable
+%
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - Formatted revision lists to Markdown format
+% - Fixed variable naming for clarity:
+%   % * fig_+num to figNum
+
+
+% TO-DO:
+% 2025_11_20 by Sean Brennan, sbrennan@psu.edu
+% - (none)
+
+%% Debugging and Input checks
+
+% Check if flag_max_speed set. This occurs if the figNum variable input
+% argument (varargin) is given a number of -1, which is not a valid figure
+% number.
+MAX_NARGIN = 3; % The largest Number of argument inputs to the function
+flag_max_speed = 0;
+if (nargin==MAX_NARGIN && isequal(varargin{end},-1))
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
+    flag_check_inputs = 0; % Flag to perform input checking
+    flag_max_speed = 1;
+else
+    % Check to see if we are externally setting debug mode to be "on"
+    flag_do_debug = 0; %     % Flag to plot the results for debugging
+    flag_check_inputs = 1; % Flag to perform input checking
+    MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS");
+    MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG = getenv("MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG");
+    if ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS) && ~isempty(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG)
+        flag_do_debug = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_DO_DEBUG); 
+        flag_check_inputs  = str2double(MATLABFLAG_DEBUGTOOLS_FLAG_CHECK_INPUTS);
+    end
+end
+
+% flag_do_debug = 1;
+
+if flag_do_debug
+    st = dbstack; %#ok<*UNRCH>
+    fprintf(1,'STARTING function: %s, in file: %s\n',st(1).name,st(1).file);
+    debug_figNum = 999978; 
+else
+    debug_figNum = []; 
+end
+
+%% check input arguments
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   _____                   _
+%  |_   _|                 | |
+%    | |  _ __  _ __  _   _| |_ ___
+%    | | | '_ \| '_ \| | | | __/ __|
+%   _| |_| | | | |_) | |_| | |_\__ \
+%  |_____|_| |_| .__/ \__,_|\__|___/
+%              | |
+%              |_|
+% See: http://patorjk.com/software/taag/#p=display&f=Big&t=Inputs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+if 0 == flag_max_speed
+    if flag_check_inputs == 1
+        % Are there the right number of inputs?
+        narginchk(2,MAX_NARGIN);
+
+        % if nargin>=2
+        %     % Check the variableTypeString input, make sure it is characters
+        %     if ~ischar(variableTypeString)
+        %         error('The variableTypeString input must be a character type, for example: ''Path'' ');
+        %     end
+        % end
+
+    end
+end
+
+
+% Check to see if user specifies figNum?
+flag_do_plots = 0; % Default is to NOT show plots
+if (0==flag_max_speed) && (MAX_NARGIN == nargin) 
+    temp = varargin{end};
+    if ~isempty(temp)
+        figNum = temp; 
+        flag_do_plots = 1;
+    end
+end
+
+
+
+
+%% Start of main code
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   __  __       _
+%  |  \/  |     (_)
+%  | \  / | __ _ _ _ __
+%  | |\/| |/ _` | | '_ \
+%  | |  | | (_| | | | | |
+%  |_|  |_|\__,_|_|_| |_|
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% add necessary directories
+if isempty(subdirectories)
+    if(exist(root_path,'dir'))
+        addpath(root_path);
+    else % Throw an error?
+        error('There was an attempt to add directory: \n%s \nto the path but the subdirectory does not exist. Suggest checking the README file to ensure correct folders are included.',...
+            root_path);
+    end
+else
+    for ith_subdirectory = 1:length(subdirectories)
+        subdirectory_name = subdirectories{ith_subdirectory};
+        if(exist([root_path, filesep,  subdirectory_name],'dir'))
+            addpath(genpath([root_path, filesep, subdirectory_name]))
+        else % Throw an error?
+            error('There was an attempt to add subdirectory: \n%s \nto the path: \n%s\nbut the subdirectory does not exist. Suggest checking the README file to ensure correct folders are included.',...
+                subdirectory_name,root_path);
+        end
+    end
+end
+
+
+%% Plot the results (for debugging)?
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   _____       _
+%  |  __ \     | |
+%  | |  | | ___| |__  _   _  __ _
+%  | |  | |/ _ \ '_ \| | | |/ _` |
+%  | |__| |  __/ |_) | |_| | (_| |
+%  |_____/ \___|_.__/ \__,_|\__, |
+%                            __/ |
+%                           |___/
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+if 1 == flag_do_plots
+    %     figure(figNum);
+    %     clf;
+    %     hold on;
+    %     grid on;
+    %
+    %        
+    
+end % Ends the flag_do_plot if statement
+
+if flag_do_debug
+    fprintf(1,'ENDING function: %s, in file: %s\n\n',st(1).name,st(1).file); 
+end
+
+end % Ends the function fcn_INTERNAL_addSubdirectoriesToPath
+

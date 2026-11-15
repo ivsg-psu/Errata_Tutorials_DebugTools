@@ -516,10 +516,20 @@
 % 
 % (new release)
 %
-%
 % 2026_11_14b by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_autoInstallRepos
 %   % * Fixed bug where dependency_name was not updated correctly
+% 
+% (new release)
+%
+% 2026_11_14c by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Moved fcn_INTERNAL_addSubdirectoriesToPath internally to avoid
+%   %   % issues with unrecognized function calls
+%   % * Fixed several other exposed DebugTool calls with INTERNAL copies
+% 
+% (new release)
+
 
 % TO-DO:
 % 
