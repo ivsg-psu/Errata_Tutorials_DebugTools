@@ -9,7 +9,10 @@
 % - In script_test_fcn_DebugTools_isThisComputerOnline
 %   * Wrote the code originally
 %   * Used script_test_fcn_DebugTools_is+OnlineFromThisComputerAndUser as starter
- 
+% 
+% 2026_11_16 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_isThisComputerOnline
+%   * Fixed bug where seed variable was used instead of isOnline 
 
 % TO-DO:
 % 2026_10_07 by Sean Brennan, sbrennan@psu.edu
@@ -52,8 +55,8 @@ sgtitle(titleString, 'Interpreter','none');
 assert(islogical(isOnline));
 
 % Check variable sizes
-assert(size(seed,1)==1); 
-assert(size(seed,2)==1); 
+assert(size(isOnline,1)==1); 
+assert(size(isOnline,2)==1); 
 
 % Check variable values
 assert(isOnline==true);  
@@ -82,8 +85,8 @@ sgtitle(titleString, 'Interpreter','none');
 assert(islogical(isOnline));
 
 % Check variable sizes
-assert(size(seed,1)==1); 
-assert(size(seed,2)==1); 
+assert(size(isOnline,1)==1); 
+assert(size(isOnline,2)==1); 
 
 % Check variable values
 assert(isOnline==true);  
@@ -112,8 +115,8 @@ sgtitle(titleString, 'Interpreter','none');
 assert(islogical(isOnline));
 
 % Check variable sizes
-assert(size(seed,1)==1); 
-assert(size(seed,2)==1); 
+assert(size(isOnline,1)==1); 
+assert(size(isOnline,2)==1); 
 
 % Check variable values
 assert(isOnline==false);  
@@ -142,8 +145,8 @@ sgtitle(titleString, 'Interpreter','none');
 assert(islogical(isOnline));
 
 % Check variable sizes
-assert(size(seed,1)==1); 
-assert(size(seed,2)==1); 
+assert(size(isOnline,1)==1); 
+assert(size(isOnline,2)==1); 
 
 % Check variable values
 assert(isOnline==true);  
@@ -173,8 +176,8 @@ sgtitle(titleString, 'Interpreter','none');
 assert(islogical(isOnline));
 
 % Check variable sizes
-assert(size(seed,1)==1); 
-assert(size(seed,2)==1); 
+assert(size(isOnline,1)==1); 
+assert(size(isOnline,2)==1); 
 
 % Check variable values
 assert(isOnline==false);  
@@ -240,8 +243,8 @@ sgtitle(titleString, 'Interpreter','none');
 assert(islogical(isOnline));
 
 % Check variable sizes
-assert(size(seed,1)==1); 
-assert(size(seed,2)==1); 
+assert(size(isOnline,1)==1); 
+assert(size(isOnline,2)==1); 
 
 % Check variable values
 assert(isOnline==true);  
@@ -269,8 +272,8 @@ sgtitle(titleString, 'Interpreter','none');
 assert(islogical(isOnline));
 
 % Check variable sizes
-assert(size(seed,1)==1); 
-assert(size(seed,2)==1); 
+assert(size(isOnline,1)==1); 
+assert(size(isOnline,2)==1); 
 
 % Check variable values
 assert(isOnline==true);  

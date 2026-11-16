@@ -529,7 +529,26 @@
 %   % * Fixed several other exposed DebugTool calls with INTERNAL copies
 % 
 % (new release)
-
+%
+% 2026_11_16 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Moved fcn_INTERNAL_addSubdirectoriesToPath internally to avoid
+%   %   % issues with unrecognized function calls
+%   % * Fixed several other exposed DebugTool calls with INTERNAL copies
+% 
+% (new release)
+% 
+% 2026_11_16 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_isThisComputerOnline
+%   % * Fixed bug where seed variable was used instead of isOnline 
+% - In fcn_DebugTools_isThisComputerOnline
+%   % * Changed default URL to Google's DNS to avoid issues with MacOS
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Changed default URL to Google's DNS to avoid issues with MacOS,
+%   %   % within fcn_INTERNAL_isThisComputerOnline (same change as in external
+%   %   % function)
+%
+% (new release)
 
 % TO-DO:
 % 

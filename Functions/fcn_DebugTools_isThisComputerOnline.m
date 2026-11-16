@@ -14,7 +14,8 @@ function [isOnline] = fcn_DebugTools_isThisComputerOnline(varargin)
 %
 %      (OPTIONAL INPUTS)
 %
-%      url: the URL to use for testing. Default is 'google.com' 
+%      url: the URL to use for testing. Default is '8.8.8.8' which is the
+%      Google Public DNS (Domain Name Server)
 %
 %      timeout: the timeout in milliseconds to use. Default is 100.
 %
@@ -45,7 +46,10 @@ function [isOnline] = fcn_DebugTools_isThisComputerOnline(varargin)
 % - In fcn_DebugTools_isThisComputerOnline
 %   * Wrote the code originally
 %   * Used fcn_DebugTools_is+OnlineFromThisComputerAndUser as starter
- 
+% 
+% 2026_11_16 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_isThisComputerOnline
+%   * Changed default URL to Google's DNS to avoid issues with MacOS
 
 % TO-DO:
 % 2026_10_07 by Sean Brennan, sbrennan@psu.edu
@@ -113,7 +117,7 @@ if 0 == flag_max_speed
 end
 
 % Does user want to specify url?
-url = 'google.com';
+url = '8.8.8.8';
 if 1 <= nargin
     input = varargin{1};
     if ~isempty(input)
