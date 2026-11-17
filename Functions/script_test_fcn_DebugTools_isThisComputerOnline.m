@@ -13,6 +13,10 @@
 % 2026_11_16 by Sean Brennan, sbrennan@psu.edu
 % - In script_test_fcn_DebugTools_isThisComputerOnline
 %   * Fixed bug where seed variable was used instead of isOnline 
+% 
+% 2026_11_17 by Sean Brennan, sbrennan@psu.edu
+% - In script_test_fcn_DebugTools_isThisComputerOnline
+%   * Added more test cases since the ping method works even with bad URLs
 
 % TO-DO:
 % 2026_10_07 by Sean Brennan, sbrennan@psu.edu
@@ -49,7 +53,7 @@ timeout = [];
 % Call the function
 [isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), (figNum));
 
-sgtitle(titleString, 'Interpreter','none');
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
 assert(islogical(isOnline));
@@ -79,7 +83,7 @@ timeout = [];
 % Call the function
 [isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), (figNum));
 
-sgtitle(titleString, 'Interpreter','none');
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
 assert(islogical(isOnline));
@@ -109,7 +113,7 @@ timeout = [];
 % Call the function
 [isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), (figNum));
 
-sgtitle(titleString, 'Interpreter','none');
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
 assert(islogical(isOnline));
@@ -119,7 +123,7 @@ assert(size(isOnline,1)==1);
 assert(size(isOnline,2)==1); 
 
 % Check variable values
-assert(isOnline==false);  
+assert(isOnline==true);  
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -139,7 +143,7 @@ timeout = 10000;
 % Call the function
 [isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), (figNum));
 
-sgtitle(titleString, 'Interpreter','none');
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
 assert(islogical(isOnline));
@@ -170,7 +174,7 @@ timeout = 5000;
 % Call the function
 [isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), (figNum));
 
-sgtitle(titleString, 'Interpreter','none');
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
 assert(islogical(isOnline));
@@ -180,7 +184,7 @@ assert(size(isOnline,1)==1);
 assert(size(isOnline,2)==1); 
 
 % Check variable values
-assert(isOnline==false);  
+assert(isOnline==true);   
 
 % Make sure plot did NOT open up
 figHandles = get(groot, 'Children');
@@ -205,6 +209,70 @@ assert(~any(figHandles==figNum));
 
 close all;
 fprintf(1,'Figure: 2XXXXXX: TEST mode cases\n');
+
+
+%% TEST case: disconnected internet with good URL
+figNum = 20002;
+titleString = sprintf('TEST case: disconnected internet with good URL');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
+
+if 1==0
+	% Set the input arguments
+	url = [];
+	timeout = [];
+
+	% Call the function
+	[isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), (figNum));
+
+	% sgtitle(titleString, 'Interpreter','none');
+
+	% Check variable types
+	assert(islogical(isOnline));
+
+	% Check variable sizes
+	assert(size(isOnline,1)==1);
+	assert(size(isOnline,2)==1);
+
+	% Check variable values
+	assert(isOnline==false);
+
+	% Make sure plot did NOT open up
+	figHandles = get(groot, 'Children');
+	assert(~any(figHandles==figNum));
+end
+
+
+%% TEST case: disconnected internet with bad URL and long timeout
+figNum = 20002;
+titleString = sprintf('TEST case: disconnected internet with bad URL and long timeout');
+fprintf(1,'Figure %.0f: %s\n',figNum, titleString);
+figure(figNum); close(figNum);
+
+if 1==0
+	% Set the input arguments
+	url = 'afhfhfhfhfkdkdjfkjfjkdjfkj.com';
+	timeout = 5000;
+
+	% Call the function
+	[isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), (figNum));
+
+	% sgtitle(titleString, 'Interpreter','none');
+
+	% Check variable types
+	assert(islogical(isOnline));
+
+	% Check variable sizes
+	assert(size(isOnline,1)==1);
+	assert(size(isOnline,2)==1);
+
+	% Check variable values
+	assert(isOnline==false);
+
+	% Make sure plot did NOT open up
+	figHandles = get(groot, 'Children');
+	assert(~any(figHandles==figNum));
+end
 
 
 %% Fast Mode Tests
@@ -237,7 +305,7 @@ timeout = [];
 % Call the function
 [isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), ([]));
 
-sgtitle(titleString, 'Interpreter','none');
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
 assert(islogical(isOnline));
@@ -266,7 +334,7 @@ timeout = [];
 % Call the function
 [isOnline] = fcn_DebugTools_isThisComputerOnline((url), (timeout), (-1));
 
-sgtitle(titleString, 'Interpreter','none');
+% sgtitle(titleString, 'Interpreter','none');
 
 % Check variable types
 assert(islogical(isOnline));

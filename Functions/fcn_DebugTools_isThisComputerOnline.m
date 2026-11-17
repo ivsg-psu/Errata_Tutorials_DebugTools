@@ -1,8 +1,16 @@
 function [isOnline] = fcn_DebugTools_isThisComputerOnline(varargin)
 
 % fcn_DebugTools_isThisComputerOnline
-% returns true if this computer is online, false if not. Checks using java
-% "isreachable" command to URL.
+% returns true if this computer is online, false if not. It does 3 layers of tests:
+%  * Checks using java "isreachable" command to the URL.
+%  * If this does not work, checks using the "webread" command with a
+%    secure "https:\\" prefix
+%  * If this does not work, checks using the "webread" command with a
+%    unsecure "http:\\" prefix
+%  * If this does not work, checks using a system-level "ping" command to
+%    '8.8.8.8', which is the Google Public DNS (Domain Name Server) 
+% If all these fail, it marks the computer as being offline. If any pass,
+% it markes the computer as being online.
 %
 % FORMAT:
 %
@@ -14,10 +22,10 @@ function [isOnline] = fcn_DebugTools_isThisComputerOnline(varargin)
 %
 %      (OPTIONAL INPUTS)
 %
-%      url: the URL to use for testing. Default is '8.8.8.8' which is the
-%      Google Public DNS (Domain Name Server)
+%      url: if given as a string, the URL to use for testing. Default is
+%      'https://github.com'.
 %
-%      timeout: the timeout in milliseconds to use. Default is 100.
+%      timeout: the timeout in milliseconds to use. Default is 1000 ms.
 %
 %      figNum: a figure number to plot results. If set to -1, skips any
 %      input checking or debugging, no figures will be generated, and sets
@@ -50,6 +58,13 @@ function [isOnline] = fcn_DebugTools_isThisComputerOnline(varargin)
 % 2026_11_16 by Sean Brennan, sbrennan@psu.edu
 % - In fcn_DebugTools_isThisComputerOnline
 %   * Changed default URL to Google's DNS to avoid issues with MacOS
+% 
+% 2026_11_17 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_isThisComputerOnline
+%   * Added a multi-tier test to work across system OS installs including
+%   % - Webread with secure URL
+%   % - Webread with unsecure URL
+%   % - Ping to googles DNS
 
 % TO-DO:
 % 2026_10_07 by Sean Brennan, sbrennan@psu.edu
@@ -117,7 +132,8 @@ if 0 == flag_max_speed
 end
 
 % Does user want to specify url?
-url = '8.8.8.8';
+url = 'google.com';
+% url = 'github.com';
 if 1 <= nargin
     input = varargin{1};
     if ~isempty(input)
@@ -126,7 +142,7 @@ if 1 <= nargin
 end
 
 % Does user want to specify timeout?
-timeout = 100;
+timeout = 1000;
 if 2 <= nargin
     input = varargin{2};
     if ~isempty(input)
@@ -157,12 +173,84 @@ end
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% Initialize variables
+isOnline = false;
+isOnline_JavaIsReachable = -1; %#ok<NASGU>
+isOnline_webreadSecure = -1;
+isOnline_webreadUnsecure = -1;
+isOnline_ping = -1;
+
 
 try
 	addr = java.net.InetAddress.getByName(url);
-	isOnline = addr.isReachable(timeout); % timeout ms
+	isOnline_JavaIsReachable = addr.isReachable(timeout); % timeout ms
 catch
-	isOnline = false;
+	isOnline_JavaIsReachable = false;
+end
+
+isOnline = isOnline || isOnline_JavaIsReachable;
+
+% Check again, using webread secure
+if ~isOnline
+	try
+
+		options = weboptions('Timeout', timeout);
+
+		%  webread('https://github.com', options);
+		webread(cat(2,'https://',url), options);
+
+		isOnline_webreadSecure = true;
+
+	catch
+
+		isOnline_webreadSecure = false;
+
+	end
+	
+	isOnline = isOnline || isOnline_webreadSecure;
+
+end
+
+
+% Check again, using webread unsecure
+if ~isOnline
+	try
+
+		options = weboptions('Timeout', timeout);
+
+		%  webread('https://github.com', options);
+		webread(cat(2,'http://',url), options);
+
+		isOnline_webreadUnsecure = true;
+
+	catch
+
+		isOnline_webreadUnsecure = false;
+
+	end
+
+	isOnline = isOnline || isOnline_webreadUnsecure;
+
+end
+
+
+% Check again, using system-level ping - this could work if the browser is
+% not available
+if ~isOnline
+	try
+		systemCommand = sprintf('ping -n 1 -w %d %s', timeout, '8.8.8.8');
+		[pingStatus, pingOutput] = system(systemCommand);
+		if pingStatus==1
+			isOnline_ping = false;
+		else
+			isOnline_ping = ~contains(pingOutput,'Request timed out');
+		end
+	catch
+		isOnline_ping = false;
+	end
+
+	isOnline = isOnline || isOnline_ping;
+
 end
 
 
@@ -179,8 +267,13 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if flag_do_plots
 
-    % Nothing to do here
-
+    % Print results
+	fprintf(1,'Test results for online verification: \n');
+	fprintf(1,'\t isReachable method (Java) - online?: \t%s\n', fcn_INTERNAL_printOnlineStatus(isOnline_JavaIsReachable));
+	fprintf(1,'\t webread secure method - online?:     \t%s\n', fcn_INTERNAL_printOnlineStatus(isOnline_webreadSecure));
+	fprintf(1,'\t webread unsecure method - online?:   \t%s\n', fcn_INTERNAL_printOnlineStatus(isOnline_webreadUnsecure));
+	fprintf(1,'\t ping method - online?:               \t%s\n', fcn_INTERNAL_printOnlineStatus(isOnline_ping));
+	fprintf(1,'Overall, is computer online?: \t\t\t%s\n',    fcn_INTERNAL_printOnlineStatus(isOnline));
 
 end
 
@@ -188,7 +281,7 @@ if flag_do_debug
     fprintf(1,'ENDING function: %s, in file: %s\n\n',st(1).name,st(1).file);
 end
 
-end % Ends main function
+end % Ends isThisComputerOnline function
 
 
 
@@ -205,8 +298,18 @@ end % Ends main function
 % See: https://patorjk.com/software/taag/#p=display&f=Big&t=Functions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%§
 
-%% fcn_DebugTools_isThisComputerOnline
-
+%% fcn_INTERNAL_printOnlineStatus
+function statusString = fcn_INTERNAL_printOnlineStatus(status)
+if -1==status
+	statusString = 'Untested';
+elseif 0==status
+	statusString = 'Offline';
+elseif 1==status
+	statusString = ' Online';
+else
+	error('Unknown status encountered: %.0d',status);
+end
+end % Ends fcn_INTERNAL_printOnlineStatus (used in isThisComputerOnline)
 
 
 

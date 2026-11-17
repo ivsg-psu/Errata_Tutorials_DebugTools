@@ -549,6 +549,18 @@
 %   %   % function)
 %
 % (new release)
+%
+% 2026_11_17 by Sean Brennan, sbrennan@psu.edu
+% - In fcn_DebugTools_isThisComputerOnline
+%   * Added a multi-tier test to work across system OS installs including
+%   % - Webread with secure URL
+%   % - Webread with unsecure URL
+%   % - Ping to googles DNS
+% - In script_test_fcn_DebugTools_isThisComputerOnline
+%   * Added more test cases since the ping method works even with bad URLs
+% - In fcn_DebugTools_autoInstallRepos
+%   % * Updated fcn_INTERNAL_isThisComputerOnline
+%   % * Same change as in external function
 
 % TO-DO:
 % 
